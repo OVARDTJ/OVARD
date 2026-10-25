@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVARD - Панель управления магазинами</title>
+    <style>
+        :root {
+            --primary-color: #10b981;
+            --primary-dark: #059669;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            margin-top: 0;
+            color: var(--primary-dark);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        .store-list {
+            margin-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+        .store-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .delete-btn {
+            background-color: #ef4444;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .delete-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Управление магазинами OVARD</h2>
+    <p>Здесь вы можете добавлять или изменять названия магазинов, которые автоматически обновляются в приложении.</p>
+
+    <div class="form-group">
+        <label for="storeName">Название магазина / Мағоза:</label>
+        <input type="text" id="storeName" placeholder="Например: Магазин №1: Бозори Меваҳо">
+    </div>
+
+    <div class="form-group">
+        <label for="storeCategory">Категория:</label>
+        <select id="storeCategory">
+            <option value="Озуқа">Озуқа / Продукты</option>
+            <option value="Корма ва Кимё">Корма, Карбамид, Силитра</option>
+            <option value="Либос ва Молу Калла">Либос ва Молу Калла</option>
+        </select>
+    </div>
+
+    <button onclick="addStore()">Добавить магазин</button>
+
+    <div class="store-list">
+        <h3>Список активных магазинов:</h3>
+        <div id="storesContainer">
+            <!-- Динамические магазины выводятся здесь -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Загрузка магазинов из localStorage при открытии
+    document.addEventListener("DOMContentLoaded", renderStores);
+
+    function getStores() {
+        return JSON.parse(localStorage.getItem('ovard_stores')) || [
+            { id: 1, name: "Магазин №1: Бозори Меваҳо", category: "Озуқа" },
+            { id: 2, name: "Магазин №2: Либосҳои Кӯдакона", category: "Либос" }
+        ];
+    }
+
+    function saveStores(stores) {
+        localStorage.setItem('ovard_stores', JSON.stringify(stores));
+    }
+
+    function addStore() {
+        const nameInput = document.getElementById('storeName');
+        const categoryInput = document.getElementById('storeCategory');
+
+        if (!nameInput.value.trim()) {
+            alert("Пожалуйста, введите название магазина!");
+            return;
+        }
+
+        const stores = getStores();
+        const newStore = {
+            id: Date.now(),
+            name: nameInput.value.trim(),
+            category: categoryInput.value
+        };
+
+        stores.push(newStore);
+        saveStores(stores);
+
+        nameInput.value = '';
+        renderStores();
+    }
+
+    function deleteStore(id) {
+        let stores = getStores();
+        stores = stores.filter(store => store.id !== id);
+        saveStores(stores);
+        renderStores();
+    }
+
+    function renderStores() {
+        const container = document.getElementById('storesContainer');
+        const stores = getStores();
+        
+        container.innerHTML = '';
+        if (stores.length === 0) {
+            container.innerHTML = '<p style="color: #64748b;">Нет добавленных магазинов.</p>';
+            return;
+        }
+
+        stores.forEach(store => {
+            const div = document.createElement('div');
+            div.className = 'store-item';
+            div.innerHTML = `
+                <div>
+                    <strong>${store.name}</strong><br>
+                    <small style="color: #64748b;">Категория: ${store.category}</small>
+                </div>
+                <button class="delete-btn" onclick="deleteStore(${store.id})">Удалить</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+</script>
+
+</body>
+</html>
