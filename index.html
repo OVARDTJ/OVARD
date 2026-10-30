@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16843a">
+  <meta name="description" content="OVARD — магазины, товары и доставка до двери.">
+  <title>OVARD — Магазины и доставка</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <a href="#" class="logo">OVARD<span>.</span></a>
+  <div class="header-actions">
+    <button aria-label="Уведомления">♧</button>
+    <button aria-label="Корзина">🛒</button>
+    <button aria-label="Профиль">♙</button>
+  </div>
+</header>
+
+<main>
+  <section class="location">
+    <span>⌖</span>
+    <div>
+      <small>Ваш адрес доставки</small>
+      <strong>Фархор, Таджикистан</strong>
+    </div>
+    <span class="arrow">⌄</span>
+  </section>
+
+  <section class="intro">
+    <h1>Покупайте в магазинах.<br><span>Мы доставим!</span></h1>
+    <p>Разные магазины и товары — в одном месте.</p>
+  </section>
+
+  <section class="search">
+    <span>⌕</span>
+    <input type="search" placeholder="Найти магазин или товар...">
+  </section>
+
+  <section class="banner">
+    <div>
+      <span class="banner-tag">OVARD DELIVERY</span>
+      <h2>Ваши покупки<br>ближе, чем кажется</h2>
+      <p>Заказывайте онлайн — получайте у двери.</p>
+    </div>
+    <div class="delivery-icon">🚚</div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>Магазины</h2>
+      <a href="#shops">Все магазины →</a>
+    </div>
+    <div class="shop-grid" id="shops">
+      <article class="shop-card">
+        <div class="shop-image">👔</div>
+        <h3>ZORO</h3>
+        <p>Мужская и женская одежда</p>
+        <span>Магазин</span>
+      </article>
+
+      <article class="shop-card">
+        <div class="shop-image">💊</div>
+        <h3>Аптека</h3>
+        <p>Лекарства и товары для здоровья</p>
+        <span>Аптека</span>
+      </article>
+
+      <article class="shop-card">
+        <div class="shop-image">🥖</div>
+        <h3>Пекарня</h3>
+        <p>Свежий и горячий хлеб</p>
+        <span>Продукты</span>
+      </article>
+
+      <article class="shop-card">
+        <div class="shop-image">🛒</div>
+        <h3>Продукты</h3>
+        <p>Товары на каждый день</p>
+        <span>Магазин</span>
+      </article>
+
+      <article class="shop-card">
+        <div class="shop-image">🥚</div>
+        <h3>Домашняя ферма</h3>
+        <p>Яйца и домашняя птица</p>
+        <span>Ферма</span>
+      </article>
+
+      <article class="shop-card">
+        <div class="shop-image">🏗️</div>
+        <h3>Стройматериалы</h3>
+        <p>Материалы для строительства</p>
+        <span>Строительство</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="delivery-info">
+    <div class="delivery-info-icon">🚚</div>
+    <div>
+      <h3>Доставка по вашему адресу</h3>
+      <p>Стоимость рассчитывается отдельно с учётом расстояния, веса и габаритов товара.</p>
+    </div>
+  </section>
+
+  <section class="section popular">
+    <div class="section-heading">
+      <h2>Популярные товары</h2>
+      <a href="#shops">Все →</a>
+    </div>
+    <div class="empty-products">
+      <span>🛍️</span>
+      <p>Скоро здесь появятся товары магазинов.</p>
+    </div>
+  </section>
+
+  <section class="partner">
+    <h2>У вас есть магазин?</h2>
+    <p>Присоединяйтесь к OVARD и находите новых клиентов.</p>
+    <button onclick="alert('Скоро здесь появится форма подключения магазина.')">
+      Стать партнёром
+    </button>
+  </section>
+</main>
+
+<nav class="bottom-nav">
+  <a class="active" href="#">⌂<small>Главная</small></a>
+  <a href="#shops">▦<small>Магазины</small></a>
+  <a href="#shops">🛒<small>Корзина</small></a>
+  <a href="#shops">♙<small>Профиль</small></a>
+</nav>
+
+<script src="script.js"></script>
+</body>
+</html>
