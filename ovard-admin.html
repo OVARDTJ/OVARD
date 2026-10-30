@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OVARD — Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6f4;font-family:Arial,sans-serif;color:#222}
+header{background:#16843a;color:white;padding:20px;font-size:23px;font-weight:bold}
+main{max-width:650px;margin:auto;padding:18px}
+.card{background:white;padding:18px;border-radius:14px;margin-bottom:16px}
+h2{font-size:19px;margin-top:0}
+input,textarea,button{width:100%;padding:13px;margin:7px 0;border-radius:9px;font-size:15px}
+input,textarea{border:1px solid #ddd;background:#fff}
+button{border:0;background:#16843a;color:white;font-weight:bold}
+.delete{background:#dc3545}
+.shop{border:1px solid #eee;padding:12px;border-radius:10px;margin-top:10px}
+.small{font-size:13px;color:#777}
+</style>
+</head>
+<body>
+
+<header>OVARD / Панель управления</header>
+
+<main>
+<div class="card">
+<h2>➕ Добавить магазин</h2>
+<input id="shopName" placeholder="Название магазина">
+<input id="shopImage" placeholder="Ссылка на фото магазина">
+<textarea id="shopDesc" placeholder="Описание магазина"></textarea>
+<button onclick="addShop()">Добавить магазин</button>
+</div>
+
+<div class="card">
+<h2>🏪 Мои магазины</h2>
+<div id="shopList"></div>
+</div>
+</main>
+
+<script>
+let shops=JSON.parse(localStorage.getItem("ovard_shops")||"[]");
+
+function save(){
+localStorage.setItem("ovard_shops",JSON.stringify(shops));
+showShops();
+}
+
+function addShop(){
+let name=document.getElementById("shopName").value.trim();
+let image=document.getElementById("shopImage").value.trim();
+let desc=document.getElementById("shopDesc").value.trim();
+
+if(!name){
+alert("Номи мағозаро нависед");
+return;
+}
+
+shops.push({
+id:Date.now(),
+name:name,
+image:image,
+desc:desc,
+products:[]
+});
+
+save();
+document.getElementById("shopName").value="";
+document.getElementById("shopImage").value="";
+document.getElementById("shopDesc").value="";
+}
+
+function deleteShop(id){
+if(confirm("Мағозаро нест мекунед?")){
+shops=shops.filter(s=>s.id!==id);
+save();
+}
+}
+
+function editShop(id){
+let shop=shops.find(s=>s.id===id);
+let name=prompt("Номи нави мағоза:",shop.name);
+if(name===null)return;
+let desc=prompt("Тавсифи мағоза:",shop.desc);
+if(desc===null)return;
+shop.name=name.trim()||shop.name;
+shop.desc=desc;
+save();
+}
+
+function showShops(){
+let list=document.getElementById("shopList");
+list.innerHTML="";
+
+if(!shops.length){
+list.innerHTML="<p class='small'>Ҳоло мағоза илова нашудааст.</p>";
+return;
+}
+
+shops.forEach(shop=>{
+let div=document.createElement("div");
+div.className="shop";
+
+let title=document.createElement("b");
+title.textContent=shop.name;
+
+let description=document.createElement("p");
+description.textContent=shop.desc||"";
+
+let edit=document.createElement("button");
+edit.textContent="Таҳрир";
+edit.onclick=()=>editShop(shop.id);
+
+let del=document.createElement("button");
+del.textContent="Нест кардан";
+del.className="delete";
+del.onclick=()=>deleteShop(shop.id);
+
+div.append(title,description,edit,del);
+list.appendChild(div);
+});
+}
+
+showShops();
+</script>
+
+</body>
+</html>
