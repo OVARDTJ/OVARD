@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#16843a">
-  <meta name="description" content="OVARD — магазины, товары и доставка до двери.">
-  <title>OVARD — Магазины и доставка</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16843a">
+<meta name="description" content="OVARD — магазины, продукты и доставка в Фархоре.">
+<title>OVARD — Магазины и доставка</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -32,69 +31,87 @@
 
   <section class="intro">
     <h1>Покупайте в магазинах.<br><span>Мы доставим!</span></h1>
-    <p>Разные магазины и товары — в одном месте.</p>
+    <p>Продукты, свежий хлеб и товары — в одном месте.</p>
   </section>
 
   <section class="search">
     <span>⌕</span>
-    <input type="search" placeholder="Найти магазин или товар...">
+    <input type="search" placeholder="Найти магазин или товар..." aria-label="Поиск">
   </section>
 
   <section class="banner">
     <div>
       <span class="banner-tag">OVARD DELIVERY</span>
-      <h2>Ваши покупки<br>ближе, чем кажется</h2>
-      <p>Заказывайте онлайн — получайте у двери.</p>
+      <h2>Покупки без лишних хлопот</h2>
+      <p>Заказывайте в магазинах Фархора — доставим к вашей двери.</p>
     </div>
     <div class="delivery-icon">🚚</div>
   </section>
 
   <section class="section">
     <div class="section-heading">
-      <h2>Магазины</h2>
+      <h2>Категории</h2>
+      <a href="#shops">Все →</a>
+    </div>
+    <div class="category-grid">
+      <a href="#shops" class="category"><span>🥖</span><strong>Хлеб</strong></a>
+      <a href="#shops" class="category"><span>🥚</span><strong>Яйца</strong></a>
+      <a href="#shops" class="category"><span>🥬</span><strong>Продукты</strong></a>
+      <a href="#shops" class="category"><span>🐔</span><strong>Птица</strong></a>
+      <a href="#shops" class="category"><span>🌾</span><strong>Корма</strong></a>
+      <a href="#shops" class="category"><span>🌱</span><strong>Агро</strong></a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>Магазины рядом</h2>
       <a href="#shops">Все магазины →</a>
     </div>
+
     <div class="shop-grid" id="shops">
       <article class="shop-card">
-        <div class="shop-image">👔</div>
-        <h3>ZORO</h3>
-        <p>Мужская и женская одежда</p>
-        <span>Магазин</span>
+        <div class="shop-image bread">🥖</div>
+        <div class="shop-details">
+          <span class="shop-label">СВЕЖАЯ ВЫПЕЧКА</span>
+          <h3>Пекарня</h3>
+          <p>Свежий горячий хлеб</p>
+          <div class="shop-bottom"><span>★ 4.9</span><span>От 5 сомони</span></div>
+          <button class="order-button">Заказать</button>
+        </div>
       </article>
 
       <article class="shop-card">
-        <div class="shop-image">💊</div>
-        <h3>Аптека</h3>
-        <p>Лекарства и товары для здоровья</p>
-        <span>Аптека</span>
+        <div class="shop-image food">🛒</div>
+        <div class="shop-details">
+          <span class="shop-label">НА КАЖДЫЙ ДЕНЬ</span>
+          <h3>Продуктовый магазин</h3>
+          <p>Продукты и товары для дома</p>
+          <div class="shop-bottom"><span>★ 4.8</span><span>От 10 сомони</span></div>
+          <button class="order-button">Заказать</button>
+        </div>
       </article>
 
       <article class="shop-card">
-        <div class="shop-image">🥖</div>
-        <h3>Пекарня</h3>
-        <p>Свежий и горячий хлеб</p>
-        <span>Продукты</span>
+        <div class="shop-image farm">🥚</div>
+        <div class="shop-details">
+          <span class="shop-label">ДОМАШНЕЕ</span>
+          <h3>Домашняя ферма</h3>
+          <p>Яйца и домашняя птица</p>
+          <div class="shop-bottom"><span>★ 4.9</span><span>По заказу</span></div>
+          <button class="order-button">Заказать</button>
+        </div>
       </article>
 
       <article class="shop-card">
-        <div class="shop-image">🛒</div>
-        <h3>Продукты</h3>
-        <p>Товары на каждый день</p>
-        <span>Магазин</span>
-      </article>
-
-      <article class="shop-card">
-        <div class="shop-image">🥚</div>
-        <h3>Домашняя ферма</h3>
-        <p>Яйца и домашняя птица</p>
-        <span>Ферма</span>
-      </article>
-
-      <article class="shop-card">
-        <div class="shop-image">🏗️</div>
-        <h3>Стройматериалы</h3>
-        <p>Материалы для строительства</p>
-        <span>Строительство</span>
+        <div class="shop-image grain">🌾</div>
+        <div class="shop-details">
+          <span class="shop-label">ДЛЯ ХОЗЯЙСТВА</span>
+          <h3>Корма и зерно</h3>
+          <p>Комбикорм, пшеница и кукуруза</p>
+          <div class="shop-bottom"><span>★ 4.8</span><span>По заказу</span></div>
+          <button class="order-button">Заказать</button>
+        </div>
       </article>
     </div>
   </section>
@@ -102,36 +119,23 @@
   <section class="delivery-info">
     <div class="delivery-info-icon">🚚</div>
     <div>
-      <h3>Доставка по вашему адресу</h3>
-      <p>Стоимость рассчитывается отдельно с учётом расстояния, веса и габаритов товара.</p>
-    </div>
-  </section>
-
-  <section class="section popular">
-    <div class="section-heading">
-      <h2>Популярные товары</h2>
-      <a href="#shops">Все →</a>
-    </div>
-    <div class="empty-products">
-      <span>🛍️</span>
-      <p>Скоро здесь появятся товары магазинов.</p>
+      <h3>Доставка до двери</h3>
+      <p>Стоимость зависит от расстояния, веса и размера заказа.</p>
     </div>
   </section>
 
   <section class="partner">
     <h2>У вас есть магазин?</h2>
-    <p>Присоединяйтесь к OVARD и находите новых клиентов.</p>
-    <button onclick="alert('Скоро здесь появится форма подключения магазина.')">
-      Стать партнёром
-    </button>
+    <p>Подключите свой магазин к OVARD и получайте заказы онлайн.</p>
+    <button id="partnerButton">Стать партнёром</button>
   </section>
 </main>
 
 <nav class="bottom-nav">
   <a class="active" href="#">⌂<small>Главная</small></a>
   <a href="#shops">▦<small>Магазины</small></a>
-  <a href="#shops">🛒<small>Корзина</small></a>
-  <a href="#shops">♙<small>Профиль</small></a>
+  <a href="#shops">🛒<small>Заказы</small></a>
+  <a href="#partnerButton">♙<small>Профиль</small></a>
 </nav>
 
 <script src="script.js"></script>
