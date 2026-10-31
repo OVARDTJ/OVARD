@@ -1,143 +1,126 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#16843a">
-<meta name="description" content="OVARD — магазины, продукты и доставка в Фархоре.">
-<title>OVARD — Магазины и доставка</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OVARD - Marketplace & Delivery</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<header class="header">
-  <a href="#" class="logo">OVARD<span>.</span></a>
-  <div class="header-actions">
-    <button aria-label="Уведомления">♧</button>
-    <button aria-label="Корзина">🛒</button>
-    <button aria-label="Профиль">♙</button>
+  <!-- Top Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="#ffffff" stroke-width="8"/>
+          <path d="M 30 50 L 45 65 L 75 35" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>OVARD</span>
+      </div>
+
+      <div class="header-actions">
+        <!-- Language Switcher -->
+        <select id="lang-select" onchange="changeLanguage(this.value)">
+          <option value="ru" selected>RU</option>
+          <option value="tj">TJ</option>
+          <option value="en">EN</option>
+        </select>
+        
+        <button class="cart-btn" onclick="toggleCart()">
+          🛒 <span id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <button class="nav-btn active" onclick="showSection('home')" id="nav-home">Главная</button>
+    <button class="nav-btn" onclick="showSection('stores')" id="nav-stores">Магазины</button>
+    <button class="nav-btn" onclick="showSection('admin')" id="nav-admin">Админка</button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="container">
+
+    <!-- HOME SECTION -->
+    <section id="sec-home" class="section active">
+      <div class="banner">
+        <h2 id="banner-title">Доставляем всё, что нужно</h2>
+        <p id="banner-sub">Продукты • Товары • Сельское хозяйство</p>
+      </div>
+
+      <h3 class="section-title" id="title-stores">Магазины и Фермы</h3>
+      <div class="stores-grid" id="stores-container">
+        <!-- Dynamic Store Cards -->
+      </div>
+    </section>
+
+    <!-- STORE DETAIL SECTION -->
+    <section id="sec-store-detail" class="section">
+      <button class="back-btn" onclick="showSection('home')" id="btn-back">← Назад</button>
+      <div id="store-header" class="store-header-box">
+        <!-- Store Info -->
+      </div>
+      <h3 class="section-title" id="title-products">Товары магазина</h3>
+      <div class="products-grid" id="products-container">
+        <!-- Dynamic Products -->
+      </div>
+    </section>
+
+    <!-- ADMIN SECTION -->
+    <section id="sec-admin" class="section">
+      <h2 id="admin-title">Управление магазинами и товарами</h2>
+      
+      <!-- Add Store Form -->
+      <div class="card-form">
+        <h3 id="admin-add-store">Добавить новый магазин</h3>
+        <input type="text" id="new-store-name" placeholder="Название магазина">
+        <input type="text" id="new-store-desc" placeholder="Описание (например, Продукты, Одежда)">
+        <button onclick="addNewStore()" id="btn-add-store">Добавить магазин</button>
+      </div>
+
+      <!-- Add Product Form -->
+      <div class="card-form">
+        <h3 id="admin-add-prod">Добавить товар</h3>
+        <select id="prod-store-select">
+          <!-- Dynamic Store Options -->
+        </select>
+        <input type="text" id="new-prod-name" placeholder="Название товара">
+        <input type="number" id="new-prod-price" placeholder="Цена (сомони)">
+        
+        <label for="prod-unit" id="lbl-unit">Единица измерения:</label>
+        <select id="prod-unit">
+          <option value="шт">шт (дона)</option>
+          <option value="кг">кг (килограмм)</option>
+          <option value="мешок">мешок (халта)</option>
+          <option value="сотих">сотих (земля)</option>
+          <option value="гектар">гектар (земля)</option>
+          <option value="тонна">тонна (корма/зерно)</option>
+          <option value="прес">прес/баст (сено)</option>
+        </select>
+        
+        <button onclick="addNewProduct()" id="btn-add-prod">Добавить товар</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="toggleCart()">&times;</span>
+      <h2 id="cart-title">Корзина</h2>
+      <div id="cart-items"></div>
+      <div class="cart-total">
+        <span id="cart-total-lbl">Итого:</span> <strong id="cart-total-price">0 сомони</strong>
+      </div>
+      <button class="checkout-btn" onclick="checkout()" id="btn-checkout">Оформить заказ</button>
+    </div>
   </div>
-</header>
 
-<main>
-  <section class="location">
-    <span>⌖</span>
-    <div>
-      <small>Ваш адрес доставки</small>
-      <strong>Фархор, Таджикистан</strong>
-    </div>
-    <span class="arrow">⌄</span>
-  </section>
-
-  <section class="intro">
-    <h1>Покупайте в магазинах.<br><span>Мы доставим!</span></h1>
-    <p>Продукты, свежий хлеб и товары — в одном месте.</p>
-  </section>
-
-  <section class="search">
-    <span>⌕</span>
-    <input type="search" placeholder="Найти магазин или товар..." aria-label="Поиск">
-  </section>
-
-  <section class="banner">
-    <div>
-      <span class="banner-tag">OVARD DELIVERY</span>
-      <h2>Покупки без лишних хлопот</h2>
-      <p>Заказывайте в магазинах Фархора — доставим к вашей двери.</p>
-    </div>
-    <div class="delivery-icon">🚚</div>
-  </section>
-
-  <section class="section">
-    <div class="section-heading">
-      <h2>Категории</h2>
-      <a href="#shops">Все →</a>
-    </div>
-    <div class="category-grid">
-      <a href="#shops" class="category"><span>🥖</span><strong>Хлеб</strong></a>
-      <a href="#shops" class="category"><span>🥚</span><strong>Яйца</strong></a>
-      <a href="#shops" class="category"><span>🥬</span><strong>Продукты</strong></a>
-      <a href="#shops" class="category"><span>🐔</span><strong>Птица</strong></a>
-      <a href="#shops" class="category"><span>🌾</span><strong>Корма</strong></a>
-      <a href="#shops" class="category"><span>🌱</span><strong>Агро</strong></a>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-heading">
-      <h2>Магазины рядом</h2>
-      <a href="#shops">Все магазины →</a>
-    </div>
-
-    <div class="shop-grid" id="shops">
-      <article class="shop-card">
-        <div class="shop-image bread">🥖</div>
-        <div class="shop-details">
-          <span class="shop-label">СВЕЖАЯ ВЫПЕЧКА</span>
-          <h3>Пекарня</h3>
-          <p>Свежий горячий хлеб</p>
-          <div class="shop-bottom"><span>★ 4.9</span><span>От 5 сомони</span></div>
-          <button class="order-button">Заказать</button>
-        </div>
-      </article>
-
-      <article class="shop-card">
-        <div class="shop-image food">🛒</div>
-        <div class="shop-details">
-          <span class="shop-label">НА КАЖДЫЙ ДЕНЬ</span>
-          <h3>Продуктовый магазин</h3>
-          <p>Продукты и товары для дома</p>
-          <div class="shop-bottom"><span>★ 4.8</span><span>От 10 сомони</span></div>
-          <button class="order-button">Заказать</button>
-        </div>
-      </article>
-
-      <article class="shop-card">
-        <div class="shop-image farm">🥚</div>
-        <div class="shop-details">
-          <span class="shop-label">ДОМАШНЕЕ</span>
-          <h3>Домашняя ферма</h3>
-          <p>Яйца и домашняя птица</p>
-          <div class="shop-bottom"><span>★ 4.9</span><span>По заказу</span></div>
-          <button class="order-button">Заказать</button>
-        </div>
-      </article>
-
-      <article class="shop-card">
-        <div class="shop-image grain">🌾</div>
-        <div class="shop-details">
-          <span class="shop-label">ДЛЯ ХОЗЯЙСТВА</span>
-          <h3>Корма и зерно</h3>
-          <p>Комбикорм, пшеница и кукуруза</p>
-          <div class="shop-bottom"><span>★ 4.8</span><span>По заказу</span></div>
-          <button class="order-button">Заказать</button>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="delivery-info">
-    <div class="delivery-info-icon">🚚</div>
-    <div>
-      <h3>Доставка до двери</h3>
-      <p>Стоимость зависит от расстояния, веса и размера заказа.</p>
-    </div>
-  </section>
-
-  <section class="partner">
-    <h2>У вас есть магазин?</h2>
-    <p>Подключите свой магазин к OVARD и получайте заказы онлайн.</p>
-    <button id="partnerButton">Стать партнёром</button>
-  </section>
-</main>
-
-<nav class="bottom-nav">
-  <a class="active" href="#">⌂<small>Главная</small></a>
-  <a href="#shops">▦<small>Магазины</small></a>
-  <a href="#shops">🛒<small>Заказы</small></a>
-  <a href="#partnerButton">♙<small>Профиль</small></a>
-</nav>
-
-<script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
