@@ -1,134 +1,472 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OVARD - Marketplace & Delivery</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#078747">
+<title>Ovard — Доставка и магазины</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f5;
+  color: #202923;
+  padding-bottom: 80px;
+}
+
+header {
+  background: #078747;
+  color: white;
+  padding: 15px 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.logo-mark {
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+select, .cart {
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  background: white;
+  font-size: 15px;
+}
+
+.cart {
+  background: #ffffff30;
+  color: white;
+}
+
+.search {
+  margin: 15px;
+  padding: 14px;
+  background: white;
+  border-radius: 15px;
+  display: flex;
+  gap: 10px;
+  box-shadow: 0 2px 8px #00000008;
+}
+
+.search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 15px;
+}
+
+.hero {
+  margin: 15px;
+  padding: 25px 20px;
+  border-radius: 22px;
+  background: linear-gradient(120deg,#078747,#005b35);
+  color: white;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero h2 {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #e4f5e9;
+}
+
+.section {
+  padding: 10px 15px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0 15px;
+}
+
+.section-title h2 {
+  font-size: 21px;
+}
+
+.section-title span {
+  color: #078747;
+  font-size: 14px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+
+.product {
+  background: white;
+  border-radius: 17px;
+  padding: 10px;
+  box-shadow: 0 3px 12px #00000009;
+}
+
+.product img {
+  width: 100%;
+  height: 125px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #f4f6f5;
+}
+
+.product h3 {
+  font-size: 15px;
+  margin: 9px 0 4px;
+}
+
+.product small {
+  color: #858585;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.add {
+  background: #078747;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 12px;
+  font-size: 18px;
+}
+
+.store {
+  background: white;
+  border-radius: 16px;
+  padding: 17px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px #00000008;
+}
+
+.store h3 {
+  margin-bottom: 6px;
+}
+
+.store p {
+  color: #858585;
+  font-size: 14px;
+}
+
+.store b {
+  font-size: 23px;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 3px;
+  border-top: 1px solid #eee;
+  z-index: 20;
+}
+
+.nav-item {
+  text-align: center;
+  color: #858585;
+  font-size: 12px;
+  border: none;
+  background: none;
+}
+
+.nav-item strong {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+
+.nav-item.active {
+  color: #078747;
+  font-weight: bold;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+@media (min-width:700px) {
+  .products {
+    grid-template-columns: repeat(4,1fr);
+  }
+  main {
+    max-width: 1000px;
+    margin: auto;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <!-- Top Header -->
-  <header class="header">
-    <div class="header-content">
-      <div class="logo">
-        <svg class="logo-icon" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#ffffff" stroke-width="8"/>
-          <path d="M 30 50 L 45 65 L 75 35" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>OVARD</span>
-      </div>
-
-      <div class="header-actions">
-        <!-- Language Switcher -->
-        <select id="lang-select" onchange="changeLanguage(this.value)">
-          <option value="ru" selected>RU</option>
-          <option value="tj">TJ</option>
-          <option value="en">EN</option>
-        </select>
-        
-        <button class="cart-btn" onclick="toggleCart()">
-          🛒 <span id="cart-count">0</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Navigation Bar -->
-  <nav class="nav-bar">
-    <button class="nav-btn active" onclick="showSection('home')" id="nav-home">Главная</button>
-    <button class="nav-btn" onclick="showSection('stores')" id="nav-stores">Магазины</button>
-    <button class="nav-btn" onclick="showSection('admin')" id="nav-admin">Админка</button>
-  </nav>
-
-  <!-- Main Content Container -->
-  <main class="container">
-
-    <!-- HOME SECTION -->
-    <section id="sec-home" class="section active">
-      <div class="banner">
-        <h2 id="banner-title">Доставляем всё, что нужно</h2>
-        <p id="banner-sub">Продукты • Товары • Сельское хозяйство</p>
-      </div>
-
-      <h3 class="section-title" id="title-stores">Магазины и Фермы</h3>
-      <div class="stores-grid" id="stores-container">
-        <!-- Dynamic Store Cards -->
-      </div>
-    </section>
-
-    <!-- STORE DETAIL SECTION -->
-    <section id="sec-store-detail" class="section">
-      <button class="back-btn" onclick="showSection('home')" id="btn-back">← Назад</button>
-      <div id="store-header" class="store-header-box">
-        <!-- Store Info -->
-      </div>
-      <h3 class="section-title" id="title-products">Товары магазина</h3>
-      <div class="products-grid" id="products-container">
-        <!-- Dynamic Products -->
-      </div>
-    </section>
-
-    <!-- ADMIN SECTION -->
-    <section id="sec-admin" class="section">
-      <h2 id="admin-title">Управление магазинами и товарами</h2>
-      
-      <!-- Add Store Form -->
-      <div class="card-form">
-        <h3 id="admin-add-store">Добавить новый магазин</h3>
-        <input type="text" id="new-store-name" placeholder="Название магазина">
-        <input type="text" id="new-store-desc" placeholder="Описание (например, Продукты, Одежда)">
-        <button onclick="addNewStore()" id="btn-add-store">Добавить магазин</button>
-      </div>
-
-      <!-- Add Product Form -->
-      <div class="card-form">
-        <h3 id="admin-add-prod">Добавить товар</h3>
-        <select id="prod-store-select">
-          <!-- Dynamic Store Options -->
-        </select>
-        <input type="text" id="new-prod-name" placeholder="Название товара">
-        <input type="number" id="new-prod-price" placeholder="Цена (сомони)">
-        
-        <label for="prod-unit" id="lbl-unit">Единица измерения:</label>
-        <select id="prod-unit">
-          <option value="шт">шт (дона)</option>
-          <option value="кг">кг (килограмм)</option>
-          <option value="мешок">мешок (халта)</option>
-          <option value="сотих">сотих (земля)</option>
-          <option value="гектар">гектар (земля)</option>
-          <option value="тонна">тонна (корма/зерно)</option>
-          <option value="прес">прес/баст (сено)</option>
-        </select>
-        
-        <button onclick="addNewProduct()" id="btn-add-prod">Добавить товар</button>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Cart Modal -->
-  <div id="cart-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="toggleCart()">&times;</span>
-      <h2 id="cart-title">Корзина</h2>
-      <div id="cart-items"></div>
-      <div class="cart-total">
-        <span id="cart-total-lbl">Итого:</span> <strong id="cart-total-price">0 сомони</strong>
-      </div>
-      <button class="checkout-btn" onclick="checkout()" id="btn-checkout">Оформить заказ</button>
-    </div>
+<header>
+  <div class="logo">
+    <div class="logo-mark">✓</div>
+    Ovard
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('Service Worker registered successfully'))
-        .catch(err => console.log('Service Worker registration failed:', err));
-    }
-  </script>
+  <div class="header-right">
+    <select>
+      <option>RU</option>
+      <option>TJ</option>
+    </select>
+    <button class="cart" onclick="showPage('cart')">
+      🛒 <span id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<div id="home" class="page active">
+
+  <div class="search">
+    🔍
+    <input id="search" placeholder="Поиск товаров и магазинов..." oninput="searchProducts()">
+  </div>
+
+  <div class="hero">
+    <h2>Доставляем всё, что нужно</h2>
+    <p>Продукты • Товары • Сельское хозяйство</p>
+  </div>
+
+  <section class="section">
+    <div class="section-title">
+      <h2>Популярные товары</h2>
+      <span>Все товары →</span>
+    </div>
+
+    <div class="products" id="productList">
+
+      <div class="product" data-name="Мука">
+        <img src="https://images.unsplash.com/photo-1627485937980-221c88ac04f9?w=400" alt="Мука">
+        <h3>Мука</h3>
+        <small>50 кг</small>
+        <div class="price-row">
+          <span>290 сомони</span>
+          <button class="add" onclick="addCart('Мука',290)">🛒</button>
+        </div>
+      </div>
+
+      <div class="product" data-name="Яйца">
+        <img src="https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=400" alt="Яйца">
+        <h3>Яйца</h3>
+        <small>30 шт.</small>
+        <div class="price-row">
+          <span>45 сомони</span>
+          <button class="add" onclick="addCart('Яйца',45)">🛒</button>
+        </div>
+      </div>
+
+      <div class="product" data-name="Комбикорм">
+        <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=400" alt="Комбикорм">
+        <h3>Комбикорм</h3>
+        <small>40 кг</small>
+        <div class="price-row">
+          <span>320 сомони</span>
+          <button class="add" onclick="addCart('Комбикорм',320)">🛒</button>
+        </div>
+      </div>
+
+      <div class="product" data-name="Селитра">
+        <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400" alt="Селитра">
+        <h3>Селитра</h3>
+        <small>50 кг</small>
+        <div class="price-row">
+          <span>280 сомони</span>
+          <button class="add" onclick="addCart('Селитра',280)">🛒</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<div id="stores" class="page">
+  <section class="section">
+    <div class="section-title">
+      <h2>Магазины</h2>
+    </div>
+
+    <div class="store">
+      <div>
+        <h3>Магазин OVARD ✓</h3>
+        <p>Продукты и товары</p>
+      </div>
+      <b>›</b>
+    </div>
+
+    <div class="store">
+      <div>
+        <h3>Ферма & Сельхоз</h3>
+        <p>Зерно, корма и удобрения</p>
+      </div>
+      <b>›</b>
+    </div>
+
+    <div class="store">
+      <div>
+        <h3>ZORO</h3>
+        <p>Мужская и женская одежда</p>
+      </div>
+      <b>›</b>
+    </div>
+  </section>
+</div>
+
+<div id="cart" class="page">
+  <section class="section">
+    <h2>Корзина</h2>
+    <div id="cartItems" style="margin-top:20px"></div>
+    <h3 id="total" style="margin-top:20px">Итого: 0 сомони</h3>
+  </section>
+</div>
+
+<div id="orders" class="page">
+  <section class="section">
+    <h2>Мои заказы</h2>
+    <p style="margin-top:15px;color:#888">Ваши заказы появятся здесь.</p>
+  </section>
+</div>
+
+<div id="profile" class="page">
+  <section class="section">
+    <h2>Профиль</h2>
+    <p style="margin-top:15px">OVARD — Фархор, Таджикистан</p>
+  </section>
+</div>
+
+</main>
+
+<nav class="bottom">
+  <button class="nav-item active" onclick="showPage('home',this)">
+    <strong>⌂</strong>Главная
+  </button>
+  <button class="nav-item" onclick="showPage('stores',this)">
+    <strong>▦</strong>Магазины
+  </button>
+  <button class="nav-item" onclick="showPage('orders',this)">
+    <strong>▤</strong>Заказы
+  </button>
+  <button class="nav-item" onclick="showPage('profile',this)">
+    <strong>♙</strong>Профиль
+  </button>
+</nav>
+
+<script>
+let cart = [];
+
+function showPage(id,btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+function addCart(name,price) {
+  let item=cart.find(x=>x.name===name);
+  if(item) item.qty++;
+  else cart.push({name,price,qty:1});
+  updateCart();
+}
+
+function updateCart() {
+  let count=cart.reduce((s,x)=>s+x.qty,0);
+  document.getElementById('cartCount').textContent=count;
+
+  let html='';
+  let total=0;
+
+  cart.forEach((x,i)=>{
+    total+=x.price*x.qty;
+    html+=`
+    <div class="store">
+      <div>
+        <h3>${x.name}</h3>
+        <p>${x.price} сомони × ${x.qty}</p>
+      </div>
+      <div>
+        <button onclick="changeQty(${i},-1)">−</button>
+        ${x.qty}
+        <button onclick="changeQty(${i},1)">+</button>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('cartItems').innerHTML=html || 'Корзина пуста';
+  document.getElementById('total').textContent='Итого: '+total+' сомони';
+}
+
+function changeQty(i,n) {
+  cart[i].qty+=n;
+  if(cart[i].qty<=0) cart.splice(i,1);
+  updateCart();
+}
+
+function searchProducts() {
+  let q=document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.product').forEach(p=>{
+    p.style.display=p.dataset.name.toLowerCase().includes(q)?'':'none';
+  });
+}
+</script>
+
 </body>
 </html>
