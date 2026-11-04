@@ -1,110 +1,148 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="tg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ovard</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Истифодаи иконкаҳо аз FontAwesome барои дақиқ баромадан -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Мағозаи маҳсулот</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .search-bar {
+            padding: 10px;
+            text-align: center;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .search-bar input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+        }
+        .categories {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: white;
+            margin-top: 10px;
+        }
+        .category-item {
+            text-align: center;
+            font-size: 14px;
+        }
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .banner {
+            background-color: #c8e6c9;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .banner h2 {
+            color: #1b5e20;
+            margin: 0;
+            font-size: 18px;
+        }
+        .products {
+            padding: 15px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .product-card {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .product-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        .price {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Сарлавҳа -->
-        <header class="header">
-            <div class="logo-area">
-                <div class="logo-icon"><i class="fa-solid fa-check"></i></div>
-                <span class="logo-text">Ovard</span>
-            </div>
-            <div class="header-actions">
-                <div class="icon-btn notification">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge">1</span>
-                </div>
-                <div class="icon-btn"><i class="fa-solid fa-gear"></i></div>
-                <div class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></div>
-            </div>
-        </header>
+    <div class="header">
+        <h2>Мағозаи Сабз 🌿</h2>
+    </div>
 
-        <!-- Баннер -->
-        <div class="promo-banner">
-            <div class="banner-text">
-                <h1>Покупайте быстро и удобно!</h1>
-                <p>Доставка по Фархору и всему региону</p>
-                <button class="banner-btn">Перейти в магазины <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-            <div class="banner-image">
-                <div class="cart-illustration">🛒</div>
-            </div>
-            <div class="slider-dots">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot active"></span>
-            </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Ҷустуҷӯи маҳсулот...">
+    </div>
+
+    <div class="categories">
+        <div class="category-item">
+            <div class="category-icon">🍎</div>
+            <span>Меваҳо</span>
         </div>
-
-        <!-- Сатри ҷустуҷӯ -->
-        <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" placeholder="Поиск товаров и магазинов...">
+        <div class="category-item">
+            <div class="category-icon">🥦</div>
+            <span>Сабзавот</span>
         </div>
-
-        <!-- Нишониҳои зуд (Quick Navigation Grid) -->
-        <div class="quick-nav">
-            <div class="quick-item">
-                <div class="qi-icon green-bg"><i class="fa-solid fa-store"></i></div>
-                <span>Магазины</span>
-            </div>
-            <div class="quick-item">
-                <div class="qi-icon green-bg"><i class="fa-solid fa-truck"></i></div>
-                <span>Доставка</span>
-            </div>
-            <div class="quick-item">
-                <div class="qi-icon green-bg">
-                    <i class="fa-solid fa-basket-shopping"></i>
-                    <span class="qi-badge">2</span>
-                </div>
-                <span>Корзина</span>
-            </div>
-            <div class="quick-item">
-                <div class="qi-icon green-bg"><i class="fa-solid fa-user"></i></div>
-                <span>Профиль</span>
-            </div>
+        <div class="category-item">
+            <div class="category-icon">🥩</div>
+            <span>Гӯшт</span>
         </div>
-
-        <!-- Корти кафолат -->
-        <div class="secure-box">
-            <div class="secure-left">
-                <i class="fa-solid fa-shield-check"></i>
-                <div>
-                    <strong>Безопасные покупки</strong>
-                    <p>и надёжные партнёры</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right"></i>
+        <div class="category-item">
+            <div class="category-icon">🥛</div>
+            <span>Ширӣ</span>
         </div>
     </div>
 
-    <!-- Панели поёнӣ (Bottom Navigation) -->
-    <nav class="bottom-nav">
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-store"></i>
-            <span>Мағозаҳо</span>
-        </a>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-truck-fast"></i>
-            <span>Расонидан</span>
-        </a>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span>Сабат</span>
-        </a>
-        <a href="#" class="nav-link active">
-            <i class="fa-solid fa-user"></i>
-            <span>Профил</span>
-        </a>
-    </nav>
+    <div class="banner">
+        <div>
+            <h2>30% Тахфиф</h2>
+            <p>Барои хариди аввалини шумо</p>
+        </div>
+    </div>
+
+    <div class="products">
+        <h3>Маҳсулоти маъмул</h3>
+        <div class="product-grid">
+            <div class="product-card">
+                <p>🍓 Клубника</p>
+                <div class="price">$4.99</div>
+            </div>
+            <div class="product-card">
+                <p>🍌 Банан</p>
+                <div class="price">$2.49</div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
