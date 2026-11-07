@@ -1,148 +1,96 @@
+
 <!DOCTYPE html>
-<html lang="tg">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мағозаи маҳсулот</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        .header {
-            background-color: #2e7d32;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-        .search-bar {
-            padding: 10px;
-            text-align: center;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .search-bar input {
-            width: 80%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            outline: none;
-        }
-        .categories {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: white;
-            margin-top: 10px;
-        }
-        .category-item {
-            text-align: center;
-            font-size: 14px;
-        }
-        .category-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #e8f5e9;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 5px;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-        .banner {
-            background-color: #c8e6c9;
-            margin: 15px;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .banner h2 {
-            color: #1b5e20;
-            margin: 0;
-            font-size: 18px;
-        }
-        .products {
-            padding: 15px;
-        }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        .product-card {
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .product-card img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-        }
-        .price {
-            color: #2e7d32;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16843a">
+  <meta name="description" content="OVARD — магазины, товары и доставка">
+  <title>Ovard — Магазины и доставка</title>
+  <link rel="icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="header">
-        <h2>Мағозаи Сабз 🌿</h2>
+  <header class="header">
+    <a href="index.html" class="logo">Ovard<span>.</span></a>
+    <div class="header-actions">
+      <button id="searchBtn" aria-label="Поиск">⌕</button>
+      <button id="menuBtn" aria-label="Настройки">⋮</button>
     </div>
+  </header>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Ҷустуҷӯи маҳсулот...">
-    </div>
+  <main id="app">
 
-    <div class="categories">
-        <div class="category-item">
-            <div class="category-icon">🍎</div>
-            <span>Меваҳо</span>
-        </div>
-        <div class="category-item">
-            <div class="category-icon">🥦</div>
-            <span>Сабзавот</span>
-        </div>
-        <div class="category-item">
-            <div class="category-icon">🥩</div>
-            <span>Гӯшт</span>
-        </div>
-        <div class="category-item">
-            <div class="category-icon">🥛</div>
-            <span>Ширӣ</span>
-        </div>
-    </div>
+    <section class="welcome">
+      <p>Добро пожаловать!</p>
+      <h1>Что будем искать?</h1>
+      <div class="search-box">
+        <input id="searchInput" placeholder="Поиск товаров и магазинов...">
+        <button id="searchSubmit">⌕</button>
+      </div>
+    </section>
 
-    <div class="banner">
-        <div>
-            <h2>30% Тахфиф</h2>
-            <p>Барои хариди аввалини шумо</p>
-        </div>
-    </div>
+    <nav class="main-nav">
+      <button class="nav-item active" data-page="home">⌂<span>Главная</span></button>
+      <button class="nav-item" data-page="shops">▦<span>Магазины</span></button>
+      <button class="nav-item" data-page="orders">▤<span>Заказы</span></button>
+      <button class="nav-item" data-page="profile">♙<span>Профиль</span></button>
+    </nav>
 
-    <div class="products">
-        <h3>Маҳсулоти маъмул</h3>
-        <div class="product-grid">
-            <div class="product-card">
-                <p>🍓 Клубника</p>
-                <div class="price">$4.99</div>
-            </div>
-            <div class="product-card">
-                <p>🍌 Банан</p>
-                <div class="price">$2.49</div>
-            </div>
-        </div>
-    </div>
+    <section id="homePage" class="page">
+      <div class="section-heading">
+        <h2>Товары Ovard</h2>
+        <span>Наши товары</span>
+      </div>
+      <div id="ovardProducts" class="product-grid"></div>
 
+      <div class="section-heading">
+        <h2>Все магазины</h2>
+        <button data-page="shops">Смотреть все →</button>
+      </div>
+      <div id="shopPreview" class="shop-list"></div>
+    </section>
+
+    <section id="shopsPage" class="page hidden">
+      <h2>Все магазины</h2>
+      <div id="allShops" class="shop-list"></div>
+    </section>
+
+    <section id="ordersPage" class="page hidden">
+      <h2>Мои заказы</h2>
+      <div id="myOrders"></div>
+    </section>
+
+    <section id="profilePage" class="page hidden">
+      <h2>Профиль</h2>
+      <div id="userProfile"></div>
+      <button id="registerBtn">Регистрация / Войти</button>
+    </section>
+
+    <section id="settingsPage" class="page hidden">
+      <h2>Настройки</h2>
+      <label>Язык</label>
+      <select id="language">
+        <option value="ru">Русский</option>
+        <option value="tg">Тоҷикӣ</option>
+        <option value="en">English</option>
+      </select>
+      <label>Тема</label>
+      <select id="theme">
+        <option value="light">Светлая</option>
+        <option value="dark">Тёмная</option>
+      </select>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Ovard — Покупай удобно.</p>
+    <small>Фархор, Таджикистан</small>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
