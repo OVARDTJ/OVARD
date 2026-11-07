@@ -1,96 +1,25 @@
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#16843a">
-  <meta name="description" content="OVARD — магазины, товары и доставка">
-  <title>Ovard — Магазины и доставка</title>
-  <link rel="icon" href="logo.png">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <header class="header">
-    <a href="index.html" class="logo">Ovard<span>.</span></a>
-    <div class="header-actions">
-      <button id="searchBtn" aria-label="Поиск">⌕</button>
-      <button id="menuBtn" aria-label="Настройки">⋮</button>
-    </div>
-  </header>
-
-  <main id="app">
-
-    <section class="welcome">
-      <p>Добро пожаловать!</p>
-      <h1>Что будем искать?</h1>
-      <div class="search-box">
-        <input id="searchInput" placeholder="Поиск товаров и магазинов...">
-        <button id="searchSubmit">⌕</button>
-      </div>
-    </section>
-
-    <nav class="main-nav">
-      <button class="nav-item active" data-page="home">⌂<span>Главная</span></button>
-      <button class="nav-item" data-page="shops">▦<span>Магазины</span></button>
-      <button class="nav-item" data-page="orders">▤<span>Заказы</span></button>
-      <button class="nav-item" data-page="profile">♙<span>Профиль</span></button>
-    </nav>
-
-    <section id="homePage" class="page">
-      <div class="section-heading">
-        <h2>Товары Ovard</h2>
-        <span>Наши товары</span>
-      </div>
-      <div id="ovardProducts" class="product-grid"></div>
-
-      <div class="section-heading">
-        <h2>Все магазины</h2>
-        <button data-page="shops">Смотреть все →</button>
-      </div>
-      <div id="shopPreview" class="shop-list"></div>
-    </section>
-
-    <section id="shopsPage" class="page hidden">
-      <h2>Все магазины</h2>
-      <div id="allShops" class="shop-list"></div>
-    </section>
-
-    <section id="ordersPage" class="page hidden">
-      <h2>Мои заказы</h2>
-      <div id="myOrders"></div>
-    </section>
-
-    <section id="profilePage" class="page hidden">
-      <h2>Профиль</h2>
-      <div id="userProfile"></div>
-      <button id="registerBtn">Регистрация / Войти</button>
-    </section>
-
-    <section id="settingsPage" class="page hidden">
-      <h2>Настройки</h2>
-      <label>Язык</label>
-      <select id="language">
-        <option value="ru">Русский</option>
-        <option value="tg">Тоҷикӣ</option>
-        <option value="en">English</option>
-      </select>
-      <label>Тема</label>
-      <select id="theme">
-        <option value="light">Светлая</option>
-        <option value="dark">Тёмная</option>
-      </select>
-    </section>
-
-  </main>
-
-  <footer>
-    <p>Ovard — Покупай удобно.</p>
-    <small>Фархор, Таджикистан</small>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<!-- Бахши интихоби суроға дар Фархор -->
+<div class="location-select-container">
+    <label for="farkhor-village">Интихоби деҳа / маҳалла дар Фархор:</label>
+    <select id="farkhor-village" onchange="updateLocation(this.value)">
+        <option value="Фархор (Марказ)">Маркази Фархор (Минимал: 50 сомонӣ)</option>
+        <optgroup label="Ҷамоатҳо ва Деҳоти Фархор (Минимал: 100 сомонӣ)">
+            <option value="ҷ. 20-солагии Истиқлолият (Комсомол)">ҷ. 20-солагии Истиқлолият</option>
+            <option value="деҳ. Бобосафоли Поён">деҳ. Бобосафоли Поён</option>
+            <option value="деҳ. Бобосафоли Боло">деҳ. Бобосафоли Боло</option>
+            <option value="деҳ. Душанбе">деҳ. Душанбе</option>
+            <option value="ҷ. Ватан (Садоқат/Қизилсу)">ҷ. Ватан</option>
+            <option value="деҳ. Лағмон">деҳ. Лағмон</option>
+            <option value="деҳ. Баҳористон">деҳ. Баҳористон</option>
+            <option value="деҳ. Куҳандиёр (Уртабӯз)">деҳ. Куҳандиёр</option>
+            <option value="ҷ. Ғайрат">ҷ. Ғайрат</option>
+            <option value="деҳ. Сурхоб">деҳ. Сурхоб</option>
+            <option value="деҳ. Хушоби Поён">деҳ. Хушоби Поён</option>
+            <option value="деҳ. Хушоби Боло">деҳ. Хушоби Боло</option>
+            <option value="ҷ. Гулистон">ҷ. Гулистон</option>
+            <option value="деҳ. Деҳқонариқ">деҳ. Деҳқонариқ</option>
+            <option value="ҷ. Зафар (Сомониён)">ҷ. Зафар</option>
+            <option value="ҷ. Истиқлол (Ҷартеппа)">ҷ. Истиқлол</option>
+        </optgroup>
+    </select>
+</div>
