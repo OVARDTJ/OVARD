@@ -1,25 +1,152 @@
-<!-- Бахши интихоби суроға дар Фархор -->
-<div class="location-select-container">
-    <label for="farkhor-village">Интихоби деҳа / маҳалла дар Фархор:</label>
-    <select id="farkhor-village" onchange="updateLocation(this.value)">
-        <option value="Фархор (Марказ)">Маркази Фархор (Минимал: 50 сомонӣ)</option>
-        <optgroup label="Ҷамоатҳо ва Деҳоти Фархор (Минимал: 100 сомонӣ)">
-            <option value="ҷ. 20-солагии Истиқлолият (Комсомол)">ҷ. 20-солагии Истиқлолият</option>
-            <option value="деҳ. Бобосафоли Поён">деҳ. Бобосафоли Поён</option>
-            <option value="деҳ. Бобосафоли Боло">деҳ. Бобосафоли Боло</option>
-            <option value="деҳ. Душанбе">деҳ. Душанбе</option>
-            <option value="ҷ. Ватан (Садоқат/Қизилсу)">ҷ. Ватан</option>
-            <option value="деҳ. Лағмон">деҳ. Лағмон</option>
-            <option value="деҳ. Баҳористон">деҳ. Баҳористон</option>
-            <option value="деҳ. Куҳандиёр (Уртабӯз)">деҳ. Куҳандиёр</option>
-            <option value="ҷ. Ғайрат">ҷ. Ғайрат</option>
-            <option value="деҳ. Сурхоб">деҳ. Сурхоб</option>
-            <option value="деҳ. Хушоби Поён">деҳ. Хушоби Поён</option>
-            <option value="деҳ. Хушоби Боло">деҳ. Хушоби Боло</option>
-            <option value="ҷ. Гулистон">ҷ. Гулистон</option>
-            <option value="деҳ. Деҳқонариқ">деҳ. Деҳқонариқ</option>
-            <option value="ҷ. Зафар (Сомониён)">ҷ. Зафар</option>
-            <option value="ҷ. Истиқлол (Ҷартеппа)">ҷ. Истиқлол</option>
-        </optgroup>
-    </select>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16843a">
+  <meta name="description" content="OVARD — покупки и доставка в одном приложении">
+  <title>Ovard — Покупки и доставка</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <a class="brand" href="#" onclick="showPage('home')">
+    <img src="logo.png" alt="Ovard">
+    <span>Ovard</span>
+  </a>
+  <div class="header-actions">
+    <button onclick="showPage('notifications')" aria-label="Уведомления">♧</button>
+    <button onclick="toggleMenu()" aria-label="Меню">⋮</button>
+  </div>
+</header>
+
+<div id="menu" class="menu hidden">
+  <button onclick="showPage('shops')">Магазины</button>
+  <button onclick="showPage('orders')">Мои заказы</button>
+  <button onclick="showPage('settings')">Настройки</button>
+  <button onclick="showPage('profile')">Профиль</button>
 </div>
+
+<main id="app">
+
+<section id="home" class="page active">
+
+  <div class="hero">
+    <div class="hero-content">
+      <h1>Покупайте легко с Ovard</h1>
+      <p>Ваши покупки и доставка в одном месте</p>
+      <button onclick="showPage('shops')">Наши магазины →</button>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <button onclick="showPage('home')">🛍️<span>Наши товары</span></button>
+    <button onclick="showPage('shops')">🏬<span>Магазины</span></button>
+    <button onclick="showPage('delivery')">🛵<span>Доставка</span></button>
+  </div>
+
+  <div class="section-heading">
+    <h2>Продукция Ovard</h2>
+    <button onclick="showPage('home')">Все товары →</button>
+  </div>
+
+  <div id="own-products" class="products-grid"></div>
+
+</section>
+
+<section id="shops" class="page">
+  <div class="page-heading">
+    <h2>Магазины</h2>
+    <p>Выберите магазин для покупок</p>
+  </div>
+  <input id="shop-search" placeholder="Поиск магазина..." oninput="renderShops()">
+  <div id="shops-list"></div>
+</section>
+
+<section id="shop-products" class="page">
+  <button class="back-button" onclick="showPage('shops')">← Магазины</button>
+  <h2 id="selected-shop-name"></h2>
+  <div id="selected-shop-products" class="products-grid"></div>
+</section>
+
+<section id="cart" class="page">
+  <h2>Корзина</h2>
+  <div id="cart-items"></div>
+  <div id="cart-summary"></div>
+  <button class="primary-button" onclick="checkout()">Оформить заказ →</button>
+</section>
+
+<section id="orders" class="page">
+  <h2>Мои заказы</h2>
+  <div id="orders-list"></div>
+</section>
+
+<section id="delivery" class="page">
+  <h2>Доставка Ovard</h2>
+  <p>Быстрая доставка ваших покупок до двери.</p>
+  <p>Стоимость доставки рассчитывается отдельно.</p>
+</section>
+
+<section id="profile" class="page">
+  <h2>Профиль</h2>
+  <div id="profile-info"></div>
+  <button class="primary-button" onclick="showPage('register')">Войти / Регистрация</button>
+</section>
+
+<section id="register" class="page">
+  <h2>Регистрация</h2>
+  <input id="customer-name" placeholder="Ваше имя">
+  <input id="customer-phone" type="tel" placeholder="Номер телефона">
+  <input id="customer-address" placeholder="Адрес доставки">
+  <button class="primary-button" onclick="registerCustomer()">Зарегистрироваться</button>
+</section>
+
+<section id="settings" class="page">
+  <h2>Настройки</h2>
+  <label>Язык приложения</label>
+  <select id="language" onchange="changeLanguage(this.value)">
+    <option value="ru">Русский</option>
+    <option value="tg">Тоҷикӣ</option>
+    <option value="en">English</option>
+  </select>
+  <label>Тёмная тема</label>
+  <input type="checkbox" id="dark-mode" onchange="toggleTheme(this.checked)">
+  <button onclick="showPage('profile')">Профиль</button>
+</section>
+
+<section id="notifications" class="page">
+  <h2>Уведомления</h2>
+  <p>Здесь будут уведомления о заказах.</p>
+</section>
+
+</main>
+
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="showPage('home')">
+    <span>⌂</span>Главная
+  </button>
+  <button class="nav-item" onclick="showPage('shops')">
+    <span>▦</span>Магазины
+  </button>
+  <button class="nav-item" onclick="showPage('cart')">
+    <span>🛒</span>Корзина <b id="cart-count">0</b>
+  </button>
+  <button class="nav-item" onclick="showPage('profile')">
+    <span>♙</span>Профиль
+  </button>
+</nav>
+
+<script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}
+</script>
+</body>
+</html>
