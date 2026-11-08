@@ -2,105 +2,119 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#16843a">
-  <title>OVARD — Фархор</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16843a">
+<title>OVARD — Магазины и доставка</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header class="header">
-  <a class="logo" href="#" onclick="showPage('home')">Ovard</a>
-  <span class="location">📍 Фархор</span>
-  <button class="menu" onclick="showPage('settings')">⋮</button>
+  <div>
+    <div class="logo">Ovard</div>
+    <small>Фархор · Таджикистан</small>
+  </div>
+  <button id="menuBtn">⋮</button>
 </header>
 
+<div id="menu" class="menu hidden">
+  <button onclick="showPage('settings')">⚙️ Настройки</button>
+  <button onclick="showPage('profile')">👤 Профиль</button>
+  <button onclick="showPage('courier')">🛵 Курьер</button>
+  <button onclick="showPage('admin')">🔐 Управление</button>
+</div>
+
+<div class="search">
+  <input id="search" placeholder="Найти товар..." oninput="renderProducts()">
+</div>
+
 <main>
-
-<section id="home" class="page">
+<section id="home" class="page active">
   <div class="hero">
-    <h1>Покупать в Фархоре стало проще</h1>
-    <p>Товары и доставка от OVARD</p>
+    <h1>Покупайте проще с Ovard</h1>
+    <p>Товары и магазины Фархора в одном месте.</p>
   </div>
-
-  <h2>Товары OVARD</h2>
-  <div id="products" class="grid"></div>
+  <h2>Наши товары</h2>
+  <div id="categories" class="categories"></div>
+  <div id="products" class="products"></div>
 </section>
 
-<section id="shops" class="page hidden">
-  <h1>Магазины</h1>
-  <div id="shops"></div>
+<section id="shops" class="page">
+  <h2>Все магазины</h2>
+  <div id="shopList"></div>
 </section>
 
-<section id="orders" class="page hidden">
-  <h1>Мои заказы</h1>
-  <div id="ordersList"></div>
-</section>
-
-<section id="profile" class="page hidden">
-  <h1>Профиль</h1>
-  <input id="customerName" placeholder="Ваше имя">
-  <input id="customerPhone" placeholder="Номер телефона">
-  <input id="customerAddress" placeholder="Адрес в Фархоре">
-  <button onclick="saveProfile()">Сохранить</button>
-</section>
-
-<section id="cart" class="page hidden">
-  <h1>Корзина</h1>
+<section id="cart" class="page">
+  <h2>Корзина</h2>
   <div id="cartItems"></div>
+  <h3 id="total">Итого: 0 сомони</h3>
+  <p class="note">Доставка оплачивается отдельно. Цена зависит от расстояния и веса.</p>
+  <input id="customerName" placeholder="Ваше имя">
+  <input id="customerPhone" placeholder="Телефон">
+  <input id="customerAddress" placeholder="Адрес доставки">
+  <button onclick="checkout()">Оформить заказ</button>
 </section>
 
-<section id="settings" class="page hidden">
-  <h1>Настройки</h1>
+<section id="profile" class="page">
+  <h2>Профиль покупателя</h2>
+  <input id="profileName" placeholder="Имя">
+  <input id="profilePhone" placeholder="Телефон">
+  <button onclick="saveProfile()">Сохранить</button>
+  <p id="profileInfo"></p>
+</section>
+
+<section id="courier" class="page">
+  <h2>Курьерская доставка</h2>
+  <p>Доставка по Фархору. Стоимость рассчитывается индивидуально.</p>
+  <input id="courierName" placeholder="Имя">
+  <input id="courierPhone" placeholder="Телефон">
+  <select id="transport">
+    <option>Пешком</option>
+    <option>Велосипед</option>
+    <option>Мотоцикл</option>
+    <option>Автомобиль</option>
+  </select>
+  <button onclick="courierRequest()">Отправить заявку</button>
+</section>
+
+<section id="settings" class="page">
+  <h2>Настройки</h2>
   <label>Язык</label>
-  <select>
-    <option>Русский</option>
-    <option>Тоҷикӣ</option>
-    <option>English</option>
+  <select id="language" onchange="saveLanguage()">
+    <option value="ru">Русский</option>
+    <option value="tg">Тоҷикӣ</option>
+    <option value="en">English</option>
   </select>
-
-  <label>Оформление</label>
-  <select onchange="changeTheme(this.value)">
-    <option value="light">Светлая тема</option>
-    <option value="dark">Тёмная тема</option>
-  </select>
-
-  <p>Регион: Фархор</p>
-  <p>Доставка: только Фархор</p>
-  <button onclick="showPage('admin')">Управление OVARD</button>
+  <label>Тёмная тема</label>
+  <input type="checkbox" id="darkMode" onchange="toggleDark()">
 </section>
 
-<section id="admin" class="page hidden">
-  <h1>Управление OVARD</h1>
+<section id="admin" class="page">
+  <h2>Управление OVARD</h2>
   <h3>Добавить товар</h3>
   <input id="pName" placeholder="Название товара">
   <input id="pPrice" type="number" placeholder="Цена">
-  <select id="pUnit" onchange="toggleOther(this.value)">
-    <option value="кг">Килограмм</option>
-    <option value="шт.">Штука</option>
-    <option value="мешок">Мешок</option>
-    <option value="упаковка">Упаковка</option>
-    <option value="литр">Литр</option>
-    <option value="метр">Метр</option>
-    <option value="другое">Другое — вручную</option>
-  </select>
-  <input id="otherUnit" class="hidden" placeholder="Напишите любую единицу">
+  <input id="pUnit" placeholder="Единица: кг, мешок, тонна...">
+  <input id="pCategory" placeholder="Категория">
+  <input id="pEmoji" placeholder="Эмодзи товара">
   <button onclick="addProduct()">Добавить товар</button>
 
   <h3>Добавить магазин</h3>
-  <input id="shopName" placeholder="Название магазина">
-  <input id="shopDescription" placeholder="Описание магазина">
+  <input id="sName" placeholder="Название магазина">
+  <input id="sDesc" placeholder="Описание">
   <button onclick="addShop()">Добавить магазин</button>
-</section>
 
+  <h3>Товары</h3>
+  <div id="adminProducts"></div>
+  <h3>Магазины</h3>
+  <div id="adminShops"></div>
+</section>
 </main>
 
 <nav class="bottom">
   <button onclick="showPage('home')">⌂<small>Главная</small></button>
   <button onclick="showPage('shops')">▦<small>Магазины</small></button>
   <button onclick="showPage('cart')">🛒<small>Корзина</small></button>
-  <button onclick="showPage('orders')">▤<small>Заказы</small></button>
   <button onclick="showPage('profile')">♙<small>Профиль</small></button>
 </nav>
 
