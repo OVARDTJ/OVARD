@@ -1,200 +1,283 @@
-
-let products = JSON.parse(localStorage.getItem("ovard_products") || "null") || [
- {id:1,name:"Гандум",price:0,unit:"кг",category:"Зерно",emoji:"🌾"},
- {id:2,name:"Комбикорм",price:0,unit:"мешок",category:"Корм",emoji:"🐓"},
- {id:3,name:"Ҷав",price:0,unit:"кг",category:"Зерно",emoji:"🌱"},
- {id:4,name:"Ҷуворимакка",price:0,unit:"кг",category:"Зерно",emoji:"🌽"}
-];
-
-let shops = JSON.parse(localStorage.getItem("ovard_shops") || "null") || [
- {id:1,name:"Нонвойхона",desc:"Свежий горячий хлеб",emoji:"🥖"},
- {id:2,name:"Аптека",desc:"Аптечные товары",emoji:"💊"},
- {id:3,name:"Строительный магазин",desc:"Материалы для дома",emoji:"🧱"}
-];
-
-let cart = JSON.parse(localStorage.getItem("ovard_cart") || "[]");
-let category = "Все";
-
-function persist() {
- localStorage.setItem("ovard_products",JSON.stringify(products));
- localStorage.setItem("ovard_shops",JSON.stringify(shops));
- localStorage.setItem("ovard_cart",JSON.stringify(cart));
-}
-
-function showPage(id) {
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.getElementById("menu").classList.add("hidden");
- if(id==="shops") renderShops();
- if(id==="cart") renderCart();
- if(id==="admin") renderAdmin();
- if(id==="profile") renderProfile();
- window.scrollTo(0,0);
-}
-
-document.getElementById("menuBtn").onclick=()=>{
- document.getElementById("menu").classList.toggle("hidden");
+const $ = id => document.getElementById(id);
+const read = (key, fallback) => {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch { return fallback; }
 };
+const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-function renderProducts() {
- let q=document.getElementById("search").value.toLowerCase();
- let cats=["Все",...new Set(products.map(p=>p.category))];
- document.getElementById("categories").innerHTML=cats.map(c=>
- `<button class="${category===c?'active':''}" onclick="category='${escapeHTML(c)}';renderProducts()">${escapeHTML(c)}</button>`
- ).join("");
+let shops = read("ovard_shops", [
+  {id:1,name:"Нонвойхона",category:"Нони гарм",emoji:"🥖",description:"Нони гарм ва маҳсулоти нонӣ"},
+  {id:2,name:"Маркази хӯрокворӣ",category:"Маҳсулоти хӯрокворӣ",emoji:"🛒",description:"Маҳсулоти рӯзмарра"},
+  {id:3,name:"Дорухона",category:"Дору ва саломатӣ",emoji:"💊",description:"Маҳсулоти дорухона"},
+  {id:4,name:"Масолеҳи сохтмонӣ",category:"Сохтмон",emoji:"🧱",description:"Маводи сохтмонӣ"},
+  {id:5,name:"Мағозаи асбобҳо",category:"Асбобҳо",emoji:"🛠️",description:"Асбоб ва таҷҳизот"}
+]);
+let products = read("ovard_products", []);
+let cart = read("ovard_cart", []);
+let orders = read("ovard_orders", []);
+let profile = read("ovard_profile", {});
+let currentShop = null;
 
- let list=products.filter(p=>
- (category==="Все"||p.category===category)&&
- (p.name.toLowerCase().includes(q))
- );
-
- document.getElementById("products").innerHTML=list.map(p=>`
- <div class="product">
-  <div class="emoji">${escapeHTML(p.emoji||"📦")}</div>
-  <h3>${escapeHTML(p.name)}</h3>
-  <small>${escapeHTML(p.unit||"")}</small>
-  <p class="price">${p.price>0?p.price+" сомони":"Цена уточняется"}</p>
-  <button onclick="addToCart(${p.id})">＋ В корзину</button>
- </div>`).join("") || "<p>Товары не найдены.</p>";
+function showPage(name) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const page = $(name + "Page");
+  if (page) page.classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.page === name));
+  if (name === "shops") renderShops();
+  if (name === "catalog") renderCatalog();
+  if (name === "cart") renderCart();
+  if (name === "orders") renderOrders();
+  if (name === "home") renderHome();
+  window.scrollTo(0,0);
 }
 
-function addToCart(id) {
- let p=products.find(x=>x.id===id);
- if(!p||p.price<=0){alert("Цена уточняется");return}
- let i=cart.find(x=>x.id===id);
- if(i)i.qty++;
- else cart.push({...p,qty:1});
- persist();
- alert("Добавлено в корзину");
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
 }
 
-function renderCart() {
- let el=document.getElementById("cartItems");
- el.innerHTML=cart.map(i=>`
- <div class="admin-item">
- ${escapeHTML(i.name)} — ${i.price} сомони × ${i.qty}
- <button onclick="changeQty(${i.id},-1)">−</button>
- <button onclick="changeQty(${i.id},1)">＋</button>
- </div>`).join("") || "<p>Корзина пуста</p>";
- let total=cart.reduce((s,i)=>s+i.price*i.qty,0);
- document.getElementById("total").textContent="Итого: "+total+" сомони";
+function productImage(p) {
+  return p.image
+    ? `<img src="${safe(p.image)}" alt="${safe(p.name)}">`
+    : safe(p.emoji || "📦");
 }
 
-function changeQty(id,d) {
- let i=cart.find(x=>x.id===id);
- if(i){i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id)}
- persist();renderCart();
+function productCard(p) {
+  const shop = shops.find(s => String(s.id) === String(p.shopId));
+  return `<article class="product-card">
+    <div class="product-image">${productImage(p)}</div>
+    <h3>${safe(p.name)}</h3>
+    <div class="shop-name">${safe(shop?.name || "OVARD")}</div>
+    <div class="price">${safe(p.price)} сомони <span class="unit">/ ${safe(p.unit || "шт.")}</span></div>
+    <button class="add-btn" onclick="addToCart(${Number(p.id)})">В корзину</button>
+  </article>`;
+}
+
+function renderHome() {
+  $("featuredShops").innerHTML = shops.slice(0,8).map(s => `
+    <button class="shop-mini" onclick="openShop(${Number(s.id)})">
+      <div class="shop-emoji">${safe(s.emoji || "🏪")}</div>
+      <strong>${safe(s.name)}</strong><small>${safe(s.category || "Магазин")}</small>
+    </button>`).join("") || `<div class="empty">Магазины скоро появятся</div>`;
+
+  const q = ($("searchInput").value || "").toLowerCase();
+  $("homeProducts").innerHTML = products.filter(p =>
+    (p.name + " " + (p.description || "")).toLowerCase().includes(q)
+  ).slice(0,8).map(productCard).join("") ||
+  `<div class="empty">Товары скоро появятся. Следите за обновлениями.</div>`;
+}
+
+function renderProducts() { renderHome(); }
+
+function renderCatalog() {
+  const q = ($("catalogSearch").value || "").toLowerCase();
+  $("catalogProducts").innerHTML = products.filter(p =>
+    (p.name + " " + (p.description || "")).toLowerCase().includes(q)
+  ).map(productCard).join("") || `<div class="empty">Пока нет товаров</div>`;
 }
 
 function renderShops() {
- document.getElementById("shopList").innerHTML=shops.map(s=>`
- <div class="shop">
- <h3>${escapeHTML(s.emoji||"🏪")} ${escapeHTML(s.name)}</h3>
- <p>${escapeHTML(s.desc||"Магазин-партнёр OVARD")}</p>
- </div>`).join("") || "<p>Магазинов пока нет.</p>";
+  $("allShops").innerHTML = shops.map(s => `
+    <div class="shop-row">
+      <div class="shop-emoji">${safe(s.emoji || "🏪")}</div>
+      <div><strong>${safe(s.name)}</strong><p>${safe(s.category || "")}</p></div>
+      <button onclick="openShop(${Number(s.id)})">Открыть →</button>
+    </div>`).join("") || `<div class="empty">Магазины пока не добавлены</div>`;
 }
 
-function addProduct() {
- let name=document.getElementById("pName").value.trim();
- let price=Number(document.getElementById("pPrice").value);
- if(!name||price<0||!Number.isFinite(price)){alert("Проверьте название и цену");return}
- products.push({
- id:Date.now(),name,price,
- unit:document.getElementById("pUnit").value||"шт.",
- category:document.getElementById("pCategory").value||"Другое",
- emoji:document.getElementById("pEmoji").value||"📦"
- });
- persist();renderProducts();renderAdmin();
- ["pName","pPrice","pUnit","pCategory","pEmoji"].forEach(id=>document.getElementById(id).value="");
+function openShop(id) {
+  currentShop = shops.find(s => String(s.id) === String(id));
+  if (!currentShop) return;
+  $("shopDetail").innerHTML = `
+    <div class="hero"><div><span class="eyebrow">МАГАЗИН OVARD</span>
+    <h1>${safe(currentShop.name)}</h1><p>${safe(currentShop.description || "")}</p></div>
+    <div class="hero-icon">${safe(currentShop.emoji || "🏪")}</div></div>
+    <h2>Товары магазина</h2>
+    <div class="product-grid">${products.filter(p => String(p.shopId) === String(id)).map(productCard).join("") || `<div class="empty">Товары скоро появятся</div>`}</div>`;
+  showPage("shopDetail");
 }
 
-function addShop() {
- let name=document.getElementById("sName").value.trim();
- if(!name){alert("Введите название");return}
- shops.push({
- id:Date.now(),name,
- desc:document.getElementById("sDesc").value,
- emoji:"🏪"
- });
- persist();renderShops();renderAdmin();
- document.getElementById("sName").value="";
- document.getElementById("sDesc").value="";
+function addToCart(id) {
+  const p = products.find(x => Number(x.id) === Number(id));
+  if (!p) return;
+  const item = cart.find(x => Number(x.id) === Number(id));
+  if (item) item.qty++;
+  else cart.push({id:p.id,qty:1});
+  save("ovard_cart",cart);
+  updateCartCount();
+  toast("Товар добавлен в корзину");
 }
 
-function renderAdmin() {
- document.getElementById("adminProducts").innerHTML=products.map(p=>`
- <div class="admin-item">${escapeHTML(p.name)} — ${p.price} сомони
- <button onclick="deleteProduct(${p.id})">Удалить</button></div>`).join("");
- document.getElementById("adminShops").innerHTML=shops.map(s=>`
- <div class="admin-item">${escapeHTML(s.name)}
- <button onclick="deleteShop(${s.id})">Удалить</button></div>`).join("");
+function updateCartCount() {
+  $("cartCount").textContent = cart.reduce((sum,x) => sum + x.qty,0);
 }
 
-function deleteProduct(id) {
- products=products.filter(p=>p.id!==id);
- cart=cart.filter(p=>p.id!==id);
- persist();renderProducts();renderAdmin();
+function cartTotal() {
+  return cart.reduce((sum,item) => {
+    const p = products.find(x => Number(x.id) === Number(item.id));
+    return sum + (p ? Number(p.price) * item.qty : 0);
+  },0);
 }
 
-function deleteShop(id) {
- shops=shops.filter(s=>s.id!==id);
- persist();renderShops();renderAdmin();
+function changeQty(id, delta) {
+  const item = cart.find(x => Number(x.id) === Number(id));
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(x => Number(x.id) !== Number(id));
+  save("ovard_cart",cart);
+  renderCart();
+  updateCartCount();
 }
 
-function checkout() {
- if(!cart.length){alert("Корзина пуста");return}
- let name=document.getElementById("customerName").value.trim();
- let phone=document.getElementById("customerPhone").value.trim();
- let address=document.getElementById("customerAddress").value.trim();
- if(!name||!phone||!address){alert("Заполните все данные");return}
- let orders=JSON.parse(localStorage.getItem("ovard_orders")||"[]");
- orders.push({name,phone,address,items:cart,total:cart.reduce((s,i)=>s+i.price*i.qty,0),date:new Date().toISOString()});
- localStorage.setItem("ovard_orders",JSON.stringify(orders));
- cart=[];persist();renderCart();
- alert("Заявка сохранена на этом устройстве");
+function renderCart() {
+  const total = cartTotal();
+  $("cartItems").innerHTML = cart.map(item => {
+    const p = products.find(x => Number(x.id) === Number(item.id));
+    if (!p) return "";
+    return `<div class="cart-line">
+      <div class="product-image" style="width:55px;height:55px;font-size:25px">${productImage(p)}</div>
+      <div class="grow"><strong>${safe(p.name)}</strong><p class="price">${safe(p.price)} сомони / ${safe(p.unit || "шт.")}</p></div>
+      <div class="qty-controls"><button onclick="changeQty(${Number(p.id)},-1)">−</button>${item.qty}<button onclick="changeQty(${Number(p.id)},1)">+</button></div>
+    </div>`;
+  }).join("") || `<div class="empty">🛒<h3>Корзина пока пуста</h3>Выберите товары в каталоге</div>`;
+
+  $("checkoutArea").innerHTML = cart.length ? `
+    <div class="checkout-box">
+      <h3>Оформление заказа</h3>
+      <div class="total-line"><span>Товары</span><strong>${total.toFixed(2)} сомони</strong></div>
+      <p class="settings-note">Минимальная сумма заказа — 50 сомони без учёта доставки.</p>
+      <input id="orderName" placeholder="Ваше имя" value="${safe(profile.name || "")}">
+      <input id="orderPhone" placeholder="Номер телефона" value="${safe(profile.phone || "")}">
+      <input id="orderAddress" placeholder="Адрес доставки" value="${safe(profile.address || "")}">
+      <input id="orderWeight" type="number" min="0" step="0.1" placeholder="Примерный вес заказа (кг), если знаете">
+      <select id="deliveryDistance">
+        <option value="unknown">Расстояние — уточнить</option>
+        <option value="near">Близко</option>
+        <option value="medium">Среднее расстояние</option>
+        <option value="far">Далеко</option>
+      </select>
+      <div class="total-line"><span>Доставка</span><strong>Уточняется</strong></div>
+      <button class="primary-btn" onclick="placeOrder()">Отправить заказ</button>
+      <button class="wide-link" onclick="whatsappOrder()">Заказать в WhatsApp</button>
+    </div>` : "";
+}
+
+function placeOrder() {
+  const total = cartTotal();
+  if (total < 50) return toast("Минимальная сумма товаров — 50 сомони");
+  const name = $("orderName").value.trim();
+  const phone = $("orderPhone").value.trim();
+  const address = $("orderAddress").value.trim();
+  if (!name || !phone || !address) return toast("Заполните имя, телефон и адрес");
+
+  const order = {
+    id:Date.now(), date:new Date().toLocaleString(),
+    name,phone,address,total,
+    weight:$("orderWeight").value,
+    distance:$("deliveryDistance").value,
+    items:cart.map(item => {
+      const p = products.find(x => Number(x.id) === Number(item.id));
+      return {name:p?.name || "Товар",price:p?.price || 0,unit:p?.unit || "",qty:item.qty};
+    }),
+    status:"Получен. Доставка уточняется."
+  };
+  orders.unshift(order);
+  save("ovard_orders",orders);
+  profile = {name,phone,address};
+  save("ovard_profile",profile);
+  cart = [];
+  save("ovard_cart",cart);
+  updateCartCount();
+  renderCart();
+  toast("Заказ сохранён на этом устройстве");
+  showPage("orders");
+}
+
+function whatsappOrder() {
+  const total = cartTotal();
+  if (total < 50) return toast("Минимальная сумма товаров — 50 сомони");
+  const name = $("orderName")?.value.trim() || profile.name || "";
+  const phone = $("orderPhone")?.value.trim() || profile.phone || "";
+  const address = $("orderAddress")?.value.trim() || profile.address || "";
+  if (!name || !phone || !address) return toast("Сначала заполните данные заказа");
+  const lines = cart.map(item => {
+    const p = products.find(x => Number(x.id) === Number(item.id));
+    return p ? `${p.name} — ${item.qty} × ${p.price} сомони / ${p.unit || "шт."}` : "";
+  }).filter(Boolean).join("\n");
+  const message = `Здравствуйте, OVARD!\nХочу оформить заказ:\n${lines}\nИтого товары: ${total} сомони\nИмя: ${name}\nТелефон: ${phone}\nАдрес: ${address}\nДоставку прошу рассчитать отдельно.`;
+  window.open("https://wa.me/992000001606?text=" + encodeURIComponent(message),"_blank");
+}
+
+function renderOrders() {
+  $("ordersList").innerHTML = orders.map(o => `
+    <div class="order-card"><strong>Заказ №${o.id}</strong>
+    <p>${safe(o.date)}</p><p>${safe(o.name)} · ${safe(o.phone)}</p>
+    <p>${safe(o.address)}</p><strong>${Number(o.total).toFixed(2)} сомони</strong>
+    <p>${safe(o.status)}</p>
+    <ul>${o.items.map(i => `<li>${safe(i.name)} — ${i.qty} × ${safe(i.price)} сомони ${safe(i.unit)}</li>`).join("")}</ul></div>
+  `).join("") || `<div class="empty">У вас пока нет заказов</div>`;
 }
 
 function saveProfile() {
- let name=document.getElementById("profileName").value.trim();
- let phone=document.getElementById("profilePhone").value.trim();
- if(!name||!phone){alert("Заполните данные");return}
- localStorage.setItem("ovard_profile",JSON.stringify({name,phone}));
- renderProfile();alert("Профиль сохранён");
+  profile = {
+    name:$("customerName").value.trim(),
+    phone:$("customerPhone").value.trim(),
+    address:$("customerAddress").value.trim()
+  };
+  save("ovard_profile",profile);
+  toast("Данные сохранены");
 }
 
-function renderProfile() {
- let p=JSON.parse(localStorage.getItem("ovard_profile")||"null");
- document.getElementById("profileInfo").textContent=p?p.name+" · "+p.phone:"Профиль не заполнен";
+function openSettings() {
+  $("settingsOverlay").classList.add("open");
+  $("languageSelect").value = localStorage.getItem("ovard_lang") || "ru";
+  $("themeSelect").value = localStorage.getItem("ovard_theme") || "light";
 }
 
-function courierRequest() {
- let name=document.getElementById("courierName").value.trim();
- let phone=document.getElementById("courierPhone").value.trim();
- if(!name||!phone){alert("Введите имя и телефон");return}
- let a=JSON.parse(localStorage.getItem("ovard_couriers")||"[]");
- a.push({name,phone,transport:document.getElementById("transport").value});
- localStorage.setItem("ovard_couriers",JSON.stringify(a));
- alert("Заявка сохранена на этом устройстве");
+function closeSettings(event) {
+  if (event && event.target !== $("settingsOverlay")) return;
+  $("settingsOverlay").classList.remove("open");
 }
 
-function toggleDark() {
- document.body.classList.toggle("dark",document.getElementById("darkMode").checked);
- localStorage.setItem("ovard_dark",document.getElementById("darkMode").checked?"1":"0");
+function changeTheme(value) {
+  localStorage.setItem("ovard_theme",value);
+  document.body.classList.toggle("dark",value === "dark");
 }
 
-function saveLanguage() {
- localStorage.setItem("ovard_language",document.getElementById("language").value);
- alert("Язык выбран. Полный перевод интерфейса ещё не подключён.");
+function changeLanguage(value) {
+  localStorage.setItem("ovard_lang",value);
+  toast(value === "tg" ? "Забон интихоб шуд: Тоҷикӣ" : value === "en" ? "Language selected: English" : "Выбран русский язык");
+  toast("Полный перевод интерфейса подключим следующим этапом");
 }
 
-function escapeHTML(s) {
- return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function changeCity(value) {
+  $("locationText").textContent = value;
+  localStorage.setItem("ovard_city",value);
 }
 
-(function init(){
- if(localStorage.getItem("ovard_dark")==="1"){
- document.body.classList.add("dark");
- document.getElementById("darkMode").checked=true;
- }
- renderProducts();renderShops();renderCart();renderAdmin();renderProfile();
-})();
+function contactOvard() {
+  window.open("https://wa.me/992000001606","_blank");
+}
+
+function toast(message) {
+  const t = $("toast");
+  t.textContent = message;
+  t.style.display = "block";
+  clearTimeout(window.ovardToastTimer);
+  window.ovardToastTimer = setTimeout(() => t.style.display = "none",2600);
+}
+
+function init() {
+  changeTheme(localStorage.getItem("ovard_theme") || "light");
+  $("locationText").textContent = localStorage.getItem("ovard_city") || "Пархар";
+  $("languageSelect").value = localStorage.getItem("ovard_lang") || "ru";
+  $("themeSelect").value = localStorage.getItem("ovard_theme") || "light";
+  if (profile.name) $("customerName").value = profile.name;
+  if (profile.phone) $("customerPhone").value = profile.phone;
+  if (profile.address) $("customerAddress").value = profile.address;
+  renderHome();
+  renderShops();
+  updateCartCount();
+}
+init();
