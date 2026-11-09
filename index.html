@@ -1,123 +1,126 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#16843a">
-<title>OVARD — Магазины и доставка</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#168447">
+  <title>OVARD — Доставка до двери</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="header">
-  <div>
-    <div class="logo">Ovard</div>
-    <small>Фархор · Таджикистан</small>
+  <header class="topbar">
+    <a class="logo" href="#" onclick="showPage('home')">Ovard<span>✓</span></a>
+    <button class="location" onclick="openSettings()">⌖ <span id="locationText">Пархар</span></button>
+    <button class="icon-btn" onclick="openSettings()" aria-label="Настройки">⋮</button>
+  </header>
+
+  <main>
+    <section id="homePage" class="page active">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">ПОКУПКИ БЕЗ ЛИШНИХ ПОЕЗДОК</span>
+          <h1>Вы заказываете.<br>OVARD привозит.</h1>
+          <p>Нужные товары из магазинов — прямо к вашей двери.</p>
+        </div>
+        <div class="hero-icon">🛍️</div>
+      </div>
+
+      <div class="search-wrap">
+        <span>⌕</span>
+        <input id="searchInput" placeholder="Найти товар или магазин..." oninput="renderProducts()">
+      </div>
+
+      <div class="section-heading">
+        <div><h2>Магазины рядом</h2><p>Выбирайте, где покупать</p></div>
+        <button class="text-btn" onclick="showPage('shops')">Все магазины →</button>
+      </div>
+      <div id="featuredShops" class="shop-strip"></div>
+
+      <div class="section-heading">
+        <div><h2>Популярные товары</h2><p>Заказывайте с доставкой</p></div>
+        <button class="text-btn" onclick="showPage('catalog')">Все товары →</button>
+      </div>
+      <div id="homeProducts" class="product-grid"></div>
+    </section>
+
+    <section id="catalogPage" class="page">
+      <div class="page-heading"><h1>Каталог</h1><p>Найдите всё необходимое</p></div>
+      <div class="search-wrap"><span>⌕</span><input id="catalogSearch" placeholder="Поиск товаров..." oninput="renderCatalog()"></div>
+      <div id="catalogProducts" class="product-grid"></div>
+    </section>
+
+    <section id="shopsPage" class="page">
+      <div class="page-heading"><h1>Магазины</h1><p>Магазины-партнёры OVARD</p></div>
+      <div id="allShops" class="shop-list"></div>
+    </section>
+
+    <section id="shopDetailPage" class="page">
+      <button class="back-btn" onclick="showPage('shops')">← Назад к магазинам</button>
+      <div id="shopDetail"></div>
+    </section>
+
+    <section id="cartPage" class="page">
+      <div class="page-heading"><h1>Корзина</h1><p>Ваш заказ</p></div>
+      <div id="cartItems"></div>
+      <div id="checkoutArea"></div>
+    </section>
+
+    <section id="ordersPage" class="page">
+      <div class="page-heading"><h1>Мои заказы</h1><p>История ваших заказов</p></div>
+      <div id="ordersList"></div>
+    </section>
+
+    <section id="profilePage" class="page">
+      <div class="page-heading"><h1>Профиль</h1><p>Ваши данные и помощь</p></div>
+      <div class="profile-card">
+        <div class="profile-avatar">👤</div>
+        <h2>Добро пожаловать в OVARD</h2>
+        <p>Укажите имя и номер телефона для оформления заказов.</p>
+        <input id="customerName" placeholder="Ваше имя">
+        <input id="customerPhone" placeholder="Номер телефона">
+        <input id="customerAddress" placeholder="Адрес доставки">
+        <button class="primary-btn" onclick="saveProfile()">Сохранить данные</button>
+      </div>
+      <button class="wide-link" onclick="openSettings()">⚙ Настройки</button>
+      <button class="wide-link" onclick="contactOvard()">☎ Связаться с OVARD</button>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="showPage('home')"><span>⌂</span>Главная</button>
+    <button class="nav-item" data-page="catalog" onclick="showPage('catalog')"><span>▦</span>Каталог</button>
+    <button class="nav-item" data-page="shops" onclick="showPage('shops')"><span>▤</span>Магазины</button>
+    <button class="nav-item cart-nav" data-page="cart" onclick="showPage('cart')"><span>🛒<i id="cartCount">0</i></span>Корзина</button>
+    <button class="nav-item" data-page="profile" onclick="showPage('profile')"><span>♙</span>Профиль</button>
+  </nav>
+
+  <div id="settingsOverlay" class="overlay" onclick="closeSettings(event)">
+    <div class="settings-panel" onclick="event.stopPropagation()">
+      <div class="panel-head"><h2>Настройки</h2><button onclick="closeSettings()">✕</button></div>
+      <label>Язык</label>
+      <select id="languageSelect" onchange="changeLanguage(this.value)">
+        <option value="ru">Русский</option>
+        <option value="tg">Тоҷикӣ</option>
+        <option value="en">English</option>
+      </select>
+      <label>Тема оформления</label>
+      <select id="themeSelect" onchange="changeTheme(this.value)">
+        <option value="light">Светлая</option>
+        <option value="dark">Тёмная</option>
+      </select>
+      <label>Город</label>
+      <select id="citySelect" onchange="changeCity(this.value)">
+        <option value="Пархар">Пархар</option>
+        <option value="Душанбе">Душанбе</option>
+        <option value="Худжанд">Худжанд</option>
+        <option value="Другой город">Другой город</option>
+      </select>
+      <p class="settings-note">Минимальная сумма заказа — 50 сомони без учёта доставки.</p>
+      <button class="primary-btn" onclick="closeSettings()">Готово</button>
+    </div>
   </div>
-  <button id="menuBtn">⋮</button>
-</header>
 
-<div id="menu" class="menu hidden">
-  <button onclick="showPage('settings')">⚙️ Настройки</button>
-  <button onclick="showPage('profile')">👤 Профиль</button>
-  <button onclick="showPage('courier')">🛵 Курьер</button>
-  <button onclick="showPage('admin')">🔐 Управление</button>
-</div>
-
-<div class="search">
-  <input id="search" placeholder="Найти товар..." oninput="renderProducts()">
-</div>
-
-<main>
-<section id="home" class="page active">
-  <div class="hero">
-    <h1>Покупайте проще с Ovard</h1>
-    <p>Товары и магазины Фархора в одном месте.</p>
-  </div>
-  <h2>Наши товары</h2>
-  <div id="categories" class="categories"></div>
-  <div id="products" class="products"></div>
-</section>
-
-<section id="shops" class="page">
-  <h2>Все магазины</h2>
-  <div id="shopList"></div>
-</section>
-
-<section id="cart" class="page">
-  <h2>Корзина</h2>
-  <div id="cartItems"></div>
-  <h3 id="total">Итого: 0 сомони</h3>
-  <p class="note">Доставка оплачивается отдельно. Цена зависит от расстояния и веса.</p>
-  <input id="customerName" placeholder="Ваше имя">
-  <input id="customerPhone" placeholder="Телефон">
-  <input id="customerAddress" placeholder="Адрес доставки">
-  <button onclick="checkout()">Оформить заказ</button>
-</section>
-
-<section id="profile" class="page">
-  <h2>Профиль покупателя</h2>
-  <input id="profileName" placeholder="Имя">
-  <input id="profilePhone" placeholder="Телефон">
-  <button onclick="saveProfile()">Сохранить</button>
-  <p id="profileInfo"></p>
-</section>
-
-<section id="courier" class="page">
-  <h2>Курьерская доставка</h2>
-  <p>Доставка по Фархору. Стоимость рассчитывается индивидуально.</p>
-  <input id="courierName" placeholder="Имя">
-  <input id="courierPhone" placeholder="Телефон">
-  <select id="transport">
-    <option>Пешком</option>
-    <option>Велосипед</option>
-    <option>Мотоцикл</option>
-    <option>Автомобиль</option>
-  </select>
-  <button onclick="courierRequest()">Отправить заявку</button>
-</section>
-
-<section id="settings" class="page">
-  <h2>Настройки</h2>
-  <label>Язык</label>
-  <select id="language" onchange="saveLanguage()">
-    <option value="ru">Русский</option>
-    <option value="tg">Тоҷикӣ</option>
-    <option value="en">English</option>
-  </select>
-  <label>Тёмная тема</label>
-  <input type="checkbox" id="darkMode" onchange="toggleDark()">
-</section>
-
-<section id="admin" class="page">
-  <h2>Управление OVARD</h2>
-  <h3>Добавить товар</h3>
-  <input id="pName" placeholder="Название товара">
-  <input id="pPrice" type="number" placeholder="Цена">
-  <input id="pUnit" placeholder="Единица: кг, мешок, тонна...">
-  <input id="pCategory" placeholder="Категория">
-  <input id="pEmoji" placeholder="Эмодзи товара">
-  <button onclick="addProduct()">Добавить товар</button>
-
-  <h3>Добавить магазин</h3>
-  <input id="sName" placeholder="Название магазина">
-  <input id="sDesc" placeholder="Описание">
-  <button onclick="addShop()">Добавить магазин</button>
-
-  <h3>Товары</h3>
-  <div id="adminProducts"></div>
-  <h3>Магазины</h3>
-  <div id="adminShops"></div>
-</section>
-</main>
-
-<nav class="bottom">
-  <button onclick="showPage('home')">⌂<small>Главная</small></button>
-  <button onclick="showPage('shops')">▦<small>Магазины</small></button>
-  <button onclick="showPage('cart')">🛒<small>Корзина</small></button>
-  <button onclick="showPage('profile')">♙<small>Профиль</small></button>
-</nav>
-
-<script src="script.js"></script>
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
 </body>
 </html>
