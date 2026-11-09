@@ -2,365 +2,285 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#16843a">
-<title>OVARD — Админ панель</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OVARD — Админ-панель</title>
 <style>
+:root{--g:#168447;--bg:#f3f7f4;--card:#fff;--text:#1b2920;--muted:#77847b;--line:#e3ebe5}
 *{box-sizing:border-box}
-body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#f3f6f3;
- color:#202923;
-}
-header{
- background:#16843a;
- color:white;
- padding:20px;
-}
-header h2{margin:0;font-size:23px}
-header p{margin:7px 0 0;font-size:13px}
-main{padding:15px;max-width:650px;margin:auto}
-.card{
- background:white;
- padding:17px;
- border-radius:16px;
- margin-bottom:15px;
- box-shadow:0 3px 12px #00000008;
-}
-h3{margin:0 0 15px;font-size:17px}
-input,textarea,select{
- width:100%;
- padding:13px;
- border:1px solid #dce4dc;
- border-radius:10px;
- margin:6px 0 12px;
- font-size:15px;
- background:white;
-}
-textarea{min-height:75px;resize:vertical}
-button{
- border:0;
- padding:12px 16px;
- border-radius:10px;
- font-size:14px;
- font-weight:bold;
- cursor:pointer;
-}
-.primary{background:#16843a;color:white;width:100%}
-.secondary{background:#e9f4ec;color:#16843a}
-.danger{background:#ffeded;color:#d32f2f}
-.item{
- border:1px solid #e6ebe6;
- border-radius:12px;
- padding:12px;
- margin:10px 0;
-}
-.item img{
- width:65px;height:65px;
- object-fit:cover;border-radius:9px;
-}
-.item-title{font-weight:bold}
-.muted{color:#7b857e;font-size:13px}
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.actions button{flex:1}
-.tabs{
- display:flex;gap:8px;margin-bottom:15px;
-}
-.tabs button{flex:1;background:#e6eee7;color:#245b35}
-.tabs button.active{background:#16843a;color:white}
-.hidden{display:none}
-.status{font-size:12px;color:#16843a}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding:16px}
+header{max-width:850px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 0 20px}
+.logo{font-size:25px;color:var(--g);font-weight:800}
+header a{color:var(--g);text-decoration:none;font-size:13px}
+main{max-width:850px;margin:auto}
+h1{font-size:23px;margin:5px 0}
+.subtitle{color:var(--muted);font-size:13px;margin-bottom:20px}
+.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:15px}
+.tabs button{border:0;background:#e5eee8;color:#315440;padding:12px 15px;border-radius:11px;white-space:nowrap;font-weight:700}
+.tabs button.active{background:var(--g);color:white}
+.panel{display:none}.panel.active{display:block}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:15px}
+h2{font-size:17px;margin:0 0 14px}
+label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}
+input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:14px Arial}
+textarea{min-height:65px;resize:vertical}
+button{cursor:pointer}
+.primary{width:100%;border:0;background:var(--g);color:white;border-radius:10px;padding:13px;font-weight:700;margin-top:12px}
+.secondary{border:0;background:#e9f3ec;color:var(--g);padding:9px 12px;border-radius:9px;font-weight:700}
+.danger{border:0;background:#fff0ee;color:#c23d32;padding:9px 12px;border-radius:9px}
+.item{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px;background:#fff}
+.item strong{display:block;margin-bottom:5px}
+.item small{color:var(--muted);display:block;margin-bottom:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px}
+.stat{background:#e5f3e9;padding:13px;border-radius:12px}
+.stat strong{display:block;color:var(--g);font-size:22px}
+.stat span{font-size:11px;color:#536b5a}
+@media(max-width:450px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}}
 </style>
 </head>
-
 <body>
-
 <header>
- <h2>OVARD <span style="font-size:13px">ADMIN</span></h2>
- <p>Управление магазином и товарами</p>
+  <div class="logo">Ovard ✓</div>
+  <a href="index.html">← Открыть сайт</a>
 </header>
-
 <main>
+  <h1>Панель управления</h1>
+  <p class="subtitle">Управление магазинами, товарами и заказами</p>
 
-<div class="tabs">
- <button class="active" onclick="showTab('shops',this)">Магазины</button>
- <button onclick="showTab('products',this)">Товары OVARD</button>
-</div>
+  <div class="stats">
+    <div class="stat"><strong id="shopCount">0</strong><span>Магазинов</span></div>
+    <div class="stat"><strong id="productCount">0</strong><span>Товаров</span></div>
+    <div class="stat"><strong id="orderCount">0</strong><span>Заказов</span></div>
+  </div>
 
-<section id="shops">
+  <div class="tabs">
+    <button class="active" onclick="tab('shops',this)">Магазины</button>
+    <button onclick="tab('products',this)">Товары</button>
+    <button onclick="tab('orders',this)">Заказы</button>
+  </div>
 
-<div class="card">
- <h3 id="shopTitle">＋ Добавить магазин</h3>
+  <section id="shops" class="panel active">
+    <div class="box">
+      <h2 id="shopFormTitle">Добавить магазин</h2>
+      <input type="hidden" id="shopEditId">
+      <label>Название магазина</label>
+      <input id="shopName" placeholder="Например: Магазин продуктов">
+      <label>Категория</label>
+      <input id="shopCategory" placeholder="Например: Продукты">
+      <label>Значок (эмодзи)</label>
+      <input id="shopEmoji" placeholder="Например: 🛒" value="🏪">
+      <label>Описание</label>
+      <textarea id="shopDescription" placeholder="Описание магазина"></textarea>
+      <button class="primary" onclick="saveShop()">Сохранить магазин</button>
+      <p class="note">Магазины можно добавлять, изменять и удалять. Количество не ограничено.</p>
+    </div>
+    <div class="box"><h2>Список магазинов</h2><div id="shopList"></div></div>
+  </section>
 
- <input id="shopName" placeholder="Название магазина">
- <input id="shopImage" placeholder="Ссылка на фото магазина">
- <textarea id="shopDesc" placeholder="Описание магазина"></textarea>
+  <section id="products" class="panel">
+    <div class="box">
+      <h2 id="productFormTitle">Добавить товар</h2>
+      <input type="hidden" id="productEditId">
+      <label>Название товара</label>
+      <input id="productName" placeholder="Например: Мука">
+      <label>Магазин</label>
+      <select id="productShop"></select>
+      <label>Цена (сомони)</label>
+      <input id="productPrice" type="number" min="0" step="0.01" placeholder="Например: 25">
+      <label>Единица измерения / за что цена</label>
+      <input id="productUnit" list="unitOptions" placeholder="Например: кг, мешок, 5 пар, за участок">
+      <datalist id="unitOptions">
+        <option value="кг"><option value="грамм"><option value="тонна">
+        <option value="шт."><option value="упаковка"><option value="пачка">
+        <option value="мешок"><option value="литр"><option value="метр">
+        <option value="пара"><option value="за день"><option value="за сезон">
+        <option value="за поездку"><option value="за участок">
+      </datalist>
+      <p class="note">Можно написать любую единицу вручную. Например: «за мешок», «5 пар», «за участок». Ограничений нет.</p>
+      <label>Ссылка на фото товара (необязательно)</label>
+      <input id="productImage" placeholder="https://...">
+      <label>Эмодзи вместо фото</label>
+      <input id="productEmoji" placeholder="📦" value="📦">
+      <label>Описание</label>
+      <textarea id="productDescription" placeholder="Описание товара"></textarea>
+      <button class="primary" onclick="saveProduct()">Сохранить товар</button>
+    </div>
+    <div class="box"><h2>Список товаров</h2><div id="productList"></div></div>
+  </section>
 
- <button class="primary" onclick="saveShop()">Сохранить магазин</button>
- <button class="secondary hidden" id="cancelShop" onclick="resetShop()">Отмена</button>
-</div>
-
-<div class="card">
- <h3>Все магазины</h3>
- <div id="shopList"></div>
-</div>
-
-</section>
-
-
-<section id="products" class="hidden">
-
-<div class="card">
- <h3 id="productTitle">＋ Добавить товар OVARD</h3>
-
- <input id="productName" placeholder="Название товара">
- <input id="productImage" placeholder="Ссылка на фото товара">
-
- <input id="productPrice" type="number" min="0" placeholder="Цена">
-
- <input id="productUnit" list="units" placeholder="Единица измерения">
-
- <datalist id="units">
-  <option value="кг">
-  <option value="грамм">
-  <option value="тонна">
-  <option value="шт">
-  <option value="упаковка">
-  <option value="мешок">
-  <option value="литр">
-  <option value="метр">
-  <option value="ящик">
-  <option value="день">
-  <option value="сезон">
- </datalist>
-
- <textarea id="productDesc" placeholder="Описание товара"></textarea>
-
- <button class="primary" onclick="saveProduct()">Сохранить товар</button>
- <button class="secondary hidden" id="cancelProduct" onclick="resetProduct()">Отмена</button>
-</div>
-
-<div class="card">
- <h3>Товары OVARD</h3>
- <div id="productList"></div>
-</div>
-
-</section>
-
-<div class="card">
- <h3>Хранение данных</h3>
- <p class="muted">Данные сохраняются в памяти браузера этого устройства.</p>
- <p class="status">● Локальное хранилище активно</p>
-</div>
-
+  <section id="orders" class="panel">
+    <div class="box"><h2>Заказы клиентов</h2><div id="orderList"></div></div>
+  </section>
 </main>
 
 <script>
+const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let shops=read("ovard_shops",[]);
+let products=read("ovard_products",[]);
+let orders=read("ovard_orders",[]);
 
-let shops = JSON.parse(localStorage.getItem("ovard_shops") || "[]");
-let products = JSON.parse(localStorage.getItem("ovard_products") || "[]");
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
-let editingShop = -1;
-let editingProduct = -1;
-
-function saveData(){
- localStorage.setItem("ovard_shops",JSON.stringify(shops));
- localStorage.setItem("ovard_products",JSON.stringify(products));
-}
-
-function showTab(tab,btn){
- document.getElementById("shops").classList.toggle("hidden",tab!=="shops");
- document.getElementById("products").classList.toggle("hidden",tab!=="products");
- document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+function tab(id,btn){
+ document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+ document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
  btn.classList.add("active");
+ renderAll();
 }
 
-function resetShop(){
- editingShop=-1;
- shopName.value="";
- shopImage.value="";
- shopDesc.value="";
- shopTitle.textContent="＋ Добавить магазин";
- cancelShop.classList.add("hidden");
+function renderAll(){
+ document.getElementById("shopCount").textContent=shops.length;
+ document.getElementById("productCount").textContent=products.length;
+ document.getElementById("orderCount").textContent=orders.length;
+ renderShops();renderProducts();renderOrders();renderShopSelect();
+}
+
+function renderShopSelect(){
+ const select=document.getElementById("productShop");
+ const old=select.value;
+ select.innerHTML=shops.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");
+ if(shops.some(s=>String(s.id)===old))select.value=old;
 }
 
 function saveShop(){
- let name=shopName.value.trim();
- if(!name){alert("Введите название магазина");return;}
-
- let data={
-  name:name,
-  image:shopImage.value.trim(),
-  description:shopDesc.value.trim(),
-  active:editingShop>=0 ? shops[editingShop].active : true,
-  products:editingShop>=0 ? (shops[editingShop].products||[]) : []
+ const name=document.getElementById("shopName").value.trim();
+ if(!name)return alert("Введите название магазина");
+ const edit=document.getElementById("shopEditId").value;
+ const data={
+  id:edit?Number(edit):Date.now(),
+  name,
+  category:document.getElementById("shopCategory").value.trim(),
+  emoji:document.getElementById("shopEmoji").value.trim()||"🏪",
+  description:document.getElementById("shopDescription").value.trim()
  };
-
- if(editingShop>=0){
-  shops[editingShop]=data;
- }else{
-  shops.push(data);
- }
-
- saveData();
- resetShop();
- renderShops();
+ if(edit)shops=shops.map(s=>Number(s.id)===Number(edit)?data:s);
+ else shops.push(data);
+ save("ovard_shops",shops);
+ clearShopForm();renderAll();
  alert("Магазин сохранён");
 }
 
-function renderShops(){
- shopList.innerHTML="";
-
- if(!shops.length){
-  shopList.innerHTML='<p class="muted">Магазинов пока нет</p>';
-  return;
- }
-
- shops.forEach((s,i)=>{
-  shopList.innerHTML+=`
-  <div class="item">
-   <div style="display:flex;gap:12px;align-items:center">
-    ${s.image?`<img src="${safe(s.image)}">`:""}
-    <div>
-     <div class="item-title">${safe(s.name)}</div>
-     <div class="muted">${safe(s.description||"")}</div>
-     <div class="status">${s.active?"● Активен":"● Выключен"}</div>
-    </div>
-   </div>
-   <div class="actions">
-    <button class="secondary" onclick="editShop(${i})">Изменить</button>
-    <button class="secondary" onclick="toggleShop(${i})">${s.active?"Выключить":"Включить"}</button>
-    <button class="danger" onclick="deleteShop(${i})">Удалить</button>
-   </div>
-  </div>`;
- });
-}
-
-function editShop(i){
- let s=shops[i];
- editingShop=i;
- shopName.value=s.name;
- shopImage.value=s.image||"";
- shopDesc.value=s.description||"";
- shopTitle.textContent="Изменить магазин";
- cancelShop.classList.remove("hidden");
+function editShop(id){
+ const s=shops.find(x=>Number(x.id)===Number(id));if(!s)return;
+ document.getElementById("shopEditId").value=s.id;
+ document.getElementById("shopName").value=s.name;
+ document.getElementById("shopCategory").value=s.category||"";
+ document.getElementById("shopEmoji").value=s.emoji||"🏪";
+ document.getElementById("shopDescription").value=s.description||"";
+ document.getElementById("shopFormTitle").textContent="Изменить магазин";
  window.scrollTo(0,0);
 }
 
-function toggleShop(i){
- shops[i].active=!shops[i].active;
- saveData();
- renderShops();
+function clearShopForm(){
+ ["shopEditId","shopName","shopCategory","shopDescription"].forEach(id=>document.getElementById(id).value="");
+ document.getElementById("shopEmoji").value="🏪";
+ document.getElementById("shopFormTitle").textContent="Добавить магазин";
 }
 
-function deleteShop(i){
- if(confirm("Удалить этот магазин?")){
-  shops.splice(i,1);
-  saveData();
-  renderShops();
- }
+function deleteShop(id){
+ if(!confirm("Удалить магазин? Его товары также будут удалены."))return;
+ shops=shops.filter(s=>Number(s.id)!==Number(id));
+ products=products.filter(p=>Number(p.shopId)!==Number(id));
+ save("ovard_shops",shops);save("ovard_products",products);renderAll();
 }
 
-function resetProduct(){
- editingProduct=-1;
- productName.value="";
- productImage.value="";
- productPrice.value="";
- productUnit.value="";
- productDesc.value="";
- productTitle.textContent="＋ Добавить товар OVARD";
- cancelProduct.classList.add("hidden");
+function renderShops(){
+ document.getElementById("shopList").innerHTML=shops.map(s=>`
+ <div class="item"><strong>${esc(s.emoji)} ${esc(s.name)}</strong>
+ <small>${esc(s.category||"")}</small>
+ <div class="actions">
+ <button class="secondary" onclick="editShop(${Number(s.id)})">Изменить</button>
+ <button class="danger" onclick="deleteShop(${Number(s.id)})">Удалить</button>
+ </div></div>`).join("")||"<p>Магазинов пока нет</p>";
 }
 
 function saveProduct(){
- let name=productName.value.trim();
- let price=productPrice.value;
- let unit=productUnit.value.trim();
-
- if(!name){alert("Введите название товара");return;}
- if(price==="" || Number(price)<0){alert("Введите правильную цену");return;}
- if(!unit){alert("Укажите единицу измерения");return;}
-
- let data={
-  name:name,
-  image:productImage.value.trim(),
-  price:Number(price),
-  unit:unit,
-  description:productDesc.value.trim()
+ const name=document.getElementById("productName").value.trim();
+ const shopId=document.getElementById("productShop").value;
+ const price=Number(document.getElementById("productPrice").value);
+ const unit=document.getElementById("productUnit").value.trim();
+ if(!name)return alert("Введите название товара");
+ if(!shopId)return alert("Сначала добавьте магазин");
+ if(!Number.isFinite(price)||price<=0)return alert("Введите правильную цену");
+ if(!unit)return alert("Укажите единицу измерения или основу цены");
+ const edit=document.getElementById("productEditId").value;
+ const data={
+  id:edit?Number(edit):Date.now(),
+  name,shopId:Number(shopId),price,unit,
+  image:document.getElementById("productImage").value.trim(),
+  emoji:document.getElementById("productEmoji").value.trim()||"📦",
+  description:document.getElementById("productDescription").value.trim()
  };
-
- if(editingProduct>=0){
-  products[editingProduct]=data;
- }else{
-  products.push(data);
- }
-
- saveData();
- resetProduct();
- renderProducts();
- alert("Товар сохранён");
+ if(edit)products=products.map(p=>Number(p.id)===Number(edit)?data:p);
+ else products.push(data);
+ save("ovard_products",products);
+ clearProductForm();renderAll();alert("Товар сохранён");
 }
 
-function renderProducts(){
- productList.innerHTML="";
-
- if(!products.length){
-  productList.innerHTML='<p class="muted">Товаров пока нет</p>';
-  return;
- }
-
- products.forEach((p,i)=>{
-  productList.innerHTML+=`
-  <div class="item">
-   <div style="display:flex;gap:12px;align-items:center">
-    ${p.image?`<img src="${safe(p.image)}">`:""}
-    <div>
-     <div class="item-title">${safe(p.name)}</div>
-     <div style="color:#16843a;font-weight:bold">${p.price} сомони / ${safe(p.unit)}</div>
-     <div class="muted">${safe(p.description||"")}</div>
-    </div>
-   </div>
-   <div class="actions">
-    <button class="secondary" onclick="editProduct(${i})">Изменить</button>
-    <button class="danger" onclick="deleteProduct(${i})">Удалить</button>
-   </div>
-  </div>`;
- });
-}
-
-function editProduct(i){
- let p=products[i];
- editingProduct=i;
- productName.value=p.name;
- productImage.value=p.image||"";
- productPrice.value=p.price;
- productUnit.value=p.unit;
- productDesc.value=p.description||"";
- productTitle.textContent="Изменить товар";
- cancelProduct.classList.remove("hidden");
+function editProduct(id){
+ const p=products.find(x=>Number(x.id)===Number(id));if(!p)return;
+ document.getElementById("productEditId").value=p.id;
+ document.getElementById("productName").value=p.name;
+ document.getElementById("productShop").value=p.shopId;
+ document.getElementById("productPrice").value=p.price;
+ document.getElementById("productUnit").value=p.unit||"";
+ document.getElementById("productImage").value=p.image||"";
+ document.getElementById("productEmoji").value=p.emoji||"📦";
+ document.getElementById("productDescription").value=p.description||"";
+ document.getElementById("productFormTitle").textContent="Изменить товар";
  window.scrollTo(0,0);
 }
 
-function deleteProduct(i){
- if(confirm("Удалить этот товар?")){
-  products.splice(i,1);
-  saveData();
-  renderProducts();
- }
+function clearProductForm(){
+ ["productEditId","productName","productPrice","productUnit","productImage","productDescription"].forEach(id=>document.getElementById(id).value="");
+ document.getElementById("productEmoji").value="📦";
+ document.getElementById("productFormTitle").textContent="Добавить товар";
 }
 
-function safe(value){
- return String(value??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
+function deleteProduct(id){
+ if(!confirm("Удалить товар?"))return;
+ products=products.filter(p=>Number(p.id)!==Number(id));
+ save("ovard_products",products);renderAll();
 }
 
-renderShops();
-renderProducts();
+function renderProducts(){
+ document.getElementById("productList").innerHTML=products.map(p=>{
+ const shop=shops.find(s=>Number(s.id)===Number(p.shopId));
+ return `<div class="item"><strong>${esc(p.emoji)} ${esc(p.name)}</strong>
+ <small>${esc(shop?.name||"Магазин удалён")} · ${esc(p.price)} сомони / ${esc(p.unit)}</small>
+ <div class="actions">
+ <button class="secondary" onclick="editProduct(${Number(p.id)})">Изменить</button>
+ <button class="danger" onclick="deleteProduct(${Number(p.id)})">Удалить</button>
+ </div></div>`;
+ }).join("")||"<p>Товаров пока нет</p>";
+}
 
+function renderOrders(){
+ document.getElementById("orderList").innerHTML=orders.map(o=>`
+ <div class="item"><strong>Заказ №${esc(o.id)}</strong>
+ <small>${esc(o.date)}</small>
+ <p>${esc(o.name)} · ${esc(o.phone)}</p>
+ <p>Адрес: ${esc(o.address)}</p>
+ <p>Сумма товаров: <b>${esc(o.total)} сомони</b></p>
+ <p>Вес: ${esc(o.weight||"Не указан")} кг</p>
+ <p>Доставка: ${esc(o.distance||"Уточнить")}</p>
+ <p>Статус: ${esc(o.status)}</p>
+ <div class="actions">
+ <button class="secondary" onclick="updateOrder(${Number(o.id)})">Изменить статус</button>
+ </div></div>`).join("")||"<p>Заказов пока нет</p>";
+}
+
+function updateOrder(id){
+ const o=orders.find(x=>Number(x.id)===Number(id));if(!o)return;
+ const status=prompt("Введите новый статус заказа:",o.status);
+ if(status===null)return;
+ o.status=status;save("ovard_orders",orders);renderOrders();
+}
+
+renderAll();
 </script>
 </body>
 </html>
