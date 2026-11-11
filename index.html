@@ -1,139 +1,193 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#078747">
-<title>OVARD — Доставка из магазинов</title>
+<meta name="description" content="OVARD — магазин и доставка из магазинов Фархора">
+<title>OVARD — Магазин и доставка</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <a class="brand" href="#" onclick="goHome();return false">
-    <span class="logo-mark"><span>✓</span></span>
-    <span>OVARD</span>
-  </a>
-  <button class="location" id="locationBtn">
-    ⌖ <span id="locationText">Фархор, Таджикистан</span>⌄
+  <button class="brand" onclick="goHome()" aria-label="OVARD">
+    <span class="brand-mark">O<span>✓</span></span>
+    <span class="brand-name">Ovard</span>
   </button>
-  <button class="menu-btn" id="menuBtn">☰</button>
+
+  <button class="location-btn" onclick="chooseLocation()">
+    <span>⌖</span>
+    <span id="locationText">Фархор</span>
+  </button>
+
+  <button class="menu-btn" onclick="openDrawer()" aria-label="Меню">☰</button>
 </header>
 
-<main id="homePage">
+<main id="homePage" class="page active">
 
-<section class="hero">
-  <div class="hero-copy">
-    <p class="eyebrow">СЕРВИС ДОСТАВКИ</p>
-    <h1>Выбирайте магазин.<br>Мы доставим до двери.</h1>
-    <p class="hero-sub">Покупайте у любимых продавцов — доставку организуем мы.</p>
-    <button class="hero-btn" onclick="document.getElementById('shops').scrollIntoView({behavior:'smooth'})">
-      Выбрать магазин <span>→</span>
-    </button>
-  </div>
-  <div class="hero-art">
-    <div class="art-circle"></div>
-    <div class="art-box"><span>✓</span></div>
-    <div class="art-leaf">✦</div>
-  </div>
-</section>
+  <section class="welcome">
+    <div>
+      <span class="eyebrow">OVARD • ДОСТАВКА</span>
+      <h1>Покупайте удобно.<br>Мы доставим.</h1>
+      <p>Выбирайте товары и заказывайте с доставкой до двери.</p>
+    </div>
+    <div class="welcome-mark">O✓</div>
+  </section>
 
-<section class="search-wrap">
-  <span>⌕</span>
-  <input id="searchInput" placeholder="Поиск магазинов и товаров...">
-  <button id="searchBtn">Найти</button>
-</section>
+  <section class="search-wrap">
+    <span>⌕</span>
+    <input id="searchInput" type="search"
+      placeholder="Найти товар или магазин..."
+      oninput="searchAll(this.value)">
+    <button onclick="clearSearch()" aria-label="Очистить">×</button>
+  </section>
 
-<section class="section" id="shops">
-  <div class="section-head">
-    <h2>Магазины</h2>
-    <button class="text-btn" id="allShopsBtn">Все магазины →</button>
-  </div>
-  <div class="shop-strip" id="shopStrip"></div>
-</section>
+  <section id="searchResults" class="section hidden">
+    <div class="section-heading">
+      <h2>Результаты поиска</h2>
+    </div>
+    <div id="searchContent"></div>
+  </section>
 
-<section class="promo">
-  <div>
-    <span class="promo-label">СЕРВИС Ovard</span>
-    <h2>Покупать стало проще</h2>
-    <p>Один заказ — покупки из магазинов с доставкой до вашей двери.</p>
-  </div>
-  <div class="promo-icon"><span class="logo-mark"><span>✓</span></span></div>
-</section>
+  <section id="ownStoreSection" class="section">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">НАШ МАГАЗИН</span>
+        <h2>Магазин OVARD</h2>
+      </div>
+      <span class="section-symbol">O✓</span>
+    </div>
+    <p class="section-note">Товары, которые предлагает сам OVARD.</p>
+    <div id="ownProducts" class="product-grid"></div>
+  </section>
 
-<section class="section hidden" id="allShopsPage">
-  <div class="section-head">
-    <button class="text-btn" onclick="showHome()">← Главная</button>
-    <h2>Все магазины</h2>
-  </div>
-  <div class="shop-list" id="allShopList"></div>
-</section>
+  <section class="partner-section">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">ВЫБИРАЙТЕ И ЗАКАЗЫВАЙТЕ</span>
+        <h2>Магазины-партнёры</h2>
+      </div>
+      <button class="text-link" onclick="showShops()">Все магазины →</button>
+    </div>
+    <p class="section-note">Магазины рядом — заказывайте, мы доставим.</p>
+    <div class="partner-window">
+      <div id="partnerTicker" class="partner-ticker"></div>
+    </div>
+  </section>
 
-<section class="section hidden" id="shopDetails">
-  <div class="section-head">
-    <button class="text-btn" id="backShops">← Магазины</button>
-    <h2 id="shopTitle">Магазин</h2>
-  </div>
-  <div id="shopCover" class="shop-cover"></div>
-  <p class="muted" id="shopDescription"></p>
-  <div id="productGrid" class="product-grid"></div>
-</section>
-
-<section class="section hidden" id="searchResults">
-  <div class="section-head">
-    <button class="text-btn" onclick="clearSearch()">← Назад</button>
-    <h2>Результаты поиска</h2>
-  </div>
-  <div id="searchGrid" class="product-grid"></div>
-</section>
+  <section class="delivery-banner">
+    <div>
+      <span class="eyebrow">СЛУЖБА ДОСТАВКИ</span>
+      <h2>Ваш заказ —<br>у вашей двери.</h2>
+      <p>Стоимость доставки зависит от расстояния и веса заказа.</p>
+    </div>
+    <div class="delivery-icon">➜</div>
+  </section>
 
 </main>
 
+<main id="shopsPage" class="page">
+  <div class="page-heading">
+    <span class="eyebrow">ПАРТНЁРЫ OVARD</span>
+    <h1>Все магазины</h1>
+    <p>Выберите магазин, чтобы посмотреть товары.</p>
+  </div>
+  <div id="allShops" class="shop-list"></div>
+</main>
+
+<main id="shopDetailsPage" class="page">
+  <button class="back-btn" onclick="showShops()">← Назад к магазинам</button>
+  <div id="shopDetails"></div>
+</main>
+
+<main id="cartPage" class="page">
+  <div class="page-heading">
+    <span class="eyebrow">ВАШ ВЫБОР</span>
+    <h1>Корзина</h1>
+    <p>Проверьте товары перед оформлением заказа.</p>
+  </div>
+  <div id="cartContent"></div>
+</main>
+
+<main id="profilePage" class="page">
+  <div class="page-heading">
+    <span class="eyebrow">OVARD</span>
+    <h1>Мой профиль</h1>
+    <p>Ваши заказы и настройки.</p>
+  </div>
+  <div class="profile-card">
+    <div class="profile-avatar">O✓</div>
+    <div>
+      <h3>Покупатель OVARD</h3>
+      <p>Добро пожаловать!</p>
+    </div>
+  </div>
+  <button class="wide-button" onclick="showOrders()">Мои заказы</button>
+  <div id="ordersContent"></div>
+</main>
+
 <nav class="bottom-nav">
-  <button class="nav-item active" data-go="home"><span>⌂</span>Главная</button>
-  <button class="nav-item" data-go="shops"><span>▦</span>Магазины</button>
-  <button class="nav-item" data-go="cart"><span>▣</span>Корзина <b id="cartCount">0</b></button>
-  <button class="nav-item" data-go="profile"><span>♙</span>Профиль</button>
+  <button class="nav-item active" data-page="homePage" onclick="goHome()">
+    <span>⌂</span><small>Главная</small>
+  </button>
+  <button class="nav-item" data-page="shopsPage" onclick="showShops()">
+    <span>▦</span><small>Магазины</small>
+  </button>
+  <button class="nav-item" data-page="cartPage" onclick="showCart()">
+    <span>🛒</span><small>Корзина</small>
+    <b id="cartCount" class="cart-count hidden">0</b>
+  </button>
+  <button class="nav-item" data-page="profilePage" onclick="showProfile()">
+    <span>♙</span><small>Профиль</small>
+  </button>
 </nav>
 
-<div class="drawer hidden" id="drawer">
-  <div class="drawer-panel">
-    <div class="section-head">
-      <h2>Настройки</h2>
-      <button id="closeDrawer" class="close-btn">×</button>
+<div id="drawerOverlay" class="overlay hidden" onclick="closeDrawer()"></div>
+<aside id="drawer" class="drawer">
+  <div class="drawer-head">
+    <div class="drawer-brand">
+      <span class="brand-mark">O<span>✓</span></span>
+      <span class="brand-name">Ovard</span>
     </div>
-    <label>Размер текста</label>
-    <div class="font-options">
-      <button data-font="normal">Средний</button>
-      <button data-font="large">Большой</button>
-      <button data-font="xlarge">Очень большой</button>
-    </div>
-    <label>Язык</label>
-    <select id="languageSelect">
-      <option value="ru">Русский</option>
-      <option value="tg">Тоҷикӣ</option>
-      <option value="en">English</option>
-    </select>
-    <label>Тема</label>
-    <button class="wide-btn" id="themeBtn">Светлая / тёмная тема</button>
-    <p class="muted">Ovard — покупки из магазинов с доставкой.</p>
-    <a class="admin-link" href="ovard-admin.html">Панель администратора →</a>
+    <button onclick="closeDrawer()">×</button>
   </div>
-</div>
 
-<div class="modal hidden" id="modal">
-  <div class="modal-card">
-    <div class="section-head">
-      <h2 id="modalTitle">Корзина</h2>
-      <button class="close-btn" id="closeModal">×</button>
-    </div>
+  <button class="drawer-link" onclick="goHome()">⌂ Главная</button>
+  <button class="drawer-link" onclick="showShops()">▦ Магазины</button>
+  <button class="drawer-link" onclick="showCart()">🛒 Корзина</button>
+  <button class="drawer-link" onclick="showProfile()">♙ Мой профиль</button>
+
+  <div class="drawer-divider"></div>
+  <h3>Настройки</h3>
+
+  <label class="setting-label" for="languageSelect">Язык</label>
+  <select id="languageSelect" onchange="changeLanguage(this.value)">
+    <option value="ru">Русский</option>
+    <option value="tg">Тоҷикӣ</option>
+    <option value="en">English</option>
+  </select>
+
+  <label class="setting-label" for="themeSelect">Оформление</label>
+  <select id="themeSelect" onchange="changeTheme(this.value)">
+    <option value="light">Светлая тема</option>
+    <option value="dark">Тёмная тема</option>
+  </select>
+
+  <div class="drawer-divider"></div>
+  <a class="drawer-admin" href="ovard-admin.html">⚙ Панель администратора</a>
+  <p class="drawer-footer">OVARD © 2026</p>
+</aside>
+
+<div id="modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
     <div id="modalContent"></div>
   </div>
 </div>
 
-<div class="toast hidden" id="toast"></div>
+<div id="toast" class="toast"></div>
 
 <script src="script.js"></script>
 </body>
