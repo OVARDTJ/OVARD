@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#168447">
-  <title>OVARD — Доставка до двери</title>
+  <title>Ovard — Фархор</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="topbar">
-    <!-- Галочка гирифта шуд -->
     <a class="logo" href="#" onclick="showPage('home')">Ovard</a>
-    <button class="location" onclick="openSettings()">⌖ <span id="locationText">Пархар</span></button>
-    <button class="icon-btn" onclick="openSettings()" aria-label="Настройки">⋮</button>
+    <button class="location" onclick="openSettings()">📍 <span id="locationText">Пархар</span></button>
+    <button class="icon-btn" onclick="openSettings()" aria-label="Меню">⋮</button>
   </header>
 
   <main>
@@ -32,46 +31,34 @@
       </div>
 
       <div class="section-heading">
-        <div><h2>Магазины рядом</h2><p>Выбирайте, где покупать</p></div>
+        <div>
+          <h2>Магазины рядом</h2>
+          <p>Выбирайте, где покупать</p>
+        </div>
         <button class="text-btn" onclick="showPage('shops')">Все магазины →</button>
       </div>
       <div id="featuredShops" class="shop-strip"></div>
 
       <div class="section-heading">
-        <div><h2>Популярные товары</h2><p>Заказывайте с доставкой</p></div>
+        <div>
+          <h2>Популярные товары</h2>
+          <p>Заказывайте с доставкой</p>
+        </div>
         <button class="text-btn" onclick="showPage('catalog')">Все товары →</button>
       </div>
       <div id="homeProducts" class="product-grid"></div>
     </section>
 
+    <!-- Дигар саҳифаҳо -->
     <section id="catalogPage" class="page">
       <div class="page-heading"><h1>Каталог</h1><p>Найдите всё необходимое</p></div>
       <div class="search-wrap"><span>⌕</span><input id="catalogSearch" placeholder="Поиск товаров..." oninput="renderCatalog()"></div>
       <div id="catalogProducts" class="product-grid"></div>
     </section>
 
-    <!-- Саҳифаи мағозаҳо бо тарзи нав ва тугмаи иловакунии дастии мағоза/мол -->
     <section id="shopsPage" class="page">
       <div class="page-heading"><h1>Магазины</h1><p>Магазины-партнёры OVARD</p></div>
-      
-      <!-- Рӯйхати мағозаҳо (мисли расми фиристодаатон) -->
       <div id="allShops" class="shop-list"></div>
-
-      <!-- Тугма ва форма барои илова кардани мағоза ё мол ба таври рушноӣ (вручную) -->
-      <div style="margin-top: 20px; padding: 16px; background: var(--card-bg, #1e1e1e); border-radius: 16px; border: 2px dashed #333;">
-        <h3 style="font-size: 16px; margin-bottom: 10px; color: #168447;">➕ Добавить магазин / товар</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <input id="customShopName" placeholder="Номи магазин ё мол (масалан: Дукон)" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: inherit; color: inherit;">
-          <input id="customShopDesc" placeholder="Маълумот ё нарх (масалан: 12 сомонӣ)" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: inherit; color: inherit;">
-          <select id="customUnit" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: inherit; color: inherit;">
-            <option value="кг">Кило (кг)</option>
-            <option value="дона">Дона (шт)</option>
-            <option value="литр">Литр</option>
-            <option value="метр">Метр</option>
-          </select>
-          <button onclick="addNewShopManually()" style="padding: 10px; background: #168447; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Илова кардан</button>
-        </div>
-      </div>
     </section>
 
     <section id="shopDetailPage" class="page">
@@ -91,92 +78,40 @@
     </section>
 
     <section id="profilePage" class="page">
-      <div class="page-heading"><h1>Профиль</h1><p>Ваши данные и помощь</p></div>
+      <div class="page-heading"><h1>Профиль</h1><p>Ваши данные</p></div>
       <div class="profile-card">
         <div class="profile-avatar">👤</div>
-        <h2>Добро пожаловать в OVARD</h2>
-        <p>Укажите имя и номер телефона для оформления заказов.</p>
+        <h2>OVARD Муштарӣ</h2>
         <input id="customerName" placeholder="Ваше имя">
         <input id="customerPhone" placeholder="Номер телефона">
         <input id="customerAddress" placeholder="Адрес доставки">
-        <button class="primary-btn" onclick="saveProfile()">Сохранить данные</button>
+        <button class="primary-btn" onclick="saveProfile()">Сохранить</button>
       </div>
-      <button class="wide-link" onclick="openSettings()">⚙ Настройки</button>
-      <button class="wide-link" onclick="contactOvard()">☎ Связаться с OVARD</button>
     </section>
   </main>
 
+  <!-- Менюи поёнӣ мисли расм -->
   <nav class="bottom-nav">
-    <button class="nav-item active" data-page="home" onclick="showPage('home')"><span>⌂</span>Главная</button>
+    <button class="nav-item active" data-page="home" onclick="showPage('home')"><span>🏠</span>Главная</button>
     <button class="nav-item" data-page="catalog" onclick="showPage('catalog')"><span>▦</span>Каталог</button>
-    <button class="nav-item" data-page="shops" onclick="showPage('shops')"><span>▤</span>Магазины</button>
+    <button class="nav-item" data-page="shops" onclick="showPage('shops')"><span>📖</span>Магазины</button>
     <button class="nav-item cart-nav" data-page="cart" onclick="showPage('cart')"><span>🛒<i id="cartCount">0</i></span>Корзина</button>
-    <button class="nav-item" data-page="profile" onclick="showPage('profile')"><span>♙</span>Профиль</button>
+    <button class="nav-item" data-page="profile" onclick="showPage('profile')"><span>👤</span>Профиль</button>
   </nav>
 
   <div id="settingsOverlay" class="overlay" onclick="closeSettings(event)">
     <div class="settings-panel" onclick="event.stopPropagation()">
       <div class="panel-head"><h2>Настройки</h2><button onclick="closeSettings()">✕</button></div>
-      <label>Язык</label>
-      <select id="languageSelect" onchange="changeLanguage(this.value)">
-        <option value="ru">Русский</option>
-        <option value="tg">Тоҷикӣ</option>
-        <option value="en">English</option>
-      </select>
-      <label>Тема оформления</label>
-      <select id="themeSelect" onchange="changeTheme(this.value)">
-        <option value="light">Светлая</option>
-        <option value="dark">Тёмная</option>
-      </select>
       <label>Город</label>
       <select id="citySelect" onchange="changeCity(this.value)">
         <option value="Пархар">Пархар</option>
         <option value="Душанбе">Душанбе</option>
-        <option value="Худжанд">Худжанд</option>
-        <option value="Другой город">Другой город</option>
       </select>
-      <p class="settings-note">Минимальная сумма заказа — 50 сомони без учёта доставки.</p>
       <button class="primary-btn" onclick="closeSettings()">Готово</button>
     </div>
   </div>
 
   <div id="toast" class="toast"></div>
-  <script>
-    // Функцияи илова кардани мағоза ё мол ба таври дастӣ бо интихоби ченак (кг/дона)
-    function addNewShopManually() {
-      const name = document.getElementById('customShopName').value;
-      const desc = document.getElementById('customShopDesc').value;
-      const unit = document.getElementById('customUnit').value;
-
-      if (!name) {
-        alert('Лутфан номро ворид кунед!');
-        return;
-      }
-
-      const allShopsContainer = document.getElementById('allShops');
-      const shopDiv = document.createElement('div');
-      shopDiv.className = 'shop-card-item'; // Систимаи стили мавҷудаи шуморо истифода мебарад
-      shopDiv.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 10px; border: 1px solid #333;";
-      
-      shopDiv.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 45px; height: 45px; background: #168447; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">🏪</div>
-          <div>
-            <h4 style="margin: 0; font-size: 15px;">${name}</h4>
-            <span style="font-size: 12px; color: #aaa;">${desc} (${unit})</span>
-          </div>
-        </div>
-        <span style="color: #168447; font-weight: bold; font-size: 13px;">Фаъол</span>
-      `;
-      
-      allShopsContainer.prepend(shopDiv);
-
-      // Тоза кардани майдончаҳо
-      document.getElementById('customShopName').value = '';
-      document.getElementById('customShopDesc').value = '';
-      alert('Бо муваффақият илова шуд!');
-    }
-  </script>
   <script src="script.js"></script>
 </body>
 </html>
