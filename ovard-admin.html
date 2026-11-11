@@ -1,379 +1,142 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#16834a">
-<title>OVARD — Админ</title>
+<title>OVARD — Администратор</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.admin-head{background:#075f37;color:#fff;padding:22px;border-radius:18px;margin-bottom:18px}
+.admin-head .brand{color:white}
+.admin-box{background:white;padding:18px;border-radius:16px;border:1px solid var(--line);margin:14px 0}
+.admin-box input,.admin-box select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin:7px 0 12px}
+.admin-box button{background:var(--green);color:white;border:0;padding:11px 15px;border-radius:10px;font-weight:bold}
+.admin-shop{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.admin-shop .grow{flex:1}
+.admin-shop button{padding:8px 10px;margin-left:4px}
+.danger{background:#d93636!important}
+</style>
 </head>
 <body>
-
-<header class="topbar">
-  <a class="brand" href="index.html">
-    <span class="brand-mark">O</span><span>vard</span>
-  </a>
-  <a class="small" href="index.html">Открыть сайт ↗</a>
-</header>
-
-<main class="wrap">
-
-<section class="hero">
-  <p class="eyebrow">УПРАВЛЕНИЕ OVARD</p>
-  <h1 style="font-size:36px">Панель <span>администратора</span></h1>
-  <p class="muted">
-    Добавляйте магазины и товары. Изменения сохраняются
-    в браузере этого устройства.
-  </p>
-</section>
-
-<section class="section-head">
-  <div>
-    <p class="eyebrow">НАСТРОЙКИ СЕРВИСА</p>
-    <h2>Город работы</h2>
+<main>
+  <div class="admin-head">
+    <div class="brand"><span class="logo-mark">✓</span><span>OVARD</span></div>
+    <h1 style="color:white;font-size:30px">Панель администратора</h1>
+    <p>Управление магазинами и товарами</p>
+    <a href="index.html" style="color:white">← Открыть сайт</a>
   </div>
-</section>
 
-<div class="panel form-grid">
-  <input id="locationInput" class="full"
-    placeholder="Например: Фархор, Таджикистан">
-  <button id="saveLocation" class="primary-btn full">
-    Сохранить город
-  </button>
-</div>
-
-<section class="section-head">
-  <div>
-    <p class="eyebrow">ПАРТНЁРЫ</p>
-    <h2>Магазины</h2>
+  <div class="admin-box">
+    <h2>Настройки доставки</h2>
+    <label>Активный город / район</label>
+    <input id="city" value="Фархор, Таджикистан">
+    <button id="saveCity">Сохранить регион</button>
+    <p class="muted">Стоимость доставки подтверждается отдельно с учётом веса и расстояния по дороге.</p>
   </div>
-  <button class="primary-btn" id="addShopBtn">+ Магазин</button>
-</section>
 
-<div id="adminShops" class="shop-list"></div>
-
-<section class="section-head space-top">
-  <div>
-    <p class="eyebrow">ЗАКАЗЫ</p>
-    <h2>Заказы на этом устройстве</h2>
+  <div class="admin-box">
+    <h2>Добавить магазин</h2>
+    <input id="shopName" placeholder="Название магазина">
+    <input id="shopDesc" placeholder="Описание магазина">
+    <input id="shopPhoto" placeholder="Эмодзи или символ для значка, например 🏬">
+    <button id="addShop">+ Добавить магазин</button>
   </div>
-</section>
 
-<div id="adminOrders" class="panel"></div>
+  <div class="admin-box">
+    <h2>Список магазинов</h2>
+    <div id="adminShops"></div>
+  </div>
 
-<p class="small muted">
-  Важно: это демонстрационная админ-панель.
-  Она не защищена паролем и не синхронизируется между телефонами.
-  Для настоящего запуска нужны серверная база данных
-  и защищённый вход администратора.
-</p>
+  <div class="admin-box">
+    <h2>Добавить товар в магазин</h2>
+    <label>Выберите магазин</label>
+    <select id="productShop"></select>
+    <input id="productName" placeholder="Название товара">
+    <input id="productPrice" type="number" min="0" placeholder="Цена, сомонӣ">
+    <input id="productUnit" placeholder="Единица (кг, шт., мешок...)">
+    <button id="addProduct">Добавить товар</button>
+  </div>
 
+  <div class="admin-box">
+    <h2>Товары выбранного магазина</h2>
+    <div id="adminProducts"></div>
+  </div>
+  <p class="muted">Демо-версия: данные сохраняются только в браузере и на этом устройстве. Для работы с телефонами клиентов и общей базой заказов потребуется подключить серверную базу данных и защищённый вход администратора.</p>
 </main>
-
-<div class="modal-backdrop" id="adminModalBackdrop">
-  <section class="modal">
-    <button class="modal-close icon-btn" id="adminModalClose">✕</button>
-    <div id="adminModalContent"></div>
-  </section>
-</div>
-
 <script>
-const $ = id => document.getElementById(id);
-
-const read = (k,d) => {
-  try { return JSON.parse(localStorage.getItem(k)) ?? d; }
-  catch { return d; }
+const KEY="ovard_v2";
+const defaults={
+ location:"Фархор, Таджикистан",
+ shops:[
+ {id:1,name:"Нонвойхона",desc:"Свежий хлеб и выпечка",photo:"🥖",active:true,products:[]},
+ {id:2,name:"Магазин продуктов",desc:"Продукты питания",photo:"🛒",active:true,products:[]},
+ {id:3,name:"Мясо и птица",desc:"Мясная продукция и яйца",photo:"🍗",active:true,products:[]},
+ {id:4,name:"Аптека",desc:"Аптечные товары",photo:"✚",active:true,products:[]},
+ {id:5,name:"Стройматериалы",desc:"Материалы для строительства",photo:"🧱",active:true,products:[]}
+ ],cart:[],font:"normal",dark:false,language:"ru"
 };
-
-const save = (k,v) =>
-  localStorage.setItem(k,JSON.stringify(v));
-
-let shops = read("ovard_shops",[]);
-
-const esc = s =>
-  String(s ?? "").replace(/[&<>"']/g,c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  }[c]));
-
-function render() {
-  $("adminShops").innerHTML = shops.map(s => `
-    <div class="shop-card">
-      <span class="shop-thumb">${esc(s.emoji || "🏪")}</span>
-
-      <span class="shop-info" style="flex:1">
-        <strong>${esc(s.name)}</strong>
-        <small>
-          ${(s.products || []).length} товаров ·
-          ${s.active === false ? "Скрыт" : "Активен"}
-        </small>
-      </span>
-
-      <button class="icon-btn" data-edit="${esc(s.id)}">✎</button>
-      <button class="icon-btn" data-products="${esc(s.id)}">＋</button>
-      <button class="icon-btn" data-delete="${esc(s.id)}">×</button>
-    </div>
-  `).join("") ||
-  '<div class="empty">Магазинов пока нет. Добавьте первый магазин.</div>';
-
-  const orders = read("ovard_orders", []);
-
-  $("adminOrders").innerHTML = orders.length
-    ? orders.slice().reverse().map(o => `
-      <div class="cart-row">
-        <span>
-          <strong>Заказ №${o.id}</strong><br>
-          <small class="muted">
-            ${new Date(o.createdAt).toLocaleString("ru-RU")}
-          </small>
-        </span>
-        <button class="small" data-order="${o.id}">Показать</button>
-      </div>
-    `).join("")
-    : '<p class="muted">Заказов пока нет на этом устройстве.</p>';
+let data=JSON.parse(localStorage.getItem(KEY)||"null")||defaults;
+function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+function render(){
+ document.getElementById("city").value=data.location;
+ const list=document.getElementById("adminShops");list.innerHTML="";
+ const select=document.getElementById("productShop");select.innerHTML="";
+ data.shops.forEach(s=>{
+  const opt=document.createElement("option");opt.value=s.id;opt.textContent=s.name;select.appendChild(opt);
+  const row=document.createElement("div");row.className="admin-shop";
+  row.innerHTML=`<span>${s.photo||"🏬"}</span><div class="grow"><b>${s.name}</b><br><small>${s.desc||""}</small></div><button data-toggle="${s.id}">${s.active?"Активен":"Скрыт"}</button><button data-edit="${s.id}">✎</button><button class="danger" data-delete="${s.id}">×</button>`;
+  list.appendChild(row);
+ });
+ renderProducts();
 }
-
-function showModal(html) {
-  $("adminModalContent").innerHTML = html;
-  $("adminModalBackdrop").classList.add("show");
+function renderProducts(){
+ const id=Number(document.getElementById("productShop").value);
+ const shop=data.shops.find(s=>s.id===id);const box=document.getElementById("adminProducts");box.innerHTML="";
+ if(!shop){box.textContent="Сначала добавьте магазин.";return;}
+ shop.products.forEach((p,i)=>{
+  const row=document.createElement("div");row.className="admin-shop";
+  row.innerHTML=`<div class="grow"><b>${p.name}</b><br><small>${p.price} сомонӣ / ${p.unit}</small></div><button class="danger" data-product-delete="${i}">Удалить</button>`;
+  box.appendChild(row);
+ });
+ if(!shop.products.length)box.innerHTML="<p class='muted'>Товаров пока нет.</p>";
 }
-
-function closeModal() {
-  $("adminModalBackdrop").classList.remove("show");
-}
-
-function shopForm(s = {}) {
-  showModal(`
-    <h2>${s.id ? "Изменить магазин" : "Новый магазин"}</h2>
-
-    <div class="form-grid">
-      <input id="sName" class="full"
-        placeholder="Название магазина"
-        value="${esc(s.name || "")}">
-
-      <input id="sCategory" placeholder="Категория"
-        value="${esc(s.category || "")}">
-
-      <input id="sAddress" placeholder="Адрес"
-        value="${esc(s.address || "")}">
-
-      <input id="sPhone" placeholder="Телефон магазина"
-        value="${esc(s.phone || "")}">
-
-      <input id="sEmoji" placeholder="Значок, например 🛒"
-        value="${esc(s.emoji || "🏪")}">
-
-      <input id="sImage" class="full"
-        placeholder="Ссылка на фото (необязательно)"
-        value="${esc(s.image || "")}">
-
-      <label class="full">
-        <input id="sActive" type="checkbox"
-          ${s.active === false ? "" : "checked"}>
-        Показывать на сайте
-      </label>
-
-      <button class="primary-btn full" id="saveShop">
-        Сохранить магазин
-      </button>
-    </div>
-  `);
-
-  $("saveShop").onclick = () => {
-    const name = $("sName").value.trim();
-
-    if (!name) {
-      alert("Введите название магазина");
-      return;
-    }
-
-    const data = {
-      id:s.id || ("shop" + Date.now()),
-      name,
-      category:$("sCategory").value,
-      address:$("sAddress").value,
-      phone:$("sPhone").value,
-      emoji:$("sEmoji").value || "🏪",
-      image:$("sImage").value,
-      active:$("sActive").checked,
-      products:s.products || []
-    };
-
-    if (s.id) {
-      shops = shops.map(x => x.id === s.id ? data : x);
-    } else {
-      shops.push(data);
-    }
-
-    save("ovard_shops",shops);
-    closeModal();
-    render();
-  };
-}
-
-function productForm(shop) {
-  showModal(`
-    <h2>Товар: ${esc(shop.name)}</h2>
-
-    <div class="form-grid">
-      <input id="pName" class="full" placeholder="Название товара">
-
-      <input id="pPrice" type="number" min="0"
-        step="0.01" placeholder="Цена, сомонӣ">
-
-      <input id="pUnit"
-        placeholder="Единица: кг, шт., мешок…">
-
-      <input id="pEmoji"
-        placeholder="Значок, например 🍞" value="🛍️">
-
-      <input id="pImage" class="full"
-        placeholder="Ссылка на фото (необязательно)">
-
-      <label class="full">
-        <input id="pAvailable" type="checkbox" checked>
-        В наличии
-      </label>
-
-      <label class="full">
-        <input id="pFeatured" type="checkbox" checked>
-        Показывать в подборке OVARD
-      </label>
-
-      <button id="saveProduct" class="primary-btn full">
-        Добавить товар
-      </button>
-    </div>
-
-    <hr>
-    <div id="productList"></div>
-  `);
-
-  const list = () => {
-    $("productList").innerHTML = (shop.products || [])
-      .map(p => `
-        <div class="cart-row">
-          <span>
-            ${esc(p.name)} — ${p.price} сомонӣ / ${esc(p.unit)}
-          </span>
-          <button data-delprod="${esc(p.id)}">Удалить</button>
-        </div>
-      `).join("") ||
-      '<p class="muted">Товаров пока нет.</p>';
-  };
-
-  list();
-
-  $("saveProduct").onclick = () => {
-    const name = $("pName").value.trim();
-
-    if (!name) {
-      alert("Введите название товара");
-      return;
-    }
-
-    shop.products = shop.products || [];
-
-    shop.products.push({
-      id:"p" + Date.now(),
-      name,
-      price:Number($("pPrice").value) || 0,
-      unit:$("pUnit").value.trim() || "шт.",
-      emoji:$("pEmoji").value,
-      image:$("pImage").value,
-      available:$("pAvailable").checked,
-      featured:$("pFeatured").checked
-    });
-
-    save("ovard_shops",shops);
-
-    $("pName").value = "";
-    $("pPrice").value = "";
-    $("pUnit").value = "";
-
-    list();
-    render();
-  };
-
-  $("productList").addEventListener("click",e => {
-    const b = e.target.closest("[data-delprod]");
-    if (!b) return;
-
-    shop.products = shop.products.filter(
-      p => p.id !== b.dataset.delprod
-    );
-
-    save("ovard_shops",shops);
-    list();
-    render();
-  });
-}
-
-$("addShopBtn").onclick = () => shopForm();
-
-$("adminShops").addEventListener("click",e => {
-  const edit = e.target.closest("[data-edit]");
-  const prod = e.target.closest("[data-products]");
-  const del = e.target.closest("[data-delete]");
-
-  if (edit) {
-    const s = shops.find(x => x.id === edit.dataset.edit);
-    if (s) shopForm(s);
-  }
-
-  if (prod) {
-    const s = shops.find(x => x.id === prod.dataset.products);
-    if (s) productForm(s);
-  }
-
-  if (del && confirm("Удалить этот магазин и его товары?")) {
-    shops = shops.filter(x => x.id !== del.dataset.delete);
-    save("ovard_shops",shops);
-    render();
-  }
-});
-
-$("adminModalClose").onclick = closeModal;
-
-$("adminModalBackdrop").addEventListener("click",e => {
-  if (e.target === $("adminModalBackdrop")) closeModal();
-});
-
-$("saveLocation").onclick = () => {
-  const v = $("locationInput").value.trim();
-
-  if (!v) {
-    alert("Введите город");
-    return;
-  }
-
-  localStorage.setItem("ovard_location",v);
-  alert("Город сохранён на этом устройстве.");
+document.getElementById("saveCity").onclick=()=>{data.location=document.getElementById("city").value.trim()||"Фархор, Таджикистан";save();alert("Регион сохранён");};
+document.getElementById("addShop").onclick=()=>{
+ const name=document.getElementById("shopName").value.trim();
+ if(!name){alert("Введите название магазина");return;}
+ data.shops.push({id:Date.now(),name,desc:document.getElementById("shopDesc").value.trim(),photo:document.getElementById("shopPhoto").value.trim()||"🏬",active:true,products:[]});
+ document.getElementById("shopName").value="";document.getElementById("shopDesc").value="";document.getElementById("shopPhoto").value="";
+ save();render();
 };
-
-$("locationInput").value =
-  localStorage.getItem("ovard_location") ||
-  "Фархор, Таджикистан";
-
-$("adminOrders").addEventListener("click",e => {
-  const b = e.target.closest("[data-order]");
-  if (!b) return;
-
-  const o = read("ovard_orders",[])
-    .find(x => String(x.id) === b.dataset.order);
-
-  if (o) {
-    showModal(`
-      <h2>Заказ №${o.id}</h2>
-      <pre style="white-space:pre-wrap;font:inherit">${esc(o.message)}</pre>
-    `);
-  }
-});
-
+document.getElementById("productShop").onchange=renderProducts;
+document.getElementById("addProduct").onclick=()=>{
+ const shop=data.shops.find(s=>s.id===Number(document.getElementById("productShop").value));
+ const name=document.getElementById("productName").value.trim();
+ const price=Number(document.getElementById("productPrice").value);
+ if(!shop||!name||price<0||!document.getElementById("productPrice").value){alert("Заполните название и цену");return;}
+ shop.products.push({name,price,unit:document.getElementById("productUnit").value.trim()||"шт."});
+ document.getElementById("productName").value="";document.getElementById("productPrice").value="";document.getElementById("productUnit").value="";
+ save();renderProducts();
+};
+document.getElementById("adminShops").onclick=e=>{
+ const b=e.target.closest("button");if(!b)return;
+ const id=Number(b.dataset.toggle||b.dataset.edit||b.dataset.delete);
+ const shop=data.shops.find(s=>s.id===id);if(!shop)return;
+ if(b.dataset.toggle){shop.active=!shop.active;}
+ if(b.dataset.edit){
+  const n=prompt("Название магазина",shop.name);if(n===null)return;
+  const d=prompt("Описание",shop.desc);if(d===null)return;
+  shop.name=n.trim()||shop.name;shop.desc=d;
+ }
+ if(b.dataset.delete){if(!confirm("Удалить магазин и его товары?"))return;data.shops=data.shops.filter(s=>s.id!==id);}
+ save();render();
+};
+document.getElementById("adminProducts").onclick=e=>{
+ const b=e.target.closest("[data-product-delete]");if(!b)return;
+ const shop=data.shops.find(s=>s.id===Number(document.getElementById("productShop").value));
+ if(shop){shop.products.splice(Number(b.dataset.productDelete),1);save();renderProducts();}
+};
 render();
 </script>
 </body>
