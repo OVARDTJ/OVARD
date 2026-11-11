@@ -1,68 +1,24 @@
-
-const CACHE_NAME = "ovard-cache-v2";
-
-const FILES = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./script.js",
-  "./manifest.json"
+const CACHE_NAME = 'ovard-v1';
+const urlsToCache = [
+  './',
+  './index.html',
+  './style.css',
+  './script.js',
+  './logo.png',
+  './manifest.json',
+  './ovard-admin.html'
 ];
 
-self.addEventListener("install", event => {
+self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(
-        FILES.map(file => new URL(file, self.registration.scope).href)
-      ))
-      .then(() => self.skipWaiting())
+      .then(cache => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      ))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener("fetch", event => {
-  const request = event.request;
-
-  if (request.method !== "GET") return;
-
-  const url = new URL(request.url);
-
-  if (url.origin !== self.location.origin) return;
-
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => cache.put(
-              new URL("./index.html", self.registration.scope).href,
-              copy
-            ));
-          return response;
-        })
-        .catch(async () => {
-          return await caches.match(request) ||
-            await caches.match(
-              new URL("./index.html", self.registration.scope).href
-            );
-        })
-    );
-    return;
-  }
-
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(request)
-      .then(cached => cached || fetch(request))
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
   );
 });
