@@ -8,35 +8,59 @@
   --line:#e7eee9;
   --shadow:0 5px 22px rgba(25,65,42,.07);
 }
+
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding-bottom:82px}
 body.dark{--bg:#111a15;--card:#1c2921;--text:#f1f5f2;--muted:#a2b0a7;--line:#344239;--shadow:0 5px 22px #0003}
+
 button,input,select{font:inherit}
 button{cursor:pointer}
+
+/* Header & Topbar */
 .topbar{height:64px;background:var(--card);display:flex;align-items:center;justify-content:space-between;padding:0 17px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .logo{font-size:26px;font-weight:800;color:var(--green);text-decoration:none;letter-spacing:-1px}
-.logo span{font-size:14px;margin-left:3px}
 .location,.icon-btn{border:0;background:var(--bg);color:var(--text);border-radius:12px;padding:10px 13px}
 .icon-btn{font-size:24px;padding:4px 12px}
+
+/* Main Structure */
 main{max-width:760px;margin:auto;padding:17px}
 .page{display:none}.page.active{display:block}
+
+/* Hero Section */
 .hero{background:var(--green);color:white;border-radius:22px;padding:23px 20px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;min-height:185px}
 .hero h1{font-size:27px;line-height:1.15;margin:12px 0}
 .hero p{font-size:13px;line-height:1.5;max-width:245px;color:#e2f4e9}
 .eyebrow{font-size:10px;letter-spacing:1.1px;color:#d4f1df}
 .hero-icon{font-size:65px;filter:drop-shadow(0 8px 8px #064b2b55)}
+
+/* Search Bar */
 .search-wrap{margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;gap:10px;padding:0 14px;height:50px;color:var(--muted)}
 .search-wrap span{font-size:24px}
 .search-wrap input{border:0;outline:0;background:transparent;color:var(--text);width:100%;font-size:14px}
+
+/* Headings */
 .section-heading{display:flex;justify-content:space-between;align-items:center;margin:25px 0 13px;gap:8px}
 .section-heading h2,.page-heading h1{margin:0;font-size:20px}
 .section-heading p,.page-heading p{margin:5px 0 0;color:var(--muted);font-size:12px}
 .text-btn{border:0;background:none;color:var(--green);font-weight:700;font-size:12px;white-space:nowrap}
+
+/* Shops Strip & List Style (Намуди мағозаҳо мувофиқи акси шумо) */
 .shop-strip{display:flex;gap:12px;overflow-x:auto;padding:2px 0 10px}
 .shop-mini{min-width:112px;max-width:112px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 8px;text-align:center;box-shadow:var(--shadow)}
-.shop-emoji{width:48px;height:48px;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:25px;margin:0 auto 8px}
+.shop-emoji{width:52px;height:52px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:25px;margin:0 auto 8px;overflow:hidden;object-fit:cover;border:1px solid var(--line)}
+
 .shop-mini strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .shop-mini small{color:var(--muted);font-size:10px}
+
+.shop-list{display:grid;gap:12px}
+.shop-row{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.shop-row .shop-emoji{margin:0;flex-shrink:0}
+.shop-row div:nth-child(2){flex:1;min-width:0}
+.shop-row strong{font-size:15px;color:var(--text)}
+.shop-row p{font-size:11px;color:var(--muted);margin:3px 0 0}
+.shop-row button{border:0;background:var(--bg);color:var(--green);padding:9px 14px;border-radius:10px;font-weight:bold;font-size:13px}
+
+/* Products Grid */
 .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
 .product-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;min-width:0;box-shadow:var(--shadow)}
 .product-image{height:115px;background:var(--bg);border-radius:12px;display:grid;place-items:center;font-size:48px;overflow:hidden}
@@ -47,26 +71,25 @@ main{max-width:760px;margin:auto;padding:17px}
 .unit{font-size:11px;color:var(--muted);font-weight:400}
 .add-btn,.primary-btn{border:0;background:var(--green);color:white;border-radius:11px;padding:11px 12px;font-weight:700;width:100%}
 .add-btn:active,.primary-btn:active{background:var(--green-dark)}
+
+/* Page Headings & Profile */
 .page-heading{margin:12px 0 20px}
-.shop-list{display:grid;gap:12px}
-.shop-row{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px}
-.shop-row .shop-emoji{margin:0;flex-shrink:0}
-.shop-row div:nth-child(2){flex:1;min-width:0}
-.shop-row strong{font-size:14px}
-.shop-row p{font-size:11px;color:var(--muted);margin:5px 0}
-.shop-row button{border:0;background:var(--bg);color:var(--green);padding:9px;border-radius:10px}
-.back-btn{border:0;background:none;color:var(--green);padding:10px 0}
-.profile-card{background:var(--card);border:1px solid var(--line);padding:20px;border-radius:18px;text-align:center}
+.back-btn{border:0;background:none;color:var(--green);padding:10px 0;font-weight:bold}
+.profile-card{background:var(--card);border:1px solid var(--line);padding:20px;border-radius:18px;text-align:center;box-shadow:var(--shadow)}
 .profile-avatar{font-size:35px}
 .profile-card h2{font-size:17px}
 .profile-card p{font-size:12px;color:var(--muted);line-height:1.5}
 .profile-card input,.settings-panel select,.checkout-box input,.checkout-box select{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--text);margin:6px 0 10px;outline:none}
-.wide-link{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:13px;padding:15px;margin-top:10px}
+.wide-link{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:13px;padding:15px;margin-top:10px;font-weight:600}
+
+/* Navigation Bar */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:70px;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:8;padding-bottom:env(safe-area-inset-bottom)}
 .nav-item{border:0;background:none;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:54px}
 .nav-item span{font-size:21px;position:relative}
 .nav-item.active{color:var(--green);font-weight:700}
 .cart-nav i{position:absolute;top:-5px;right:-10px;background:#ef8d36;color:white;border-radius:20px;font-size:9px;padding:2px 5px;font-style:normal}
+
+/* Settings Overlay */
 .overlay{display:none;position:fixed;inset:0;background:#0007;z-index:20;align-items:flex-end}
 .overlay.open{display:flex}
 .settings-panel{background:var(--card);color:var(--text);width:100%;border-radius:22px 22px 0 0;padding:22px;max-width:600px;margin:auto}
@@ -75,14 +98,24 @@ main{max-width:760px;margin:auto;padding:17px}
 .panel-head button{border:0;background:var(--bg);color:var(--text);padding:8px 12px;border-radius:9px}
 .settings-panel label{display:block;font-size:12px;font-weight:700;margin-top:10px}
 .settings-note{font-size:12px;color:var(--muted);line-height:1.5;margin:15px 0}
+
+/* Toast Notification */
 .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#1c2a21;color:white;padding:12px 18px;border-radius:12px;font-size:13px;display:none;z-index:30;max-width:90%;text-align:center}
+
+/* Cart & Checkout */
 .cart-line,.order-card{background:var(--card);border:1px solid var(--line);padding:13px;border-radius:14px;margin:10px 0}
 .cart-line{display:flex;align-items:center;gap:10px}
 .cart-line .grow{flex:1}
 .qty-controls{display:flex;align-items:center;gap:9px}
-.qty-controls button{border:0;background:var(--bg);color:var(--green);padding:6px 10px;border-radius:8px}
+.qty-controls button{border:0;background:var(--bg);color:var(--green);padding:6px 10px;border-radius:8px;font-weight:bold}
 .checkout-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:15px}
 .checkout-box h3{margin-top:0}
 .total-line{display:flex;justify-content:space-between;margin:10px 0;font-size:13px}
 .empty{text-align:center;padding:35px 10px;color:var(--muted);background:var(--card);border-radius:15px}
-@media(min-width:650px){.product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero h1{font-size:34px}.hero{padding:30px 35px}}
+
+/* Desktop Responsive */
+@media(min-width:650px){
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hero h1{font-size:34px}
+  .hero{padding:30px 35px}
+}
