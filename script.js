@@ -1,379 +1,117 @@
 
-const OVARD_WHATSAPP = "992000001606";
-const DEFAULT_LOCATION = "Фархор, Таджикистан";
-const $ = id => document.getElementById(id);
-
-const read = (key, fallback) => {
-  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-  catch { return fallback; }
+const KEY = "ovard_v2";
+const defaults = {
+  location: "Фархор, Таджикистан",
+  shops: [
+    {id:1,name:"Нонвойхона",desc:"Свежий хлеб и выпечка",photo:"🥖",active:true,products:[]},
+    {id:2,name:"Магазин продуктов",desc:"Продукты питания",photo:"🛒",active:true,products:[]},
+    {id:3,name:"Мясо и птица",desc:"Мясная продукция и яйца",photo:"🍗",active:true,products:[]},
+    {id:4,name:"Аптека",desc:"Аптечные товары",photo:"✚",active:true,products:[]},
+    {id:5,name:"Стройматериалы",desc:"Материалы для строительства",photo:"🧱",active:true,products:[]}
+  ],
+  cart: [],
+  font: "normal",
+  dark: false,
+  language: "ru"
 };
-const save = (key, value) =>
-  localStorage.setItem(key, JSON.stringify(value));
-
-const starterShops = [
-  {
-    id:"bread", name:"Нонвойхона", category:"Нони гарм",
-    address:"Фархор", phone:"", emoji:"🥖", active:true,
-    products:[
-      {id:"bread1",name:"Нони гарм",price:4,unit:"дона",emoji:"🥖",available:true,featured:true}
-    ]
-  },
-  {
-    id:"market", name:"Маҳсулоти рӯзгор", category:"Хӯрокворӣ",
-    address:"Фархор", phone:"", emoji:"🛒", active:true,
-    products:[
-      {id:"oil",name:"Равғани растанӣ",price:18,unit:"литр",emoji:"🫗",available:true,featured:true}
-    ]
-  },
-  {
-    id:"eggs", name:"Тухм ва маҳсулоти мурғ",
-    category:"Маҳсулоти мурғ", address:"Фархор",
-    phone:"", emoji:"🥚", active:true,
-    products:[
-      {id:"egg",name:"Тухми мурғ",price:2,unit:"дона",emoji:"🥚",available:true,featured:true}
-    ]
-  }
-];
-
-let shops = read("ovard_shops", starterShops);
-let cart = read("ovard_cart", []);
-
-const money = n =>
-  `${Number(n || 0).toLocaleString("ru-RU")} сомонӣ`;
-
-const safe = s =>
-  String(s ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
-  }[c]));
-
-function toast(msg) {
-  $("toast").textContent = msg;
-  $("toast").classList.add("show");
-  setTimeout(() => $("toast").classList.remove("show"), 2200);
+let data = JSON.parse(localStorage.getItem(KEY) || "null") || defaults;
+function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+function toast(msg){
+  const el=document.getElementById("toast");
+  el.textContent=msg;el.classList.remove("hidden");
+  setTimeout(()=>el.classList.add("hidden"),2400);
 }
-
-function activeShops() {
-  return shops.filter(s => s.active !== false);
-}
-
-function allProducts() {
-  return activeShops().flatMap(s =>
-    (s.products || [])
-      .filter(p => p.available !== false)
-      .map(p => ({...p, shopId:s.id, shopName:s.name}))
-  );
-}
-
-function renderShops() {
-  const list = activeShops();
-  $("shopCount").textContent = list.length;
-
-  $("shopsList").innerHTML = list.length
-    ? list.map(s => `
-      <button class="shop-card" data-shop="${safe(s.id)}">
-        <span class="shop-thumb">
-          ${s.image
-            ? `<img src="${safe(s.image)}" alt="">`
-            : safe(s.emoji || "🏪")}
-        </span>
-        <span class="shop-info">
-          <strong>${safe(s.name)}</strong>
-          <small>${safe(s.category || "Магазин")} · ${safe(s.address || "")}</small>
-        </span>
-        <span>›</span>
-      </button>
-    `).join("")
-    : `<div class="empty">Пока нет активных магазинов.</div>`;
-}
-
-function renderFeatured() {
-  const q = $("searchInput").value.trim().toLowerCase();
-
-  const products = allProducts()
-    .filter(p => p.featured || p.isNew || p.sale)
-    .filter(p =>
-      !q || (p.name + " " + p.shopName).toLowerCase().includes(q)
-    );
-
-  $("featuredList").innerHTML = products.length
-    ? products.map(p => `
-      <article class="product-card">
-        <div class="product-photo">
-          ${p.image
-            ? `<img src="${safe(p.image)}" alt="">`
-            : safe(p.emoji || "🛍️")}
-        </div>
-        <strong>${safe(p.name)}</strong>
-        <small>${safe(p.shopName)} · ${safe(p.unit || "шт.")}</small>
-        <div class="price">${money(p.price)}</div>
-        <button class="add-btn"
-          data-add="${safe(p.id)}"
-          data-shopid="${safe(p.shopId)}">
-          + В корзину
-        </button>
-      </article>
-    `).join("")
-    : `<div class="empty">Пока нет товаров в подборке.</div>`;
-}
-
-function renderCart() {
-  const count = cart.reduce((a,x) => a + x.qty, 0);
-  const total = cart.reduce((a,x) => a + x.price * x.qty, 0);
-
-  $("cartCount").textContent = count;
-  $("cartTotal").textContent = money(total);
-
-  $("cartItems").innerHTML = cart.length
-    ? cart.map(x => `
-      <div class="cart-row">
-        <span>
-          <strong>${safe(x.name)}</strong><br>
-          <small class="muted">${x.qty} × ${money(x.price)}</small>
-        </span>
-        <span>
-          <strong>${money(x.qty * x.price)}</strong>
-          <button data-remove="${safe(x.key)}" aria-label="Удалить">×</button>
-        </span>
-      </div>
-    `).join("")
-    : `<p class="muted">Корзина пока пуста.</p>`;
-
-  save("ovard_cart", cart);
-}
-
-function addToCart(shopId, productId) {
-  const shop = shops.find(s => s.id === shopId);
-  const p = shop?.products?.find(x => x.id === productId);
-  if (!p) return;
-
-  const key = shopId + "_" + productId;
-  const old = cart.find(x => x.key === key);
-
-  if (old) {
-    old.qty++;
-  } else {
-    cart.push({
-      key, shopId, shopName:shop.name,
-      id:p.id, name:p.name,
-      price:Number(p.price) || 0,
-      unit:p.unit || "шт.", qty:1
-    });
-  }
-
-  renderCart();
-  toast("Добавлено в корзину");
-}
-
-function openShop(id) {
-  const s = shops.find(x => x.id === id);
-  if (!s) return;
-
-  const products = (s.products || [])
-    .filter(p => p.available !== false);
-
-  $("modalContent").innerHTML = `
-    <p class="eyebrow">${safe(s.category || "МАГАЗИН")}</p>
-    <h2>${safe(s.name)}</h2>
-    <p class="muted">${safe(s.address || "")}
-      ${s.phone ? "· " + safe(s.phone) : ""}
-    </p>
-    <div>
-      ${products.map(p => `
-        <div class="modal-product">
-          <div class="shop-thumb">
-            ${p.image
-              ? `<img src="${safe(p.image)}" alt="">`
-              : safe(p.emoji || "🛍️")}
-          </div>
-          <div style="flex:1">
-            <strong>${safe(p.name)}</strong>
-            <div class="small muted">${safe(p.unit || "шт.")}</div>
-            <div class="price">${money(p.price)}</div>
-          </div>
-          <button class="add-btn" style="width:auto"
-            data-add="${safe(p.id)}"
-            data-shopid="${safe(s.id)}">+</button>
-        </div>
-      `).join("") || '<p class="empty">Товаров пока нет.</p>'}
-    </div>
-  `;
-
-  $("modalBackdrop").classList.add("show");
-}
-
-function orderText() {
-  const name = $("customerName").value.trim();
-  const phone = $("customerPhone").value.trim();
-  const address = $("customerAddress").value.trim();
-  const note = $("customerNote").value.trim();
-
-  if (!cart.length) {
-    toast("Сначала добавьте товар в корзину");
-    return null;
-  }
-
-  if (!name || !phone || !address) {
-    toast("Заполните имя, телефон и адрес");
-    return null;
-  }
-
-  const total = cart.reduce(
-    (a,x) => a + x.price * x.qty, 0
-  );
-
-  return `Здравствуйте! Заказ с сайта OVARD
-Имя: ${name}
-Телефон: ${phone}
-Адрес: ${address}
-
-${cart.map((x,i) =>
-  `${i+1}. ${x.name} — ${x.qty} ${x.unit} × ${x.price} = ${x.qty*x.price} сомонӣ (${x.shopName})`
-).join("\n")}
-
-Товары итого: ${total} сомонӣ
-Доставка: уточнить отдельно
-Комментарий: ${note || "нет"}`;
-}
-
-function sendWhatsApp() {
-  const msg = orderText();
-  if (msg) {
-    window.open(
-      `https://wa.me/${OVARD_WHATSAPP}?text=${encodeURIComponent(msg)}`,
-      "_blank",
-      "noopener"
-    );
-  }
-}
-
-function submitSiteOrder() {
-  const msg = orderText();
-  if (!msg) return;
-
-  const orders = read("ovard_orders", []);
-  orders.push({
-    id:Date.now(),
-    createdAt:new Date().toISOString(),
-    message:msg,
-    status:"Новый"
+function renderShops(filter=""){
+  const grid=document.getElementById("shopGrid");
+  grid.innerHTML="";
+  data.shops.filter(s=>s.active && s.name.toLowerCase().includes(filter.toLowerCase())).forEach(s=>{
+    const card=document.createElement("button");
+    card.className="shop-card";
+    card.innerHTML=`<div class="shop-photo">${s.photo||"🏬"}</div><div class="shop-info"><strong>${s.name}</strong><small>${s.desc||"Магазин OVARD"}</small></div>`;
+    card.onclick=()=>openShop(s.id);
+    grid.appendChild(card);
   });
-
-  save("ovard_orders", orders);
-  toast("Заказ сохранён на этом устройстве. Свяжитесь с OVARD для подтверждения.");
+  if(!grid.children.length)grid.innerHTML="<p class='muted'>Магазины не найдены.</p>";
 }
-
-$("shopsList").addEventListener("click", e => {
-  const b = e.target.closest("[data-shop]");
-  if (b) openShop(b.dataset.shop);
-});
-
-document.addEventListener("click", e => {
-  const add = e.target.closest("[data-add]");
-  if (add) addToCart(add.dataset.shopid, add.dataset.add);
-
-  const rem = e.target.closest("[data-remove]");
-  if (rem) {
-    cart = cart.filter(x => x.key !== rem.dataset.remove);
-    renderCart();
-  }
-});
-
-$("whatsappBtn").addEventListener("click", sendWhatsApp);
-$("siteOrderBtn").addEventListener("click", submitSiteOrder);
-$("searchBtn").addEventListener("click", renderFeatured);
-$("searchInput").addEventListener("input", renderFeatured);
-
-$("menuBtn").addEventListener("click", () => {
-  $("settingsDrawer").classList.add("open");
-  $("drawerBackdrop").classList.add("show");
-});
-
-function closeDrawer() {
-  $("settingsDrawer").classList.remove("open");
-  $("drawerBackdrop").classList.remove("show");
-}
-
-$("closeDrawer").addEventListener("click", closeDrawer);
-$("drawerBackdrop").addEventListener("click", closeDrawer);
-
-$("modalClose").addEventListener("click", () =>
-  $("modalBackdrop").classList.remove("show")
-);
-
-$("modalBackdrop").addEventListener("click", e => {
-  if (e.target === $("modalBackdrop")) {
-    $("modalBackdrop").classList.remove("show");
-  }
-});
-
-$("profileBtn").addEventListener("click", () => {
-  const p = read("ovard_profile", {});
-
-  $("modalContent").innerHTML = `
-    <h2>Профиль</h2>
-    <p class="muted">Сохраните данные, чтобы быстрее оформлять заказы.</p>
-    <div class="form-grid">
-      <input id="profileName" placeholder="Имя" value="${safe(p.name || "")}">
-      <input id="profilePhone" placeholder="Телефон" value="${safe(p.phone || "")}">
-      <input id="profileAddress" class="full" placeholder="Адрес" value="${safe(p.address || "")}">
-      <button class="primary-btn full" id="saveProfile">Сохранить</button>
-    </div>
-  `;
-
-  $("modalBackdrop").classList.add("show");
-
-  $("saveProfile").addEventListener("click", () => {
-    const v = {
-      name:$("profileName").value,
-      phone:$("profilePhone").value,
-      address:$("profileAddress").value
-    };
-
-    save("ovard_profile", v);
-    $("customerName").value = v.name;
-    $("customerPhone").value = v.phone;
-    $("customerAddress").value = v.address;
-    $("modalBackdrop").classList.remove("show");
-    toast("Профиль сохранён");
+function openShop(id){
+  const shop=data.shops.find(s=>s.id===id);if(!shop)return;
+  document.getElementById("shopDetails").classList.remove("hidden");
+  document.getElementById("shopTitle").textContent=shop.name;
+  const grid=document.getElementById("productGrid");grid.innerHTML="";
+  if(!shop.products.length)grid.innerHTML="<p class='muted'>Скоро здесь появятся товары этого магазина.</p>";
+  shop.products.forEach((p,i)=>{
+    const el=document.createElement("div");el.className="product-card";
+    el.innerHTML=`<strong>${p.name}</strong><p>${p.price} сомонӣ / ${p.unit||"шт."}</p><button>Добавить в корзину</button>`;
+    el.querySelector("button").onclick=()=>{data.cart.push({shop:shop.name,name:p.name,price:Number(p.price),unit:p.unit||"шт."});save();updateCart();toast("Добавлено в корзину");};
+    grid.appendChild(el);
   });
+  document.getElementById("shopDetails").scrollIntoView({behavior:"smooth"});
+}
+function updateCart(){
+  document.getElementById("cartCount").textContent=data.cart.length;
+}
+function showCart(){
+  document.getElementById("modalTitle").textContent="Корзина и оформление";
+  const total=data.cart.reduce((a,b)=>a+b.price,0);
+  let rows=data.cart.map((p,i)=>`<div class="cart-line"><span>${p.name}<small class="muted"> — ${p.shop}</small></span><b>${p.price} с.</b></div>`).join("");
+  document.getElementById("modalContent").innerHTML=`
+    ${rows||"<p class='muted'>Корзина пока пуста.</p>"}
+    <p><b>Сумма товаров: ${total.toFixed(2)} сомонӣ</b></p>
+    <p class="muted">Доставка оплачивается отдельно. Её стоимость зависит от веса заказа и расстояния по дороге. Окончательную сумму подтвердим перед доставкой.</p>
+    <form id="orderForm">
+      <label>Ваше имя</label><input name="name" required placeholder="Имя">
+      <label>Телефон для связи</label><input name="phone" required placeholder="+992...">
+      <label>Адрес доставки</label><input name="address" required placeholder="Улица, дом, ориентир">
+      <label>Комментарий</label><input name="note" placeholder="Дополнительная информация">
+      <button class="wide-btn" type="submit">Продолжить через WhatsApp</button>
+    </form>`;
+  document.getElementById("orderForm").onsubmit=sendOrder;
+  document.getElementById("modal").classList.remove("hidden");
+}
+function sendOrder(e){
+  e.preventDefault();
+  if(!data.cart.length){toast("Сначала добавьте товары");return;}
+  const f=new FormData(e.target);
+  const total=data.cart.reduce((a,b)=>a+b.price,0);
+  const items=data.cart.map(p=>`• ${p.name} — ${p.price} сомонӣ (${p.shop})`).join("\n");
+  const msg=`Здравствуйте! Новый заказ OVARD:\n\n${items}\n\nСумма товаров: ${total} сомонӣ\nДоставка: рассчитать отдельно по весу и расстоянию.\n\nИмя: ${f.get("name")}\nТелефон: ${f.get("phone")}\nАдрес: ${f.get("address")}\nКомментарий: ${f.get("note")||"Нет"}`;
+  window.open("https://wa.me/992000001606?text="+encodeURIComponent(msg),"_blank");
+}
+function openDrawer(){document.getElementById("drawer").classList.remove("hidden");}
+document.getElementById("menuBtn").onclick=openDrawer;
+document.getElementById("closeDrawer").onclick=()=>document.getElementById("drawer").classList.add("hidden");
+document.getElementById("themeBtn").onclick=()=>{data.dark=!data.dark;document.body.classList.toggle("dark",data.dark);save();};
+document.querySelectorAll("[data-font]").forEach(b=>b.onclick=()=>{
+  data.font=b.dataset.font;document.body.classList.remove("font-large","font-xlarge");
+  if(data.font==="large")document.body.classList.add("font-large");
+  if(data.font==="xlarge")document.body.classList.add("font-xlarge");
+  save();toast("Размер текста изменён");
 });
-
-$("themeSelect").value =
-  localStorage.getItem("ovard_theme") || "light";
-
-$("themeSelect").addEventListener("change", e => {
-  document.body.classList.toggle("dark", e.target.value === "dark");
-  localStorage.setItem("ovard_theme", e.target.value);
+document.getElementById("languageSelect").onchange=e=>{data.language=e.target.value;save();toast("Язык сохранён. Перевод интерфейса будет добавлен в следующей версии.");};
+document.getElementById("searchBtn").onclick=()=>renderShops(document.getElementById("searchInput").value);
+document.getElementById("searchInput").oninput=e=>renderShops(e.target.value);
+document.getElementById("allShopsBtn").onclick=()=>document.getElementById("shops").scrollIntoView({behavior:"smooth"});
+document.getElementById("backShops").onclick=()=>document.getElementById("shopDetails").classList.add("hidden");
+document.getElementById("closeModal").onclick=()=>document.getElementById("modal").classList.add("hidden");
+document.getElementById("locationBtn").onclick=()=>toast("Минтақаи фаъол: "+data.location);
+document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+  if(b.dataset.go==="shops")document.getElementById("shops").scrollIntoView({behavior:"smooth"});
+  if(b.dataset.go==="cart")showCart();
+  if(b.dataset.go==="profile")showProfile();
+  if(b.dataset.go==="home")window.scrollTo({top:0,behavior:"smooth"});
 });
-
-$("fontSelect").value =
-  localStorage.getItem("ovard_font") || "normal";
-
-$("fontSelect").addEventListener("change", e => {
-  document.body.classList.remove("large", "xlarge");
-  if (e.target.value !== "normal") {
-    document.body.classList.add(e.target.value);
-  }
-  localStorage.setItem("ovard_font", e.target.value);
-});
-
-document.body.classList.toggle(
-  "dark", localStorage.getItem("ovard_theme") === "dark"
-);
-
-document.body.classList.add(
-  localStorage.getItem("ovard_font") || "normal"
-);
-
-$("activeLocation").textContent =
-  localStorage.getItem("ovard_location") || DEFAULT_LOCATION;
-
-const profile = read("ovard_profile", {});
-$("customerName").value = profile.name || "";
-$("customerPhone").value = profile.phone || "";
-$("customerAddress").value = profile.address || "";
-
-renderShops();
-renderFeatured();
-renderCart();
+function showProfile(){
+  document.getElementById("modalTitle").textContent="Профиль OVARD";
+  document.getElementById("modalContent").innerHTML=`<h3>Добро пожаловать в OVARD</h3><p>Ваши заказы оформляются через WhatsApp.</p><p class="muted">История заказов появится здесь после подключения общей базы заказов.</p>`;
+  document.getElementById("modal").classList.remove("hidden");
+}
+function applySaved(){
+  document.getElementById("locationText").textContent=data.location;
+  document.body.classList.toggle("dark",data.dark);
+  document.body.classList.toggle("font-large",data.font==="large");
+  document.body.classList.toggle("font-xlarge",data.font==="xlarge");
+  document.getElementById("languageSelect").value=data.language||"ru";
+  renderShops();updateCart();
+}
+applySaved();
