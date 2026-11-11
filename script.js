@@ -55,47 +55,111 @@ function productCard(p) {
 }
 
 function renderHome() {
-  $("featuredShops").innerHTML = shops.slice(0,8).map(s => `
-    <button class="shop-mini" onclick="openShop(${Number(s.id)})">
-      <div class="shop-emoji">${safe(s.emoji || "🏪")}</div>
-      <strong>${safe(s.name)}</strong><small>${safe(s.category || "Магазин")}</small>
-    </button>`).join("") || `<div class="empty">Магазины скоро появятся</div>`;
+  const featured = $("featuredShops");
+  if (featured) {
+    featured.innerHTML = shops.slice(0,8).map(s => `
+      <button class="shop-mini" onclick="openShop(${Number(s.id)})">
+        <div class="shop-emoji">${safe(s.emoji || "🏪")}</div>
+        <strong>${safe(s.name)}</strong><small>${safe(s.category || "Магазин")}</small>
+      </button>`).join("") || `<div class="empty">Магазины скоро появятся</div>`;
+  }
 
-  const q = ($("searchInput").value || "").toLowerCase();
-  $("homeProducts").innerHTML = products.filter(p =>
-    (p.name + " " + (p.description || "")).toLowerCase().includes(q)
-  ).slice(0,8).map(productCard).join("") ||
-  `<div class="empty">Товары скоро появятся. Следите за обновлениями.</div>`;
+  const q = (($("searchInput") && $("searchInput").value) || "").toLowerCase();
+  const homeProds = $("homeProducts");
+  if (homeProds) {
+    homeProds.innerHTML = products.filter(p =>
+      (p.name + " " + (p.description || "")).toLowerCase().includes(q)
+    ).slice(0,8).map(productCard).join("") ||
+    `<div class="empty">Товары скоро появятся. Следите за обновлениями.</div>`;
+  }
 }
 
 function renderProducts() { renderHome(); }
 
 function renderCatalog() {
-  const q = ($("catalogSearch").value || "").toLowerCase();
-  $("catalogProducts").innerHTML = products.filter(p =>
-    (p.name + " " + (p.description || "")).toLowerCase().includes(q)
-  ).map(productCard).join("") || `<div class="empty">Пока нет товаров</div>`;
+  const q = (($("catalogSearch") && $("catalogSearch").value) || "").toLowerCase();
+  const catProds = $("catalogProducts");
+  if (catProds) {
+    catProds.innerHTML = products.filter(p =>
+      (p.name + " " + (p.description || "")).toLowerCase().includes(q)
+    ).map(productCard).join("") || `<div class="empty">Пока нет товаров</div>`;
+  }
 }
 
 function renderShops() {
-  $("allShops").innerHTML = shops.map(s => `
-    <div class="shop-row">
-      <div class="shop-emoji">${safe(s.emoji || "🏪")}</div>
-      <div><strong>${safe(s.name)}</strong><p>${safe(s.category || "")}</p></div>
-      <button onclick="openShop(${Number(s.id)})">Открыть →</button>
-    </div>`).join("") || `<div class="empty">Магазины пока не добавлены</div>`;
+  const allShopsEl = $("allShops");
+  if (allShopsEl) {
+    allShopsEl.innerHTML = shops.map(s => `
+      <div class="shop-row">
+        <div class="shop-emoji">${safe(s.emoji || "🏪")}</div>
+        <div><strong>${safe(s.name)}</strong><p>${safe(s.category || "")}</p></div>
+        <button onclick="openShop(${Number(s.id)})">Открыть →</button>
+      </div>`).join("") || `<div class="empty">Магазины пока не добавлены</div>`;
+  }
 }
 
 function openShop(id) {
   currentShop = shops.find(s => String(s.id) === String(id));
   if (!currentShop) return;
-  $("shopDetail").innerHTML = `
-    <div class="hero"><div><span class="eyebrow">МАГАЗИН OVARD</span>
-    <h1>${safe(currentShop.name)}</h1><p>${safe(currentShop.description || "")}</p></div>
-    <div class="hero-icon">${safe(currentShop.emoji || "🏪")}</div></div>
-    <h2>Товары магазина</h2>
-    <div class="product-grid">${products.filter(p => String(p.shopId) === String(id)).map(productCard).join("") || `<div class="empty">Товары скоро появятся</div>`}</div>`;
+  const detail = $("shopDetail");
+  if (detail) {
+    detail.innerHTML = `
+      <div class="hero"><div><span class="eyebrow">МАГАЗИН OVARD</span>
+      <h1>${safe(currentShop.name)}</h1><p>${safe(currentShop.description || "")}</p></div>
+      <div class="hero-icon">${safe(currentShop.emoji || "🏪")}</div></div>
+      <h2 style="margin:20px 0 10px;">Товары магазина</h2>
+      <div class="product-grid">${products.filter(p => String(p.shopId) === String(id)).map(productCard).join("") || `<div class="empty">Товары скоро появятся</div>`}</div>`;
+  }
   showPage("shopDetail");
+}
+
+/* Илова кардани мағоза ё мол ба таври дастӣ (Вручную) */
+function addNewShopManually() {
+  const nameInput = $("customShopName");
+  const descInput = $("customShopDesc");
+  const unitSelect = $("customUnit");
+
+  const name = nameInput ? nameInput.value.trim() : "";
+  const desc = descInput ? descInput.value.trim() : "";
+  const unit = unitSelect ? unitSelect.value : "кг";
+
+  if (!name) {
+    return toast("Лутфан номи мағоза ё молро ворид кунед!");
+  }
+
+  const newId = Date.now();
+  const newShop = {
+    id: newId,
+    name: name,
+    category: desc ? `${desc} (${unit})` : `Ченак: ${unit}`,
+    emoji: "🏪",
+    description: desc
+  };
+
+  shops.unshift(newShop);
+  save("ovard_shops", shops);
+
+  // Агар рақам ворид шуда бошад, онро ҳамчун моли алоҳида низ сабт мекунем
+  if (desc && !isNaN(parseFloat(desc))) {
+    const newProduct = {
+      id: newId,
+      shopId: newId,
+      name: name,
+      price: parseFloat(desc),
+      unit: unit,
+      emoji: "📦"
+    };
+    products.unshift(newProduct);
+    save("ovard_products", products);
+  }
+
+  renderShops();
+  renderHome();
+
+  if (nameInput) nameInput.value = "";
+  if (descInput) descInput.value = "";
+
+  toast("Илова шуд!");
 }
 
 function addToCart(id) {
@@ -110,7 +174,8 @@ function addToCart(id) {
 }
 
 function updateCartCount() {
-  $("cartCount").textContent = cart.reduce((sum,x) => sum + x.qty,0);
+  const el = $("cartCount");
+  if (el) el.textContent = cart.reduce((sum,x) => sum + x.qty,0);
 }
 
 function cartTotal() {
@@ -132,35 +197,41 @@ function changeQty(id, delta) {
 
 function renderCart() {
   const total = cartTotal();
-  $("cartItems").innerHTML = cart.map(item => {
-    const p = products.find(x => Number(x.id) === Number(item.id));
-    if (!p) return "";
-    return `<div class="cart-line">
-      <div class="product-image" style="width:55px;height:55px;font-size:25px">${productImage(p)}</div>
-      <div class="grow"><strong>${safe(p.name)}</strong><p class="price">${safe(p.price)} сомони / ${safe(p.unit || "шт.")}</p></div>
-      <div class="qty-controls"><button onclick="changeQty(${Number(p.id)},-1)">−</button>${item.qty}<button onclick="changeQty(${Number(p.id)},1)">+</button></div>
-    </div>`;
-  }).join("") || `<div class="empty">🛒<h3>Корзина пока пуста</h3>Выберите товары в каталоге</div>`;
+  const itemsEl = $("cartItems");
+  if (itemsEl) {
+    itemsEl.innerHTML = cart.map(item => {
+      const p = products.find(x => Number(x.id) === Number(item.id));
+      if (!p) return "";
+      return `<div class="cart-line">
+        <div class="product-image" style="width:55px;height:55px;font-size:25px">${productImage(p)}</div>
+        <div class="grow"><strong>${safe(p.name)}</strong><p class="price">${safe(p.price)} сомони / ${safe(p.unit || "шт.")}</p></div>
+        <div class="qty-controls"><button onclick="changeQty(${Number(p.id)},-1)">−</button>${item.qty}<button onclick="changeQty(${Number(p.id)},1)">+</button></div>
+      </div>`;
+    }).join("") || `<div class="empty">🛒<h3>Корзина пока пуста</h3>Выберите товары в каталоге</div>`;
+  }
 
-  $("checkoutArea").innerHTML = cart.length ? `
-    <div class="checkout-box">
-      <h3>Оформление заказа</h3>
-      <div class="total-line"><span>Товары</span><strong>${total.toFixed(2)} сомони</strong></div>
-      <p class="settings-note">Минимальная сумма заказа — 50 сомони без учёта доставки.</p>
-      <input id="orderName" placeholder="Ваше имя" value="${safe(profile.name || "")}">
-      <input id="orderPhone" placeholder="Номер телефона" value="${safe(profile.phone || "")}">
-      <input id="orderAddress" placeholder="Адрес доставки" value="${safe(profile.address || "")}">
-      <input id="orderWeight" type="number" min="0" step="0.1" placeholder="Примерный вес заказа (кг), если знаете">
-      <select id="deliveryDistance">
-        <option value="unknown">Расстояние — уточнить</option>
-        <option value="near">Близко</option>
-        <option value="medium">Среднее расстояние</option>
-        <option value="far">Далеко</option>
-      </select>
-      <div class="total-line"><span>Доставка</span><strong>Уточняется</strong></div>
-      <button class="primary-btn" onclick="placeOrder()">Отправить заказ</button>
-      <button class="wide-link" onclick="whatsappOrder()">Заказать в WhatsApp</button>
-    </div>` : "";
+  const checkEl = $("checkoutArea");
+  if (checkEl) {
+    checkEl.innerHTML = cart.length ? `
+      <div class="checkout-box">
+        <h3>Оформление заказа</h3>
+        <div class="total-line"><span>Товары</span><strong>${total.toFixed(2)} сомони</strong></div>
+        <p class="settings-note">Минимальная сумма заказа — 50 сомони без учёта доставки.</p>
+        <input id="orderName" placeholder="Ваше имя" value="${safe(profile.name || "")}">
+        <input id="orderPhone" placeholder="Номер телефона" value="${safe(profile.phone || "")}">
+        <input id="orderAddress" placeholder="Адрес доставки" value="${safe(profile.address || "")}">
+        <input id="orderWeight" type="number" min="0" step="0.1" placeholder="Примерный вес заказа (кг), если знаете">
+        <select id="deliveryDistance">
+          <option value="unknown">Расстояние — уточнить</option>
+          <option value="near">Близко</option>
+          <option value="medium">Среднее расстояние</option>
+          <option value="far">Далеко</option>
+        </select>
+        <div class="total-line"><span>Доставка</span><strong>Уточняется</strong></div>
+        <button class="primary-btn" onclick="placeOrder()">Отправить заказ</button>
+        <button class="wide-link" onclick="whatsappOrder()">Заказать в WhatsApp</button>
+      </div>` : "";
+  }
 }
 
 function placeOrder() {
@@ -197,87 +268,3 @@ function placeOrder() {
 function whatsappOrder() {
   const total = cartTotal();
   if (total < 50) return toast("Минимальная сумма товаров — 50 сомони");
-  const name = $("orderName")?.value.trim() || profile.name || "";
-  const phone = $("orderPhone")?.value.trim() || profile.phone || "";
-  const address = $("orderAddress")?.value.trim() || profile.address || "";
-  if (!name || !phone || !address) return toast("Сначала заполните данные заказа");
-  const lines = cart.map(item => {
-    const p = products.find(x => Number(x.id) === Number(item.id));
-    return p ? `${p.name} — ${item.qty} × ${p.price} сомони / ${p.unit || "шт."}` : "";
-  }).filter(Boolean).join("\n");
-  const message = `Здравствуйте, OVARD!\nХочу оформить заказ:\n${lines}\nИтого товары: ${total} сомони\nИмя: ${name}\nТелефон: ${phone}\nАдрес: ${address}\nДоставку прошу рассчитать отдельно.`;
-  window.open("https://wa.me/992000001606?text=" + encodeURIComponent(message),"_blank");
-}
-
-function renderOrders() {
-  $("ordersList").innerHTML = orders.map(o => `
-    <div class="order-card"><strong>Заказ №${o.id}</strong>
-    <p>${safe(o.date)}</p><p>${safe(o.name)} · ${safe(o.phone)}</p>
-    <p>${safe(o.address)}</p><strong>${Number(o.total).toFixed(2)} сомони</strong>
-    <p>${safe(o.status)}</p>
-    <ul>${o.items.map(i => `<li>${safe(i.name)} — ${i.qty} × ${safe(i.price)} сомони ${safe(i.unit)}</li>`).join("")}</ul></div>
-  `).join("") || `<div class="empty">У вас пока нет заказов</div>`;
-}
-
-function saveProfile() {
-  profile = {
-    name:$("customerName").value.trim(),
-    phone:$("customerPhone").value.trim(),
-    address:$("customerAddress").value.trim()
-  };
-  save("ovard_profile",profile);
-  toast("Данные сохранены");
-}
-
-function openSettings() {
-  $("settingsOverlay").classList.add("open");
-  $("languageSelect").value = localStorage.getItem("ovard_lang") || "ru";
-  $("themeSelect").value = localStorage.getItem("ovard_theme") || "light";
-}
-
-function closeSettings(event) {
-  if (event && event.target !== $("settingsOverlay")) return;
-  $("settingsOverlay").classList.remove("open");
-}
-
-function changeTheme(value) {
-  localStorage.setItem("ovard_theme",value);
-  document.body.classList.toggle("dark",value === "dark");
-}
-
-function changeLanguage(value) {
-  localStorage.setItem("ovard_lang",value);
-  toast(value === "tg" ? "Забон интихоб шуд: Тоҷикӣ" : value === "en" ? "Language selected: English" : "Выбран русский язык");
-  toast("Полный перевод интерфейса подключим следующим этапом");
-}
-
-function changeCity(value) {
-  $("locationText").textContent = value;
-  localStorage.setItem("ovard_city",value);
-}
-
-function contactOvard() {
-  window.open("https://wa.me/992000001606","_blank");
-}
-
-function toast(message) {
-  const t = $("toast");
-  t.textContent = message;
-  t.style.display = "block";
-  clearTimeout(window.ovardToastTimer);
-  window.ovardToastTimer = setTimeout(() => t.style.display = "none",2600);
-}
-
-function init() {
-  changeTheme(localStorage.getItem("ovard_theme") || "light");
-  $("locationText").textContent = localStorage.getItem("ovard_city") || "Пархар";
-  $("languageSelect").value = localStorage.getItem("ovard_lang") || "ru";
-  $("themeSelect").value = localStorage.getItem("ovard_theme") || "light";
-  if (profile.name) $("customerName").value = profile.name;
-  if (profile.phone) $("customerPhone").value = profile.phone;
-  if (profile.address) $("customerAddress").value = profile.address;
-  renderHome();
-  renderShops();
-  updateCartCount();
-}
-init();
