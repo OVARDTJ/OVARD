@@ -1,286 +1,380 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OVARD — Админ-панель</title>
-<style>
-:root{--g:#168447;--bg:#f3f7f4;--card:#fff;--text:#1b2920;--muted:#77847b;--line:#e3ebe5}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding:16px}
-header{max-width:850px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 0 20px}
-.logo{font-size:25px;color:var(--g);font-weight:800}
-header a{color:var(--g);text-decoration:none;font-size:13px}
-main{max-width:850px;margin:auto}
-h1{font-size:23px;margin:5px 0}
-.subtitle{color:var(--muted);font-size:13px;margin-bottom:20px}
-.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:15px}
-.tabs button{border:0;background:#e5eee8;color:#315440;padding:12px 15px;border-radius:11px;white-space:nowrap;font-weight:700}
-.tabs button.active{background:var(--g);color:white}
-.panel{display:none}.panel.active{display:block}
-.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:15px}
-h2{font-size:17px;margin:0 0 14px}
-label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}
-input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:14px Arial}
-textarea{min-height:65px;resize:vertical}
-button{cursor:pointer}
-.primary{width:100%;border:0;background:var(--g);color:white;border-radius:10px;padding:13px;font-weight:700;margin-top:12px}
-.secondary{border:0;background:#e9f3ec;color:var(--g);padding:9px 12px;border-radius:9px;font-weight:700}
-.danger{border:0;background:#fff0ee;color:#c23d32;padding:9px 12px;border-radius:9px}
-.item{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px;background:#fff}
-.item strong{display:block;margin-bottom:5px}
-.item small{color:var(--muted);display:block;margin-bottom:10px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.note{font-size:12px;color:var(--muted);line-height:1.5}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px}
-.stat{background:#e5f3e9;padding:13px;border-radius:12px}
-.stat strong{display:block;color:var(--g);font-size:22px}
-.stat span{font-size:11px;color:#536b5a}
-@media(max-width:450px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16834a">
+<title>OVARD — Админ</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <div class="logo">Ovard ✓</div>
-  <a href="index.html">← Открыть сайт</a>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">O</span><span>vard</span>
+  </a>
+  <a class="small" href="index.html">Открыть сайт ↗</a>
 </header>
-<main>
-  <h1>Панель управления</h1>
-  <p class="subtitle">Управление магазинами, товарами и заказами</p>
 
-  <div class="stats">
-    <div class="stat"><strong id="shopCount">0</strong><span>Магазинов</span></div>
-    <div class="stat"><strong id="productCount">0</strong><span>Товаров</span></div>
-    <div class="stat"><strong id="orderCount">0</strong><span>Заказов</span></div>
+<main class="wrap">
+
+<section class="hero">
+  <p class="eyebrow">УПРАВЛЕНИЕ OVARD</p>
+  <h1 style="font-size:36px">Панель <span>администратора</span></h1>
+  <p class="muted">
+    Добавляйте магазины и товары. Изменения сохраняются
+    в браузере этого устройства.
+  </p>
+</section>
+
+<section class="section-head">
+  <div>
+    <p class="eyebrow">НАСТРОЙКИ СЕРВИСА</p>
+    <h2>Город работы</h2>
   </div>
+</section>
 
-  <div class="tabs">
-    <button class="active" onclick="tab('shops',this)">Магазины</button>
-    <button onclick="tab('products',this)">Товары</button>
-    <button onclick="tab('orders',this)">Заказы</button>
+<div class="panel form-grid">
+  <input id="locationInput" class="full"
+    placeholder="Например: Фархор, Таджикистан">
+  <button id="saveLocation" class="primary-btn full">
+    Сохранить город
+  </button>
+</div>
+
+<section class="section-head">
+  <div>
+    <p class="eyebrow">ПАРТНЁРЫ</p>
+    <h2>Магазины</h2>
   </div>
+  <button class="primary-btn" id="addShopBtn">+ Магазин</button>
+</section>
 
-  <section id="shops" class="panel active">
-    <div class="box">
-      <h2 id="shopFormTitle">Добавить магазин</h2>
-      <input type="hidden" id="shopEditId">
-      <label>Название магазина</label>
-      <input id="shopName" placeholder="Например: Магазин продуктов">
-      <label>Категория</label>
-      <input id="shopCategory" placeholder="Например: Продукты">
-      <label>Значок (эмодзи)</label>
-      <input id="shopEmoji" placeholder="Например: 🛒" value="🏪">
-      <label>Описание</label>
-      <textarea id="shopDescription" placeholder="Описание магазина"></textarea>
-      <button class="primary" onclick="saveShop()">Сохранить магазин</button>
-      <p class="note">Магазины можно добавлять, изменять и удалять. Количество не ограничено.</p>
-    </div>
-    <div class="box"><h2>Список магазинов</h2><div id="shopList"></div></div>
-  </section>
+<div id="adminShops" class="shop-list"></div>
 
-  <section id="products" class="panel">
-    <div class="box">
-      <h2 id="productFormTitle">Добавить товар</h2>
-      <input type="hidden" id="productEditId">
-      <label>Название товара</label>
-      <input id="productName" placeholder="Например: Мука">
-      <label>Магазин</label>
-      <select id="productShop"></select>
-      <label>Цена (сомони)</label>
-      <input id="productPrice" type="number" min="0" step="0.01" placeholder="Например: 25">
-      <label>Единица измерения / за что цена</label>
-      <input id="productUnit" list="unitOptions" placeholder="Например: кг, мешок, 5 пар, за участок">
-      <datalist id="unitOptions">
-        <option value="кг"><option value="грамм"><option value="тонна">
-        <option value="шт."><option value="упаковка"><option value="пачка">
-        <option value="мешок"><option value="литр"><option value="метр">
-        <option value="пара"><option value="за день"><option value="за сезон">
-        <option value="за поездку"><option value="за участок">
-      </datalist>
-      <p class="note">Можно написать любую единицу вручную. Например: «за мешок», «5 пар», «за участок». Ограничений нет.</p>
-      <label>Ссылка на фото товара (необязательно)</label>
-      <input id="productImage" placeholder="https://...">
-      <label>Эмодзи вместо фото</label>
-      <input id="productEmoji" placeholder="📦" value="📦">
-      <label>Описание</label>
-      <textarea id="productDescription" placeholder="Описание товара"></textarea>
-      <button class="primary" onclick="saveProduct()">Сохранить товар</button>
-    </div>
-    <div class="box"><h2>Список товаров</h2><div id="productList"></div></div>
-  </section>
+<section class="section-head space-top">
+  <div>
+    <p class="eyebrow">ЗАКАЗЫ</p>
+    <h2>Заказы на этом устройстве</h2>
+  </div>
+</section>
 
-  <section id="orders" class="panel">
-    <div class="box"><h2>Заказы клиентов</h2><div id="orderList"></div></div>
-  </section>
+<div id="adminOrders" class="panel"></div>
+
+<p class="small muted">
+  Важно: это демонстрационная админ-панель.
+  Она не защищена паролем и не синхронизируется между телефонами.
+  Для настоящего запуска нужны серверная база данных
+  и защищённый вход администратора.
+</p>
+
 </main>
 
+<div class="modal-backdrop" id="adminModalBackdrop">
+  <section class="modal">
+    <button class="modal-close icon-btn" id="adminModalClose">✕</button>
+    <div id="adminModalContent"></div>
+  </section>
+</div>
+
 <script>
-const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
-const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-let shops=read("ovard_shops",[]);
-let products=read("ovard_products",[]);
-let orders=read("ovard_orders",[]);
+const $ = id => document.getElementById(id);
 
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+const read = (k,d) => {
+  try { return JSON.parse(localStorage.getItem(k)) ?? d; }
+  catch { return d; }
+};
 
-function tab(id,btn){
- document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
- document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- btn.classList.add("active");
- renderAll();
+const save = (k,v) =>
+  localStorage.setItem(k,JSON.stringify(v));
+
+let shops = read("ovard_shops",[]);
+
+const esc = s =>
+  String(s ?? "").replace(/[&<>"']/g,c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+
+function render() {
+  $("adminShops").innerHTML = shops.map(s => `
+    <div class="shop-card">
+      <span class="shop-thumb">${esc(s.emoji || "🏪")}</span>
+
+      <span class="shop-info" style="flex:1">
+        <strong>${esc(s.name)}</strong>
+        <small>
+          ${(s.products || []).length} товаров ·
+          ${s.active === false ? "Скрыт" : "Активен"}
+        </small>
+      </span>
+
+      <button class="icon-btn" data-edit="${esc(s.id)}">✎</button>
+      <button class="icon-btn" data-products="${esc(s.id)}">＋</button>
+      <button class="icon-btn" data-delete="${esc(s.id)}">×</button>
+    </div>
+  `).join("") ||
+  '<div class="empty">Магазинов пока нет. Добавьте первый магазин.</div>';
+
+  const orders = read("ovard_orders", []);
+
+  $("adminOrders").innerHTML = orders.length
+    ? orders.slice().reverse().map(o => `
+      <div class="cart-row">
+        <span>
+          <strong>Заказ №${o.id}</strong><br>
+          <small class="muted">
+            ${new Date(o.createdAt).toLocaleString("ru-RU")}
+          </small>
+        </span>
+        <button class="small" data-order="${o.id}">Показать</button>
+      </div>
+    `).join("")
+    : '<p class="muted">Заказов пока нет на этом устройстве.</p>';
 }
 
-function renderAll(){
- document.getElementById("shopCount").textContent=shops.length;
- document.getElementById("productCount").textContent=products.length;
- document.getElementById("orderCount").textContent=orders.length;
- renderShops();renderProducts();renderOrders();renderShopSelect();
+function showModal(html) {
+  $("adminModalContent").innerHTML = html;
+  $("adminModalBackdrop").classList.add("show");
 }
 
-function renderShopSelect(){
- const select=document.getElementById("productShop");
- const old=select.value;
- select.innerHTML=shops.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");
- if(shops.some(s=>String(s.id)===old))select.value=old;
+function closeModal() {
+  $("adminModalBackdrop").classList.remove("show");
 }
 
-function saveShop(){
- const name=document.getElementById("shopName").value.trim();
- if(!name)return alert("Введите название магазина");
- const edit=document.getElementById("shopEditId").value;
- const data={
-  id:edit?Number(edit):Date.now(),
-  name,
-  category:document.getElementById("shopCategory").value.trim(),
-  emoji:document.getElementById("shopEmoji").value.trim()||"🏪",
-  description:document.getElementById("shopDescription").value.trim()
- };
- if(edit)shops=shops.map(s=>Number(s.id)===Number(edit)?data:s);
- else shops.push(data);
- save("ovard_shops",shops);
- clearShopForm();renderAll();
- alert("Магазин сохранён");
+function shopForm(s = {}) {
+  showModal(`
+    <h2>${s.id ? "Изменить магазин" : "Новый магазин"}</h2>
+
+    <div class="form-grid">
+      <input id="sName" class="full"
+        placeholder="Название магазина"
+        value="${esc(s.name || "")}">
+
+      <input id="sCategory" placeholder="Категория"
+        value="${esc(s.category || "")}">
+
+      <input id="sAddress" placeholder="Адрес"
+        value="${esc(s.address || "")}">
+
+      <input id="sPhone" placeholder="Телефон магазина"
+        value="${esc(s.phone || "")}">
+
+      <input id="sEmoji" placeholder="Значок, например 🛒"
+        value="${esc(s.emoji || "🏪")}">
+
+      <input id="sImage" class="full"
+        placeholder="Ссылка на фото (необязательно)"
+        value="${esc(s.image || "")}">
+
+      <label class="full">
+        <input id="sActive" type="checkbox"
+          ${s.active === false ? "" : "checked"}>
+        Показывать на сайте
+      </label>
+
+      <button class="primary-btn full" id="saveShop">
+        Сохранить магазин
+      </button>
+    </div>
+  `);
+
+  $("saveShop").onclick = () => {
+    const name = $("sName").value.trim();
+
+    if (!name) {
+      alert("Введите название магазина");
+      return;
+    }
+
+    const data = {
+      id:s.id || ("shop" + Date.now()),
+      name,
+      category:$("sCategory").value,
+      address:$("sAddress").value,
+      phone:$("sPhone").value,
+      emoji:$("sEmoji").value || "🏪",
+      image:$("sImage").value,
+      active:$("sActive").checked,
+      products:s.products || []
+    };
+
+    if (s.id) {
+      shops = shops.map(x => x.id === s.id ? data : x);
+    } else {
+      shops.push(data);
+    }
+
+    save("ovard_shops",shops);
+    closeModal();
+    render();
+  };
 }
 
-function editShop(id){
- const s=shops.find(x=>Number(x.id)===Number(id));if(!s)return;
- document.getElementById("shopEditId").value=s.id;
- document.getElementById("shopName").value=s.name;
- document.getElementById("shopCategory").value=s.category||"";
- document.getElementById("shopEmoji").value=s.emoji||"🏪";
- document.getElementById("shopDescription").value=s.description||"";
- document.getElementById("shopFormTitle").textContent="Изменить магазин";
- window.scrollTo(0,0);
+function productForm(shop) {
+  showModal(`
+    <h2>Товар: ${esc(shop.name)}</h2>
+
+    <div class="form-grid">
+      <input id="pName" class="full" placeholder="Название товара">
+
+      <input id="pPrice" type="number" min="0"
+        step="0.01" placeholder="Цена, сомонӣ">
+
+      <input id="pUnit"
+        placeholder="Единица: кг, шт., мешок…">
+
+      <input id="pEmoji"
+        placeholder="Значок, например 🍞" value="🛍️">
+
+      <input id="pImage" class="full"
+        placeholder="Ссылка на фото (необязательно)">
+
+      <label class="full">
+        <input id="pAvailable" type="checkbox" checked>
+        В наличии
+      </label>
+
+      <label class="full">
+        <input id="pFeatured" type="checkbox" checked>
+        Показывать в подборке OVARD
+      </label>
+
+      <button id="saveProduct" class="primary-btn full">
+        Добавить товар
+      </button>
+    </div>
+
+    <hr>
+    <div id="productList"></div>
+  `);
+
+  const list = () => {
+    $("productList").innerHTML = (shop.products || [])
+      .map(p => `
+        <div class="cart-row">
+          <span>
+            ${esc(p.name)} — ${p.price} сомонӣ / ${esc(p.unit)}
+          </span>
+          <button data-delprod="${esc(p.id)}">Удалить</button>
+        </div>
+      `).join("") ||
+      '<p class="muted">Товаров пока нет.</p>';
+  };
+
+  list();
+
+  $("saveProduct").onclick = () => {
+    const name = $("pName").value.trim();
+
+    if (!name) {
+      alert("Введите название товара");
+      return;
+    }
+
+    shop.products = shop.products || [];
+
+    shop.products.push({
+      id:"p" + Date.now(),
+      name,
+      price:Number($("pPrice").value) || 0,
+      unit:$("pUnit").value.trim() || "шт.",
+      emoji:$("pEmoji").value,
+      image:$("pImage").value,
+      available:$("pAvailable").checked,
+      featured:$("pFeatured").checked
+    });
+
+    save("ovard_shops",shops);
+
+    $("pName").value = "";
+    $("pPrice").value = "";
+    $("pUnit").value = "";
+
+    list();
+    render();
+  };
+
+  $("productList").addEventListener("click",e => {
+    const b = e.target.closest("[data-delprod]");
+    if (!b) return;
+
+    shop.products = shop.products.filter(
+      p => p.id !== b.dataset.delprod
+    );
+
+    save("ovard_shops",shops);
+    list();
+    render();
+  });
 }
 
-function clearShopForm(){
- ["shopEditId","shopName","shopCategory","shopDescription"].forEach(id=>document.getElementById(id).value="");
- document.getElementById("shopEmoji").value="🏪";
- document.getElementById("shopFormTitle").textContent="Добавить магазин";
-}
+$("addShopBtn").onclick = () => shopForm();
 
-function deleteShop(id){
- if(!confirm("Удалить магазин? Его товары также будут удалены."))return;
- shops=shops.filter(s=>Number(s.id)!==Number(id));
- products=products.filter(p=>Number(p.shopId)!==Number(id));
- save("ovard_shops",shops);save("ovard_products",products);renderAll();
-}
+$("adminShops").addEventListener("click",e => {
+  const edit = e.target.closest("[data-edit]");
+  const prod = e.target.closest("[data-products]");
+  const del = e.target.closest("[data-delete]");
 
-function renderShops(){
- document.getElementById("shopList").innerHTML=shops.map(s=>`
- <div class="item"><strong>${esc(s.emoji)} ${esc(s.name)}</strong>
- <small>${esc(s.category||"")}</small>
- <div class="actions">
- <button class="secondary" onclick="editShop(${Number(s.id)})">Изменить</button>
- <button class="danger" onclick="deleteShop(${Number(s.id)})">Удалить</button>
- </div></div>`).join("")||"<p>Магазинов пока нет</p>";
-}
+  if (edit) {
+    const s = shops.find(x => x.id === edit.dataset.edit);
+    if (s) shopForm(s);
+  }
 
-function saveProduct(){
- const name=document.getElementById("productName").value.trim();
- const shopId=document.getElementById("productShop").value;
- const price=Number(document.getElementById("productPrice").value);
- const unit=document.getElementById("productUnit").value.trim();
- if(!name)return alert("Введите название товара");
- if(!shopId)return alert("Сначала добавьте магазин");
- if(!Number.isFinite(price)||price<=0)return alert("Введите правильную цену");
- if(!unit)return alert("Укажите единицу измерения или основу цены");
- const edit=document.getElementById("productEditId").value;
- const data={
-  id:edit?Number(edit):Date.now(),
-  name,shopId:Number(shopId),price,unit,
-  image:document.getElementById("productImage").value.trim(),
-  emoji:document.getElementById("productEmoji").value.trim()||"📦",
-  description:document.getElementById("productDescription").value.trim()
- };
- if(edit)products=products.map(p=>Number(p.id)===Number(edit)?data:p);
- else products.push(data);
- save("ovard_products",products);
- clearProductForm();renderAll();alert("Товар сохранён");
-}
+  if (prod) {
+    const s = shops.find(x => x.id === prod.dataset.products);
+    if (s) productForm(s);
+  }
 
-function editProduct(id){
- const p=products.find(x=>Number(x.id)===Number(id));if(!p)return;
- document.getElementById("productEditId").value=p.id;
- document.getElementById("productName").value=p.name;
- document.getElementById("productShop").value=p.shopId;
- document.getElementById("productPrice").value=p.price;
- document.getElementById("productUnit").value=p.unit||"";
- document.getElementById("productImage").value=p.image||"";
- document.getElementById("productEmoji").value=p.emoji||"📦";
- document.getElementById("productDescription").value=p.description||"";
- document.getElementById("productFormTitle").textContent="Изменить товар";
- window.scrollTo(0,0);
-}
+  if (del && confirm("Удалить этот магазин и его товары?")) {
+    shops = shops.filter(x => x.id !== del.dataset.delete);
+    save("ovard_shops",shops);
+    render();
+  }
+});
 
-function clearProductForm(){
- ["productEditId","productName","productPrice","productUnit","productImage","productDescription"].forEach(id=>document.getElementById(id).value="");
- document.getElementById("productEmoji").value="📦";
- document.getElementById("productFormTitle").textContent="Добавить товар";
-}
+$("adminModalClose").onclick = closeModal;
 
-function deleteProduct(id){
- if(!confirm("Удалить товар?"))return;
- products=products.filter(p=>Number(p.id)!==Number(id));
- save("ovard_products",products);renderAll();
-}
+$("adminModalBackdrop").addEventListener("click",e => {
+  if (e.target === $("adminModalBackdrop")) closeModal();
+});
 
-function renderProducts(){
- document.getElementById("productList").innerHTML=products.map(p=>{
- const shop=shops.find(s=>Number(s.id)===Number(p.shopId));
- return `<div class="item"><strong>${esc(p.emoji)} ${esc(p.name)}</strong>
- <small>${esc(shop?.name||"Магазин удалён")} · ${esc(p.price)} сомони / ${esc(p.unit)}</small>
- <div class="actions">
- <button class="secondary" onclick="editProduct(${Number(p.id)})">Изменить</button>
- <button class="danger" onclick="deleteProduct(${Number(p.id)})">Удалить</button>
- </div></div>`;
- }).join("")||"<p>Товаров пока нет</p>";
-}
+$("saveLocation").onclick = () => {
+  const v = $("locationInput").value.trim();
 
-function renderOrders(){
- document.getElementById("orderList").innerHTML=orders.map(o=>`
- <div class="item"><strong>Заказ №${esc(o.id)}</strong>
- <small>${esc(o.date)}</small>
- <p>${esc(o.name)} · ${esc(o.phone)}</p>
- <p>Адрес: ${esc(o.address)}</p>
- <p>Сумма товаров: <b>${esc(o.total)} сомони</b></p>
- <p>Вес: ${esc(o.weight||"Не указан")} кг</p>
- <p>Доставка: ${esc(o.distance||"Уточнить")}</p>
- <p>Статус: ${esc(o.status)}</p>
- <div class="actions">
- <button class="secondary" onclick="updateOrder(${Number(o.id)})">Изменить статус</button>
- </div></div>`).join("")||"<p>Заказов пока нет</p>";
-}
+  if (!v) {
+    alert("Введите город");
+    return;
+  }
 
-function updateOrder(id){
- const o=orders.find(x=>Number(x.id)===Number(id));if(!o)return;
- const status=prompt("Введите новый статус заказа:",o.status);
- if(status===null)return;
- o.status=status;save("ovard_orders",orders);renderOrders();
-}
+  localStorage.setItem("ovard_location",v);
+  alert("Город сохранён на этом устройстве.");
+};
 
-renderAll();
+$("locationInput").value =
+  localStorage.getItem("ovard_location") ||
+  "Фархор, Таджикистан";
+
+$("adminOrders").addEventListener("click",e => {
+  const b = e.target.closest("[data-order]");
+  if (!b) return;
+
+  const o = read("ovard_orders",[])
+    .find(x => String(x.id) === b.dataset.order);
+
+  if (o) {
+    showModal(`
+      <h2>Заказ №${o.id}</h2>
+      <pre style="white-space:pre-wrap;font:inherit">${esc(o.message)}</pre>
+    `);
+  }
+});
+
+render();
 </script>
 </body>
 </html>
