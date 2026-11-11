@@ -2,450 +2,597 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#078747">
-<title>Ovard — Администратор</title>
+<title>OVARD — Администратор</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.admin-main{max-width:850px;margin:auto;padding:15px}
-.admin-head{background:#075f37;color:white;padding:22px;border-radius:18px;margin-bottom:18px}
-.admin-head .brand{color:white}
-.admin-head h1{color:white;font-size:27px}
-.admin-box{background:white;color:#17251e;padding:18px;border-radius:16px;border:1px solid #e5eee9;margin:14px 0}
-.admin-box input,.admin-box select,.admin-box textarea{
- width:100%;padding:12px;border:1px solid #e5eee9;border-radius:10px;margin:7px 0 12px
-}
-.admin-box button{background:#078747;color:white;border:0;padding:11px 15px;border-radius:10px;font-weight:bold}
-.admin-box label{font-weight:bold;display:block;margin-top:8px}
-.admin-shop{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #e5eee9;flex-wrap:wrap}
-.admin-shop .grow{flex:1;min-width:120px}
-.admin-shop button{padding:8px 10px}
-.danger{background:#d93636!important}
-.admin-image{width:65px;height:65px;object-fit:cover;border-radius:10px;background:#e9f8f0}
-.admin-check{display:flex!important;align-items:center;gap:10px;padding:10px;border:1px solid #e5eee9;border-radius:10px}
-.admin-check input{width:auto;margin:0}
-.admin-note{background:#fff6df;padding:12px;border-radius:10px;color:#76551c;font-size:13px;line-height:1.5}
+.admin-wrap{max-width:850px;margin:auto;padding:16px}
+.admin-header{padding:20px;background:var(--green);color:white;border-radius:18px;margin-bottom:18px}
+.admin-header h1{margin:0 0 7px;font-size:25px}
+.admin-header p{margin:0;font-size:13px;color:#e1f4e8}
+.admin-section{padding:17px;margin:15px 0;background:var(--card);border:1px solid var(--line);border-radius:17px}
+.admin-section h2{font-size:18px;margin:0 0 14px}
+.admin-section input,.admin-section textarea,.admin-section select{width:100%;padding:12px;margin:6px 0 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+.admin-section textarea{min-height:65px}
+.admin-section label{display:block;font-size:12px;color:var(--muted);margin-top:8px}
+.admin-button{padding:11px 14px;border:0;border-radius:10px;background:var(--green);color:white;font-weight:700;margin:4px 4px 4px 0}
+.admin-button.secondary{background:#65746b}
+.admin-button.danger{background:#c64444}
+.admin-button.small{padding:8px 10px;font-size:12px}
+.admin-item{padding:13px 0;border-bottom:1px solid var(--line)}
+.admin-item:last-child{border-bottom:0}
+.admin-item strong{display:block;margin-bottom:5px;font-size:14px}
+.admin-item p{margin:4px 0;color:var(--muted);font-size:12px}
+.admin-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.admin-check{display:flex!important;align-items:center;gap:9px;margin:12px 0!important;color:var(--text)!important}
+.admin-check input{width:auto!important;margin:0!important}
+.admin-note{padding:12px;background:var(--green-soft);color:var(--green-dark);border-radius:11px;font-size:12px;line-height:1.5}
+.admin-back{display:inline-block;margin-bottom:14px;color:var(--green);font-weight:700;text-decoration:none}
+.admin-status{font-weight:700;color:var(--green)}
 </style>
 </head>
 <body>
 
-<main class="admin-main">
-<div class="admin-head">
- <div class="brand">
-  <span class="logo-mark"><span>✓</span></span>
-  <span>Ovard</span>
- </div>
- <h1>Панель администратора</h1>
- <p>Управление магазинами, товарами и заказами</p>
- <a href="index.html" style="color:white">← Открыть сайт</a>
-</div>
+<div class="admin-wrap">
 
-<div class="admin-box">
- <h2>Регион доставки</h2>
- <label>Активный город / район</label>
- <input id="city" placeholder="Фархор, Таджикистан">
- <button id="saveCity">Сохранить регион</button>
- <p class="muted">Стоимость доставки зависит от веса и расстояния по дороге.</p>
-</div>
+<a class="admin-back" href="index.html">← Вернуться на сайт</a>
 
-<div class="admin-box">
- <h2>Добавить магазин</h2>
- <label>Название магазина</label>
- <input id="shopName" placeholder="Название магазина">
- <label>Описание</label>
- <input id="shopDesc" placeholder="Описание магазина">
- <label>Значок, если нет фотографии</label>
- <input id="shopPhoto" placeholder="Например 🏬">
- <label>Фотография магазина</label>
- <input id="shopImage" type="file" accept="image/*">
- <button id="addShop">+ Добавить магазин</button>
-</div>
-
-<div class="admin-box">
- <h2>Список магазинов</h2>
- <div id="adminShops"></div>
-</div>
-
-<div class="admin-box">
- <h2>Добавить товар</h2>
- <label>Выберите магазин</label>
- <select id="productShop"></select>
- <label>Название товара</label>
- <input id="productName" placeholder="Например: Мука">
- <label>Цена</label>
- <input id="productPrice" type="number" min="0" step="any" placeholder="Цена в сомонӣ">
- <label>Единица измерения</label>
- <select id="unitSelect">
-  <option value="кг">Килограмм (кг)</option>
-  <option value="г">Грамм (г)</option>
-  <option value="тонна">Тонна</option>
-  <option value="шт.">Штука (шт.)</option>
-  <option value="упаковка">Упаковка</option>
-  <option value="мешок">Мешок</option>
-  <option value="литр">Литр</option>
-  <option value="метр">Метр</option>
-  <option value="пачка">Пачка</option>
-  <option value="другое">Другое — написать вручную</option>
- </select>
- <input id="customUnit" placeholder="Напишите свою единицу измерения" class="hidden">
- <label>Описание товара</label>
- <textarea id="productDesc" placeholder="Описание товара"></textarea>
- <label>Фотография товара</label>
- <input id="productImage" type="file" accept="image/*">
- <button id="addProduct">Добавить товар</button>
-</div>
-
-<div class="admin-box">
- <h2>Товары выбранного магазина</h2>
- <div id="adminProducts"></div>
-</div>
-
-<div class="admin-box">
- <h2>Способы оформления заказа</h2>
- <p class="muted">Включай и выключай способы вручную.</p>
- <label class="admin-check"><input type="checkbox" id="whatsapp"> WhatsApp</label>
- <label class="admin-check"><input type="checkbox" id="website"> Через Ovard</label>
- <label class="admin-check"><input type="checkbox" id="phone"> Позвонить</label>
- <label>Номер WhatsApp / телефона</label>
- <input id="contactPhone" placeholder="+992000001606">
- <button id="saveCheckout">Сохранить настройки заказов</button>
-</div>
-
-<div class="admin-box">
- <h2>Способы оплаты</h2>
- <div id="paymentList"></div>
- <label>Добавить способ оплаты</label>
- <input id="paymentName" placeholder="Например: Alif, карта банка">
- <input id="paymentDetails" placeholder="Реквизиты или описание">
- <button id="addPayment">+ Добавить способ оплаты</button>
-</div>
-
-<div class="admin-box">
- <h2>Заказы</h2>
- <div id="adminOrders"></div>
-</div>
+<header class="admin-header">
+  <h1>OVARD — Администратор</h1>
+  <p>Управление собственным магазином, партнёрами и заказами.</p>
+</header>
 
 <div class="admin-note">
- Важно: эта версия сохраняет данные в браузере данного устройства. Для общей базы между телефонами, получения заказов на другом телефоне и автоматического подтверждения онлайн-платежей потребуется подключить сервер и платёжный API.
+  Важно: эта версия хранит данные в памяти браузера на одном устройстве.
+  Для общей работы сайта на разных телефонах потребуется подключить базу данных и сервер.
 </div>
-</main>
+
+<section class="admin-section">
+  <h2>Магазин OVARD — свои товары</h2>
+  <p class="section-note">Эти товары показываются на главной странице сайта.</p>
+
+  <input id="ownId" type="hidden">
+
+  <label>Название товара</label>
+  <input id="ownName" placeholder="Например: Гандум">
+
+  <label>Цена в сомони</label>
+  <input id="ownPrice" type="number" min="0" placeholder="Цена">
+
+  <label>Единица измерения</label>
+  <input id="ownUnit" placeholder="кг, мешок, штука, тонна...">
+
+  <label>Ссылка на фотографию</label>
+  <input id="ownImage" placeholder="https://...">
+
+  <label>Описание</label>
+  <textarea id="ownDescription" placeholder="Описание товара"></textarea>
+
+  <button class="admin-button" onclick="saveOwnProduct()">Сохранить товар</button>
+  <button class="admin-button secondary" onclick="clearOwnForm()">Очистить</button>
+
+  <div id="ownProductList"></div>
+</section>
+
+<section class="admin-section">
+  <h2>Магазины-партнёры</h2>
+  <p class="section-note">Добавленные магазины автоматически появляются в разделе партнёров на главной странице.</p>
+
+  <input id="shopId" type="hidden">
+
+  <label>Название магазина</label>
+  <input id="shopName" placeholder="Название магазина">
+
+  <label>Описание</label>
+  <textarea id="shopDescription" placeholder="Краткое описание"></textarea>
+
+  <button class="admin-button" onclick="saveShop()">Сохранить магазин</button>
+  <button class="admin-button secondary" onclick="clearShopForm()">Очистить</button>
+
+  <div id="shopList"></div>
+</section>
+
+<section class="admin-section">
+  <h2>Товары партнёрских магазинов</h2>
+
+  <label>Выберите магазин</label>
+  <select id="productShop" onchange="renderPartnerProducts()">
+    <option value="">Выберите магазин</option>
+  </select>
+
+  <input id="partnerProductId" type="hidden">
+
+  <label>Название товара</label>
+  <input id="partnerProductName" placeholder="Название товара">
+
+  <label>Цена</label>
+  <input id="partnerProductPrice" type="number" min="0" placeholder="Цена">
+
+  <label>Единица измерения</label>
+  <input id="partnerProductUnit" placeholder="кг, штука, мешок, тонна...">
+
+  <label>Ссылка на фотографию</label>
+  <input id="partnerProductImage" placeholder="https://...">
+
+  <label>Описание</label>
+  <textarea id="partnerProductDescription" placeholder="Описание товара"></textarea>
+
+  <button class="admin-button" onclick="savePartnerProduct()">Сохранить товар</button>
+  <button class="admin-button secondary" onclick="clearPartnerForm()">Очистить</button>
+
+  <div id="partnerProductList"></div>
+</section>
+
+<section class="admin-section">
+  <h2>Настройки приёма заказов</h2>
+
+  <label class="admin-check">
+    <input type="checkbox" id="whatsappEnabled">
+    Отправка заказов через WhatsApp
+  </label>
+
+  <label>Номер WhatsApp с кодом страны</label>
+  <input id="adminPhone" type="tel" placeholder="992XXXXXXXXX">
+
+  <label class="admin-check">
+    <input type="checkbox" id="websiteEnabled">
+    Приём заказов через сайт
+  </label>
+
+  <button class="admin-button" onclick="saveOrderSettings()">Сохранить настройки</button>
+</section>
+
+<section class="admin-section">
+  <h2>Способы оплаты</h2>
+
+  <label class="admin-check">
+    <input type="checkbox" id="cashEnabled">
+    Оплата наличными
+  </label>
+
+  <label class="admin-check">
+    <input type="checkbox" id="alifEnabled">
+    Оплата через Alif
+  </label>
+
+  <p class="admin-note">Для онлайн-оплаты Alif потребуется подключить платёжный API. Сейчас здесь сохраняется только настройка способа оплаты.</p>
+
+  <button class="admin-button" onclick="savePayments()">Сохранить оплату</button>
+</section>
+
+<section class="admin-section">
+  <h2>Заказы покупателей</h2>
+  <div id="ordersList"></div>
+</section>
+
+</div>
 
 <script>
-const KEY="ovard_v2";
+const KEY = "ovard_v2";
 
-const defaults={
- location:"Фархор, Таджикистан",
- shops:[],cart:[],orders:[],font:"normal",dark:false,language:"ru",
- checkout:{whatsapp:true,website:true,phone:true,phoneNumber:"+992000001606"},
- payments:[
-  {id:1,name:"Наличными при получении",details:"",active:true},
-  {id:2,name:"Alif",details:"Реквизиты уточняются",active:false}
- ]
+const baseData = {
+  city:"Фархор",
+  shops:[],
+  ownProducts:[],
+  cart:[],
+  orders:[],
+  settings:{language:"ru",theme:"light",whatsapp:true,website:true,phone:""},
+  payments:{cash:true,alif:false}
 };
 
-let data;
-try{
- data=JSON.parse(localStorage.getItem(KEY))||JSON.parse(JSON.stringify(defaults));
-}catch(e){data=JSON.parse(JSON.stringify(defaults));}
+function readData(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(KEY));
+    if(!saved || typeof saved!=="object") return structuredClone(baseData);
 
-data.shops ||= [];
-data.cart ||= [];
-data.orders ||= [];
-data.checkout ||= {...defaults.checkout};
-data.payments ||= [...defaults.payments];
+    const result={...structuredClone(baseData),...saved};
+    result.shops=Array.isArray(result.shops)?result.shops:[];
+    result.ownProducts=Array.isArray(result.ownProducts)?result.ownProducts:[];
+    result.orders=Array.isArray(result.orders)?result.orders:[];
+    result.settings={...baseData.settings,...(result.settings||{})};
+    result.payments={...baseData.payments,...(result.payments||{})};
 
-function save(){
- localStorage.setItem(KEY,JSON.stringify(data));
+    result.shops.forEach(shop=>{
+      if(!Array.isArray(shop.products)) shop.products=[];
+      if(shop.active===undefined) shop.active=true;
+    });
+
+    return result;
+  }catch(e){
+    return structuredClone(baseData);
+  }
 }
 
-function esc(v){
- return String(v??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- })[c]);
+let data=readData();
+
+function saveData(){
+  localStorage.setItem(KEY,JSON.stringify(data));
 }
 
-function compressImage(file){
- return new Promise((resolve,reject)=>{
-  if(!file){resolve("");return;}
-  if(!file.type.startsWith("image/")){reject("Выберите изображение");return;}
-  const reader=new FileReader();
-  reader.onload=()=>{
-   const img=new Image();
-   img.onload=()=>{
-    const canvas=document.createElement("canvas");
-    const max=900;
-    const scale=Math.min(1,max/Math.max(img.width,img.height));
-    canvas.width=Math.round(img.width*scale);
-    canvas.height=Math.round(img.height*scale);
-    const ctx=canvas.getContext("2d");
-    ctx.drawImage(img,0,0,canvas.width,canvas.height);
-    resolve(canvas.toDataURL("image/jpeg",0.75));
-   };
-   img.onerror=()=>reject("Не удалось прочитать изображение");
-   img.src=reader.result;
+function id(){
+  return Date.now()+Math.floor(Math.random()*1000);
+}
+
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[c]);
+}
+
+function money(value){
+  return (Number(value)||0).toLocaleString("ru-RU")+" сомони";
+}
+
+function renderOwnProducts(){
+  const box=document.getElementById("ownProductList");
+  if(!data.ownProducts.length){
+    box.innerHTML='<p class="section-note">Своих товаров пока нет.</p>';
+    return;
+  }
+
+  box.innerHTML=data.ownProducts.map(p=>`
+    <div class="admin-item">
+      <strong>${esc(p.name)}</strong>
+      <p>${money(p.price)} / ${esc(p.unit||"шт.")}</p>
+      <p>${p.active===false?"Скрыт":"Показывается на сайте"}</p>
+      <div class="admin-row">
+        <button class="admin-button small" onclick="editOwnProduct('${esc(p.id)}')">Изменить</button>
+        <button class="admin-button small secondary" onclick="toggleOwnProduct('${esc(p.id)}')">${p.active===false?"Показать":"Скрыть"}</button>
+        <button class="admin-button small danger" onclick="deleteOwnProduct('${esc(p.id)}')">Удалить</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function clearOwnForm(){
+  ["ownId","ownName","ownPrice","ownUnit","ownImage","ownDescription"].forEach(id=>{
+    document.getElementById(id).value="";
+  });
+}
+
+function saveOwnProduct(){
+  const name=document.getElementById("ownName").value.trim();
+  const price=document.getElementById("ownPrice").value;
+  const unit=document.getElementById("ownUnit").value.trim();
+  const image=document.getElementById("ownImage").value.trim();
+  const description=document.getElementById("ownDescription").value.trim();
+  const oldId=document.getElementById("ownId").value;
+
+  if(!name || price===""){
+    alert("Введите название и цену товара.");
+    return;
+  }
+
+  const product={
+    id:oldId||String(id()),
+    name,price:Number(price),
+    unit:unit||"шт.",
+    image,description,
+    active:true
   };
-  reader.onerror=()=>reject("Ошибка загрузки фотографии");
-  reader.readAsDataURL(file);
- });
+
+  if(oldId){
+    const index=data.ownProducts.findIndex(p=>String(p.id)===oldId);
+    if(index!==-1){
+      product.active=data.ownProducts[index].active!==false;
+      data.ownProducts[index]=product;
+    }
+  }else{
+    data.ownProducts.unshift(product);
+  }
+
+  saveData();
+  clearOwnForm();
+  renderOwnProducts();
+  alert("Товар сохранён.");
 }
 
-function render(){
- document.getElementById("city").value=data.location||"";
- renderShops();
- renderProducts();
- renderCheckout();
- renderPayments();
- renderOrders();
+function editOwnProduct(productId){
+  const p=data.ownProducts.find(x=>String(x.id)===String(productId));
+  if(!p)return;
+
+  document.getElementById("ownId").value=p.id;
+  document.getElementById("ownName").value=p.name||"";
+  document.getElementById("ownPrice").value=p.price??"";
+  document.getElementById("ownUnit").value=p.unit||"";
+  document.getElementById("ownImage").value=p.image||"";
+  document.getElementById("ownDescription").value=p.description||"";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleOwnProduct(productId){
+  const p=data.ownProducts.find(x=>String(x.id)===String(productId));
+  if(!p)return;
+  p.active=p.active===false;
+  saveData();
+  renderOwnProducts();
+}
+
+function deleteOwnProduct(productId){
+  if(!confirm("Удалить этот товар?"))return;
+  data.ownProducts=data.ownProducts.filter(p=>String(p.id)!==String(productId));
+  saveData();
+  renderOwnProducts();
 }
 
 function renderShops(){
- const list=document.getElementById("adminShops");
- const select=document.getElementById("productShop");
- list.innerHTML="";
- const old=select.value;
- select.innerHTML="";
+  const box=document.getElementById("shopList");
+  const select=document.getElementById("productShop");
+  const selected=select.value;
 
- data.shops.forEach(s=>{
-  const opt=document.createElement("option");
-  opt.value=s.id;
-  opt.textContent=s.name;
-  select.appendChild(opt);
+  if(!data.shops.length){
+    box.innerHTML='<p class="section-note">Магазинов пока нет.</p>';
+  }else{
+    box.innerHTML=data.shops.map(shop=>`
+      <div class="admin-item">
+        <strong>${esc(shop.name)}</strong>
+        <p>${esc(shop.description||"")}</p>
+        <p>${shop.active===false?"Скрыт":"Активен"}</p>
+        <div class="admin-row">
+          <button class="admin-button small" onclick="editShop(${Number(shop.id)})">Изменить</button>
+          <button class="admin-button small secondary" onclick="toggleShop(${Number(shop.id)})">${shop.active===false?"Показать":"Скрыть"}</button>
+          <button class="admin-button small danger" onclick="deleteShop(${Number(shop.id)})">Удалить</button>
+        </div>
+      </div>
+    `).join("");
+  }
 
-  const row=document.createElement("div");
-  row.className="admin-shop";
-  row.innerHTML=`
-   ${s.image?`<img class="admin-image" src="${s.image}">`:`<span class="admin-image" style="display:grid;place-items:center;font-size:30px">${esc(s.photo||"🏬")}</span>`}
-   <div class="grow"><b>${esc(s.name)}</b><br><small>${esc(s.desc||"")}</small></div>
-   <button data-toggle="${s.id}">${s.active?"Активен":"Скрыт"}</button>
-   <button data-edit="${s.id}">✎</button>
-   <button class="danger" data-delete="${s.id}">×</button>`;
-  list.appendChild(row);
- });
+  select.innerHTML='<option value="">Выберите магазин</option>'+
+    data.shops.map(shop=>`
+      <option value="${Number(shop.id)}">${esc(shop.name)}</option>
+    `).join("");
 
- if([...select.options].some(o=>o.value===old))select.value=old;
- if(!data.shops.length)list.innerHTML="<p class='muted'>Магазинов пока нет.</p>";
+  if(data.shops.some(shop=>String(shop.id)===selected)){
+    select.value=selected;
+  }
 }
 
-function renderProducts(){
- const id=Number(document.getElementById("productShop").value);
- const shop=data.shops.find(s=>s.id===id);
- const box=document.getElementById("adminProducts");
- box.innerHTML="";
- if(!shop){box.innerHTML="<p class='muted'>Сначала добавьте магазин.</p>";return;}
-
- (shop.products||[]).forEach((p,i)=>{
-  const row=document.createElement("div");
-  row.className="admin-shop";
-  row.innerHTML=`
-   ${p.image?`<img class="admin-image" src="${p.image}">`:`<span class="admin-image" style="display:grid;place-items:center;font-size:30px">🛍️</span>`}
-   <div class="grow">
-    <b>${esc(p.name)}</b><br>
-    <small>${Number(p.price).toFixed(2)} сомонӣ / ${esc(p.unit||"шт.")}</small>
-   </div>
-   <button data-product-edit="${i}">✎</button>
-   <button class="danger" data-product-delete="${i}">×</button>`;
-  box.appendChild(row);
- });
- if(!shop.products.length)box.innerHTML="<p class='muted'>Товаров пока нет.</p>";
+function clearShopForm(){
+  document.getElementById("shopId").value="";
+  document.getElementById("shopName").value="";
+  document.getElementById("shopDescription").value="";
 }
 
-function renderCheckout(){
- const c=data.checkout;
- document.getElementById("whatsapp").checked=!!c.whatsapp;
- document.getElementById("website").checked=!!c.website;
- document.getElementById("phone").checked=!!c.phone;
- document.getElementById("contactPhone").value=c.phoneNumber||"";
+function saveShop(){
+  const name=document.getElementById("shopName").value.trim();
+  const description=document.getElementById("shopDescription").value.trim();
+  const oldId=document.getElementById("shopId").value;
+
+  if(!name){
+    alert("Введите название магазина.");
+    return;
+  }
+
+  if(oldId){
+    const shop=data.shops.find(s=>String(s.id)===oldId);
+    if(shop){
+      shop.name=name;
+      shop.description=description;
+    }
+  }else{
+    data.shops.push({
+      id:id(),name,description,active:true,products:[]
+    });
+  }
+
+  saveData();
+  clearShopForm();
+  renderShops();
+  alert("Магазин сохранён. На главной странице он появится после обновления сайта.");
 }
 
-function renderPayments(){
- const box=document.getElementById("paymentList");
- box.innerHTML="";
- data.payments.forEach(p=>{
-  const row=document.createElement("div");
-  row.className="admin-shop";
-  row.innerHTML=`
-   <div class="grow"><b>${esc(p.name)}</b><br><small>${esc(p.details||"")}</small></div>
-   <button data-payment-toggle="${p.id}">${p.active?"Включён":"Выключен"}</button>
-   <button class="danger" data-payment-delete="${p.id}">×</button>`;
-  box.appendChild(row);
- });
+function editShop(shopId){
+  const shop=data.shops.find(s=>Number(s.id)===Number(shopId));
+  if(!shop)return;
+
+  document.getElementById("shopId").value=shop.id;
+  document.getElementById("shopName").value=shop.name||"";
+  document.getElementById("shopDescription").value=shop.description||"";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleShop(shopId){
+  const shop=data.shops.find(s=>Number(s.id)===Number(shopId));
+  if(!shop)return;
+  shop.active=shop.active===false;
+  saveData();
+  renderShops();
+}
+
+function deleteShop(shopId){
+  if(!confirm("Удалить магазин и его товары?"))return;
+  data.shops=data.shops.filter(s=>Number(s.id)!==Number(shopId));
+  saveData();
+  renderShops();
+  renderPartnerProducts();
+}
+
+function clearPartnerForm(){
+  ["partnerProductId","partnerProductName","partnerProductPrice",
+   "partnerProductUnit","partnerProductImage","partnerProductDescription"]
+  .forEach(id=>document.getElementById(id).value="");
+}
+
+function savePartnerProduct(){
+  const shopId=Number(document.getElementById("productShop").value);
+  const shop=data.shops.find(s=>Number(s.id)===shopId);
+
+  if(!shop){
+    alert("Сначала выберите магазин.");
+    return;
+  }
+
+  const name=document.getElementById("partnerProductName").value.trim();
+  const price=document.getElementById("partnerProductPrice").value;
+  const oldId=document.getElementById("partnerProductId").value;
+
+  if(!name || price===""){
+    alert("Введите название и цену товара.");
+    return;
+  }
+
+  const product={
+    id:oldId||String(id()),
+    name,
+    price:Number(price),
+    unit:document.getElementById("partnerProductUnit").value.trim()||"шт.",
+    image:document.getElementById("partnerProductImage").value.trim(),
+    description:document.getElementById("partnerProductDescription").value.trim(),
+    active:true
+  };
+
+  if(oldId){
+    const index=shop.products.findIndex(p=>String(p.id)===oldId);
+    if(index!==-1){
+      product.active=shop.products[index].active!==false;
+      shop.products[index]=product;
+    }
+  }else{
+    shop.products.unshift(product);
+  }
+
+  saveData();
+  clearPartnerForm();
+  renderPartnerProducts();
+  alert("Товар сохранён.");
+}
+
+function renderPartnerProducts(){
+  const box=document.getElementById("partnerProductList");
+  const shopId=Number(document.getElementById("productShop").value);
+  const shop=data.shops.find(s=>Number(s.id)===shopId);
+
+  if(!shop){
+    box.innerHTML='<p class="section-note">Выберите магазин, чтобы увидеть его товары.</p>';
+    return;
+  }
+
+  if(!shop.products.length){
+    box.innerHTML='<p class="section-note">В этом магазине пока нет товаров.</p>';
+    return;
+  }
+
+  box.innerHTML=shop.products.map(p=>`
+    <div class="admin-item">
+      <strong>${esc(p.name)}</strong>
+      <p>${money(p.price)} / ${esc(p.unit||"шт.")}</p>
+      <p>${p.active===false?"Скрыт":"Активен"}</p>
+      <div class="admin-row">
+        <button class="admin-button small" onclick="editPartnerProduct('${esc(p.id)}')">Изменить</button>
+        <button class="admin-button small secondary" onclick="togglePartnerProduct('${esc(p.id)}')">${p.active===false?"Показать":"Скрыть"}</button>
+        <button class="admin-button small danger" onclick="deletePartnerProduct('${esc(p.id)}')">Удалить</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function editPartnerProduct(productId){
+  const shop=data.shops.find(s=>Number(s.id)===Number(document.getElementById("productShop").value));
+  const p=shop?.products.find(x=>String(x.id)===String(productId));
+  if(!p)return;
+
+  document.getElementById("partnerProductId").value=p.id;
+  document.getElementById("partnerProductName").value=p.name||"";
+  document.getElementById("partnerProductPrice").value=p.price??"";
+  document.getElementById("partnerProductUnit").value=p.unit||"";
+  document.getElementById("partnerProductImage").value=p.image||"";
+  document.getElementById("partnerProductDescription").value=p.description||"";
+  window.scrollTo({top:document.getElementById("productShop").offsetTop,behavior:"smooth"});
+}
+
+function togglePartnerProduct(productId){
+  const shop=data.shops.find(s=>Number(s.id)===Number(document.getElementById("productShop").value));
+  const p=shop?.products.find(x=>String(x.id)===String(productId));
+  if(!p)return;
+  p.active=p.active===false;
+  saveData();
+  renderPartnerProducts();
+}
+
+function deletePartnerProduct(productId){
+  const shop=data.shops.find(s=>Number(s.id)===Number(document.getElementById("productShop").value));
+  if(!shop || !confirm("Удалить товар?"))return;
+  shop.products=shop.products.filter(p=>String(p.id)!==String(productId));
+  saveData();
+  renderPartnerProducts();
+}
+
+function saveOrderSettings(){
+  data.settings.whatsapp=document.getElementById("whatsappEnabled").checked;
+  data.settings.website=document.getElementById("websiteEnabled").checked;
+  data.settings.phone=document.getElementById("adminPhone").value.trim();
+  saveData();
+  alert("Настройки сохранены.");
+}
+
+function savePayments(){
+  data.payments.cash=document.getElementById("cashEnabled").checked;
+  data.payments.alif=document.getElementById("alifEnabled").checked;
+  saveData();
+  alert("Настройки оплаты сохранены.");
 }
 
 function renderOrders(){
- const box=document.getElementById("adminOrders");
- box.innerHTML="";
- if(!data.orders.length){
-  box.innerHTML="<p class='muted'>Заказов пока нет.</p>";return;
- }
- data.orders.forEach(o=>{
-  const row=document.createElement("div");
-  row.className="admin-shop";
-  row.style.display="block";
-  row.innerHTML=`
-   <b>Заказ №${o.id}</b>
-   <p>${esc(o.date)} · ${esc(o.status)}</p>
-   <p>Клиент: ${esc(o.name)} · ${esc(o.phone)}</p>
-   <p>Адрес: ${esc(o.address)}</p>
-   <p>Сумма: ${Number(o.total).toFixed(2)} сомонӣ</p>
-   <p>Оплата: ${esc(o.payment)}</p>
-   <button data-order-status="${o.id}">Изменить статус</button>
-   <button class="danger" data-order-delete="${o.id}">Удалить</button>`;
-  box.appendChild(row);
- });
+  const box=document.getElementById("ordersList");
+
+  if(!data.orders.length){
+    box.innerHTML='<p class="section-note">Заказов пока нет.</p>';
+    return;
+  }
+
+  box.innerHTML=data.orders.map(order=>`
+    <div class="admin-item">
+      <strong>Заказ №${esc(order.id)}</strong>
+      <p>Покупатель: ${esc(order.name)}</p>
+      <p>Телефон: ${esc(order.phone)}</p>
+      <p>Адрес: ${esc(order.address)}</p>
+      <p>Дата: ${esc(order.date)}</p>
+      <p>Товары: ${(order.items||[]).map(item=>
+        `${esc(item.name)} × ${Number(item.quantity)}`
+      ).join(", ")}</p>
+      <p>Сумма: <strong>${money(order.total)}</strong></p>
+      <label>Статус заказа</label>
+      <select onchange="changeOrderStatus(${Number(order.id)},this.value)">
+        ${["Новый","Подтверждён","В доставке","Выполнен","Отменён"].map(status=>
+          `<option ${order.status===status?"selected":""}>${status}</option>`
+        ).join("")}
+      </select>
+      <div class="admin-row">
+        <button class="admin-button small danger" onclick="deleteOrder(${Number(order.id)})">Удалить заказ</button>
+      </div>
+    </div>
+  `).join("");
 }
 
-document.getElementById("saveCity").onclick=()=>{
- data.location=document.getElementById("city").value.trim()||"Фархор, Таджикистан";
- save();alert("Регион сохранён");
-};
-
-document.getElementById("addShop").onclick=async()=>{
- const name=document.getElementById("shopName").value.trim();
- if(!name)return alert("Введите название магазина");
- try{
-  const image=await compressImage(document.getElementById("shopImage").files[0]);
-  data.shops.push({
-   id:Date.now(),name,
-   desc:document.getElementById("shopDesc").value.trim(),
-   photo:document.getElementById("shopPhoto").value.trim()||"🏬",
-   image,active:true,products:[]
-  });
-  ["shopName","shopDesc","shopPhoto","shopImage"].forEach(id=>document.getElementById(id).value="");
-  save();render();
- }catch(e){alert(e);}
-};
-
-document.getElementById("productShop").onchange=renderProducts;
-
-document.getElementById("unitSelect").onchange=e=>{
- document.getElementById("customUnit").classList.toggle("hidden",e.target.value!=="другое");
-};
-
-document.getElementById("addProduct").onclick=async()=>{
- const shop=data.shops.find(s=>s.id===Number(document.getElementById("productShop").value));
- const name=document.getElementById("productName").value.trim();
- const priceField=document.getElementById("productPrice").value;
- const price=Number(priceField);
- let unit=document.getElementById("unitSelect").value;
- if(unit==="другое")unit=document.getElementById("customUnit").value.trim();
-
- if(!shop||!name||priceField===""||!Number.isFinite(price)||price<0||!unit){
-  return alert("Заполните название, цену и единицу измерения");
- }
-
- try{
-  const image=await compressImage(document.getElementById("productImage").files[0]);
-  shop.products.push({
-   id:Date.now(),name,price,unit,
-   desc:document.getElementById("productDesc").value.trim(),
-   image,active:true
-  });
-  ["productName","productPrice","customUnit","productDesc","productImage"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("unitSelect").value="кг";
-  document.getElementById("customUnit").classList.add("hidden");
-  save();renderProducts();
- }catch(e){alert(e);}
-};
-
-document.getElementById("adminShops").onclick=e=>{
- const b=e.target.closest("button");if(!b)return;
- const id=Number(b.dataset.toggle||b.dataset.edit||b.dataset.delete);
- const shop=data.shops.find(s=>s.id===id);if(!shop)return;
-
- if(b.dataset.toggle)shop.active=!shop.active;
-
- if(b.dataset.edit){
-  const n=prompt("Название магазина",shop.name);
-  if(n===null)return;
-  const d=prompt("Описание магазина",shop.desc);
-  if(d===null)return;
-  shop.name=n.trim()||shop.name;
-  shop.desc=d;
- }
-
- if(b.dataset.delete){
-  if(!confirm("Удалить магазин и его товары?"))return;
-  data.shops=data.shops.filter(s=>s.id!==id);
- }
- save();render();
-};
-
-document.getElementById("adminProducts").onclick=e=>{
- const b=e.target.closest("button");if(!b)return;
- const shop=data.shops.find(s=>s.id===Number(document.getElementById("productShop").value));
- if(!shop)return;
- const i=Number(b.dataset.productDelete??b.dataset.productEdit);
- const p=shop.products[i];if(!p)return;
-
- if(b.dataset.productDelete){
-  if(!confirm("Удалить товар?"))return;
-  shop.products.splice(i,1);
- }
- if(b.dataset.productEdit){
-  const name=prompt("Название товара",p.name);
-  if(name===null)return;
-  const price=prompt("Цена",p.price);
-  if(price===null)return;
-  const unit=prompt("Единица измерения",p.unit);
-  if(unit===null)return;
-  if(!name.trim()||price===""||!Number.isFinite(Number(price))||Number(price)<0)return alert("Проверьте данные");
-  p.name=name.trim();p.price=Number(price);p.unit=unit.trim()||p.unit;
- }
- save();renderProducts();
-};
-
-document.getElementById("saveCheckout").onclick=()=>{
- data.checkout={
-  whatsapp:document.getElementById("whatsapp").checked,
-  website:document.getElementById("website").checked,
-  phone:document.getElementById("phone").checked,
-  phoneNumber:document.getElementById("contactPhone").value.trim()
- };
- save();alert("Настройки заказов сохранены");
-};
-
-document.getElementById("addPayment").onclick=()=>{
- const name=document.getElementById("paymentName").value.trim();
- if(!name)return alert("Введите название способа оплаты");
- data.payments.push({
-  id:Date.now(),name,
-  details:document.getElementById("paymentDetails").value.trim(),
-  active:true
- });
- document.getElementById("paymentName").value="";
- document.getElementById("paymentDetails").value="";
- save();renderPayments();
-};
-
-document.getElementById("paymentList").onclick=e=>{
- const b=e.target.closest("button");if(!b)return;
- const id=Number(b.dataset.paymentToggle||b.dataset.paymentDelete);
- const p=data.payments.find(x=>x.id===id);if(!p)return;
- if(b.dataset.paymentToggle)p.active=!p.active;
- if(b.dataset.paymentDelete){
-  if(!confirm("Удалить способ оплаты?"))return;
-  data.payments=data.payments.filter(x=>x.id!==id);
- }
- save();renderPayments();
-};
-
-document.getElementById("adminOrders").onclick=e=>{
- const b=e.target.closest("button");if(!b)return;
- const id=Number(b.dataset.orderStatus||b.dataset.orderDelete);
- const order=data.orders.find(o=>o.id===id);if(!order)return;
- if(b.dataset.orderStatus){
-  const status=prompt("Статус заказа: Новый / Принят / Доставляется / Выполнен / Отменён",order.status);
-  if(status===null)return;
+function changeOrderStatus(orderId,status){
+  const order=data.orders.find(o=>Number(o.id)===Number(orderId));
+  if(!order)return;
   order.status=status;
- }
- if(b.dataset.orderDelete){
-  if(!confirm("Удалить заказ?"))return;
-  data.orders=data.orders.filter(o=>o.id!==id);
- }
- save();renderOrders();
-};
+  saveData();
+}
 
-render();
+function deleteOrder(orderId){
+  if(!confirm("Удалить заказ?"))return;
+  data.orders=data.orders.filter(o=>Number(o.id)!==Number(orderId));
+  saveData();
+  renderOrders();
+}
+
+function initAdmin(){
+  document.getElementById("whatsappEnabled").checked=!!data.settings.whatsapp;
+  document.getElementById("websiteEnabled").checked=!!data.settings.website;
+  document.getElementById("adminPhone").value=data.settings.phone||"";
+  document.getElementById("cashEnabled").checked=!!data.payments.cash;
+  document.getElementById("alifEnabled").checked=!!data.payments.alif;
+
+  renderOwnProducts();
+  renderShops();
+  renderPartnerProducts();
+  renderOrders();
+}
+
+initAdmin();
 </script>
 </body>
 </html>
