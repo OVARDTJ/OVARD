@@ -1,194 +1,130 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#078747">
-<meta name="description" content="OVARD — магазин и доставка из магазинов Фархора">
-<title>OVARD — Магазин и доставка</title>
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#078747">
+  <meta name="description" content="OVARD — покупки и доставка из магазинов">
+  <title>Ovard — покупки и доставка</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<header class="topbar">
-  <button class="brand" onclick="goHome()" aria-label="OVARD">
-    <span class="brand-mark">O<span>✓</span></span>
-    <span class="brand-name">Ovard</span>
-  </button>
-
-  <button class="location-btn" onclick="chooseLocation()">
-    <span>⌖</span>
-    <span id="locationText">Фархор</span>
-  </button>
-
-  <button class="menu-btn" onclick="openDrawer()" aria-label="Меню">☰</button>
-</header>
-
-<main id="homePage" class="page active">
-
-  <section class="welcome">
-    <div>
-      <span class="eyebrow">OVARD • ДОСТАВКА</span>
-      <h1>Покупайте удобно.<br>Мы доставим.</h1>
-      <p>Выбирайте товары и заказывайте с доставкой до двери.</p>
-    </div>
-    <div class="welcome-mark">O✓</div>
-  </section>
-
-  <section class="search-wrap">
-    <span>⌕</span>
-    <input id="searchInput" type="search"
-      placeholder="Найти товар или магазин..."
-      oninput="searchAll(this.value)">
-    <button onclick="clearSearch()" aria-label="Очистить">×</button>
-  </section>
-
-  <section id="searchResults" class="section hidden">
-    <div class="section-heading">
-      <h2>Результаты поиска</h2>
-    </div>
-    <div id="searchContent"></div>
-  </section>
-
-  <section id="ownStoreSection" class="section">
-    <div class="section-heading">
-      <div>
-        <span class="eyebrow">НАШ МАГАЗИН</span>
-        <h2>Магазин OVARD</h2>
-      </div>
-      <span class="section-symbol">O✓</span>
-    </div>
-    <p class="section-note">Товары, которые предлагает сам OVARD.</p>
-    <div id="ownProducts" class="product-grid"></div>
-  </section>
-
-  <section class="partner-section">
-    <div class="section-heading">
-      <div>
-        <span class="eyebrow">ВЫБИРАЙТЕ И ЗАКАЗЫВАЙТЕ</span>
-        <h2>Магазины-партнёры</h2>
-      </div>
-      <button class="text-link" onclick="showShops()">Все магазины →</button>
-    </div>
-    <p class="section-note">Магазины рядом — заказывайте, мы доставим.</p>
-    <div class="partner-window">
-      <div id="partnerTicker" class="partner-ticker"></div>
-    </div>
-  </section>
-
-  <section class="delivery-banner">
-    <div>
-      <span class="eyebrow">СЛУЖБА ДОСТАВКИ</span>
-      <h2>Ваш заказ —<br>у вашей двери.</h2>
-      <p>Стоимость доставки зависит от расстояния и веса заказа.</p>
-    </div>
-    <div class="delivery-icon">➜</div>
-  </section>
-
-</main>
-
-<main id="shopsPage" class="page">
-  <div class="page-heading">
-    <span class="eyebrow">ПАРТНЁРЫ OVARD</span>
-    <h1>Все магазины</h1>
-    <p>Выберите магазин, чтобы посмотреть товары.</p>
-  </div>
-  <div id="allShops" class="shop-list"></div>
-</main>
-
-<main id="shopDetailsPage" class="page">
-  <button class="back-btn" onclick="showShops()">← Назад к магазинам</button>
-  <div id="shopDetails"></div>
-</main>
-
-<main id="cartPage" class="page">
-  <div class="page-heading">
-    <span class="eyebrow">ВАШ ВЫБОР</span>
-    <h1>Корзина</h1>
-    <p>Проверьте товары перед оформлением заказа.</p>
-  </div>
-  <div id="cartContent"></div>
-</main>
-
-<main id="profilePage" class="page">
-  <div class="page-heading">
-    <span class="eyebrow">OVARD</span>
-    <h1>Мой профиль</h1>
-    <p>Ваши заказы и настройки.</p>
-  </div>
-  <div class="profile-card">
-    <div class="profile-avatar">O✓</div>
-    <div>
-      <h3>Покупатель OVARD</h3>
-      <p>Добро пожаловать!</p>
-    </div>
-  </div>
-  <button class="wide-button" onclick="showOrders()">Мои заказы</button>
-  <div id="ordersContent"></div>
-</main>
-
-<nav class="bottom-nav">
-  <button class="nav-item active" data-page="homePage" onclick="goHome()">
-    <span>⌂</span><small>Главная</small>
-  </button>
-  <button class="nav-item" data-page="shopsPage" onclick="showShops()">
-    <span>▦</span><small>Магазины</small>
-  </button>
-  <button class="nav-item" data-page="cartPage" onclick="showCart()">
-    <span>🛒</span><small>Корзина</small>
-    <b id="cartCount" class="cart-count hidden">0</b>
-  </button>
-  <button class="nav-item" data-page="profilePage" onclick="showProfile()">
-    <span>♙</span><small>Профиль</small>
-  </button>
-</nav>
-
-<div id="drawerOverlay" class="overlay hidden" onclick="closeDrawer()"></div>
-<aside id="drawer" class="drawer">
-  <div class="drawer-head">
-    <div class="drawer-brand">
+  <header class="topbar">
+    <a class="brand" href="#" onclick="showPage('home');return false">
       <span class="brand-mark">O<span>✓</span></span>
-      <span class="brand-name">Ovard</span>
+      <span>Ovard</span>
+    </a>
+    <button class="location" onclick="chooseLocation()">⌖ <span id="cityName">Фархор</span></button>
+    <button class="icon-btn" onclick="toggleMenu()" aria-label="Меню">☰</button>
+  </header>
+
+  <div id="drawer" class="drawer hidden">
+    <button onclick="showPage('profile')">Мой профиль</button>
+    <button onclick="showPage('orders')">Мои заказы</button>
+    <button onclick="showPage('shops')">Все магазины</button>
+    <div class="drawer-settings">
+      <label>Язык
+        <select id="language" onchange="changeLanguage(this.value)">
+          <option value="ru">Русский</option>
+          <option value="tg">Тоҷикӣ</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+      <label>Тема
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+          <option value="light">Светлая</option>
+          <option value="dark">Тёмная</option>
+        </select>
+      </label>
     </div>
-    <button onclick="closeDrawer()">×</button>
+    <a class="admin-link" href="ovard-admin.html">Панель администратора</a>
   </div>
 
-  <button class="drawer-link" onclick="goHome()">⌂ Главная</button>
-  <button class="drawer-link" onclick="showShops()">▦ Магазины</button>
-  <button class="drawer-link" onclick="showCart()">🛒 Корзина</button>
-  <button class="drawer-link" onclick="showProfile()">♙ Мой профиль</button>
+  <main>
+    <section id="homePage" class="page">
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">ПОКУПКИ ПРОЩЕ</span>
+          <h1>Нужное рядом.<br>Доставка к двери.</h1>
+          <p>Выбирайте товары и магазины — мы поможем с доставкой.</p>
+          <button class="primary-btn" onclick="showPage('shops')">Выбрать магазин <span>→</span></button>
+        </div>
+        <div class="hero-symbol"><span>O✓</span></div>
+      </section>
 
-  <div class="drawer-divider"></div>
-  <h3>Настройки</h3>
+      <div class="search-wrap">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="Найти товар..." oninput="renderHome()">
+      </div>
 
-  <label class="setting-label" for="languageSelect">Язык</label>
-  <select id="languageSelect" onchange="changeLanguage(this.value)">
-    <option value="ru">Русский</option>
-    <option value="tg">Тоҷикӣ</option>
-    <option value="en">English</option>
-  </select>
+      <section class="ticker-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">НАШИ ПАРТНЁРЫ</span><h2>Магазины рядом</h2></div>
+          <button class="text-btn" onclick="showPage('shops')">Все магазины →</button>
+        </div>
+        <div class="ticker-window"><div id="partnerTicker" class="ticker-track"></div></div>
+      </section>
 
-  <label class="setting-label" for="themeSelect">Оформление</label>
-  <select id="themeSelect" onchange="changeTheme(this.value)">
-    <option value="light">Светлая тема</option>
-    <option value="dark">Тёмная тема</option>
-  </select>
+      <section class="products-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">ВЫБОР OVARD</span><h2>Наши товары</h2></div>
+        </div>
+        <div id="ownProducts" class="product-grid"></div>
+      </section>
 
-  <div class="drawer-divider"></div>
-  <a class="drawer-admin" href="ovard-admin.html">⚙ Панель администратора</a>
-  <p class="drawer-footer">OVARD © 2026</p>
-</aside>
+      <section class="delivery-note">
+        <div class="delivery-icon">⌁</div>
+        <div><h3>Доставка до двери</h3><p>Стоимость зависит от расстояния, веса и сложности доставки. Точную сумму подтвердим перед отправкой.</p></div>
+      </section>
+    </section>
 
-<div id="modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <div id="modalContent"></div>
+    <section id="shopsPage" class="page hidden">
+      <div class="page-heading"><span class="eyebrow">ПАРТНЁРЫ OVARD</span><h1>Все магазины</h1><p>Выберите магазин и посмотрите его товары.</p></div>
+      <div id="allShops" class="shop-list"></div>
+    </section>
+
+    <section id="shopDetailsPage" class="page hidden">
+      <button class="back-btn" onclick="showPage('shops')">← Все магазины</button>
+      <div id="shopDetails"></div>
+    </section>
+
+    <section id="cartPage" class="page hidden">
+      <div class="page-heading"><span class="eyebrow">ВАШ ВЫБОР</span><h1>Корзина</h1></div>
+      <div id="cartContent"></div>
+    </section>
+
+    <section id="profilePage" class="page hidden">
+      <div class="page-heading"><span class="eyebrow">OVARD</span><h1>Профиль</h1></div>
+      <div class="panel">
+        <h3>Покупатель OVARD</h3>
+        <p>Укажите свои данные при оформлении заказа. Регистрация и личный кабинет будут подключены после настройки общей базы.</p>
+        <button class="primary-btn" onclick="showPage('orders')">Мои заказы</button>
+      </div>
+    </section>
+
+    <section id="ordersPage" class="page hidden">
+      <div class="page-heading"><span class="eyebrow">ИСТОРИЯ</span><h1>Мои заказы</h1></div>
+      <div id="ordersContent"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>Главная</button>
+    <button data-page="shops" onclick="showPage('shops')"><span>▦</span>Магазины</button>
+    <button data-page="cart" onclick="showPage('cart')"><span>🛒</span>Корзина <i id="cartCount">0</i></button>
+    <button data-page="profile" onclick="showPage('profile')"><span>♙</span>Профиль</button>
+  </nav>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div id="modalContent"></div>
+    </div>
   </div>
-</div>
+  <div id="toast" class="toast"></div>
 
-<div id="toast" class="toast"></div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
