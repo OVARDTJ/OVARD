@@ -1,98 +1,106 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#16834a">
-  <title>OVARD — Закажи, мы привезём</title>
+  <meta name="theme-color" content="#078747">
+  <title>OVARD — Доставка из магазинов</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="#" aria-label="OVARD"><span class="brand-mark">O</span><span>vard</span></a>
-  <button class="icon-btn" id="menuBtn" aria-label="Открыть настройки">☰</button>
+  <a class="brand" href="#">
+    <span class="logo-mark"><span>✓</span></span>
+    <span>OVARD</span>
+  </a>
+  <button class="location" id="locationBtn">⌖ <span id="locationText">Фархор, Таджикистан</span>⌄</button>
+  <button class="menu-btn" id="menuBtn" aria-label="Меню">☰</button>
 </header>
 
-<main class="wrap">
+<main>
   <section class="hero">
-    <p class="eyebrow">ОВАРД • ДОСТАВКА РЯДОМ</p>
-    <h1>Закажи нужное.<br><span>Мы привезём.</span></h1>
-    <p class="muted">Товары из магазинов — с доставкой до вашей двери.</p>
-    <div class="location-line"><span>📍</span><span id="activeLocation">Фархор, Таджикистан</span></div>
-  </section>
-
-  <section class="search-row">
-    <input id="searchInput" type="search" placeholder="Найти товар или магазин…" aria-label="Поиск">
-    <button class="primary-btn" id="searchBtn">Найти</button>
-  </section>
-
-  <section class="section-head">
-    <div><p class="eyebrow">ВЫБИРАЙТЕ</p><h2>Магазины</h2></div>
-    <span class="count" id="shopCount">0</span>
-  </section>
-  <div id="shopsList" class="shop-list"></div>
-
-  <section class="section-head space-top">
-    <div><p class="eyebrow">ИНТЕРЕСНОЕ</p><h2>Подборка OVARD</h2></div>
-  </section>
-  <div id="featuredList" class="product-grid"></div>
-
-  <section class="section-head space-top">
-    <div><p class="eyebrow">ВАШ ЗАКАЗ</p><h2>Корзина</h2></div>
-    <span class="count" id="cartCount">0</span>
-  </section>
-  <div class="panel">
-    <div id="cartItems" class="cart-items"><p class="muted">Корзина пока пуста.</p></div>
-    <div class="cart-total"><span>Итого за товары</span><strong id="cartTotal">0 сомонӣ</strong></div>
-    <div class="form-grid">
-      <input id="customerName" placeholder="Ваше имя">
-      <input id="customerPhone" type="tel" placeholder="Номер телефона">
-      <input id="customerAddress" class="full" placeholder="Адрес доставки">
-      <textarea id="customerNote" class="full" rows="2" placeholder="Комментарий к заказу (необязательно)"></textarea>
+    <div class="hero-copy">
+      <p class="eyebrow">OVARD — СЕРВИС ДОСТАВКИ</p>
+      <h1>Выбирайте магазин.<br>Мы доставим до двери.</h1>
+      <p class="hero-sub">Покупайте у любимых продавцов — доставку организуем мы.</p>
+      <button class="hero-btn" onclick="document.getElementById('shops').scrollIntoView({behavior:'smooth'})">Выбрать магазин <span>→</span></button>
     </div>
-    <p class="small muted">Доставка оплачивается отдельно. Её стоимость подтвердим перед отправкой.</p>
-    <div class="action-row">
-      <button class="primary-btn grow" id="siteOrderBtn">Оформить заказ</button>
-      <button class="whatsapp-btn grow" id="whatsappBtn">WhatsApp</button>
+    <div class="hero-art">
+      <div class="art-circle"></div>
+      <div class="art-box">✓</div>
+      <div class="art-leaf">✦</div>
     </div>
-  </div>
+  </section>
+
+  <section class="search-wrap">
+    <span>⌕</span>
+    <input id="searchInput" placeholder="Поиск магазинов...">
+    <button id="searchBtn">Найти</button>
+  </section>
+
+  <section class="section" id="shops">
+    <div class="section-head">
+      <h2>Магазины</h2>
+      <button class="text-btn" id="allShopsBtn">Все магазины →</button>
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </section>
+
+  <section class="promo">
+    <div>
+      <span class="promo-label">СЕРВИС OVARD</span>
+      <h2>Покупать стало проще</h2>
+      <p>Один заказ — покупки из магазинов с доставкой до вашей двери.</p>
+    </div>
+    <div class="promo-icon">O✓</div>
+  </section>
+
+  <section class="section hidden" id="shopDetails">
+    <div class="section-head">
+      <button class="text-btn" id="backShops">← Магазины</button>
+      <h2 id="shopTitle">Магазин</h2>
+    </div>
+    <div id="productGrid" class="product-grid"></div>
+  </section>
 </main>
 
 <nav class="bottom-nav">
-  <a href="#" class="active">⌂<small>Главная</small></a>
-  <a href="#shopsList">▦<small>Магазины</small></a>
-  <a href="#cartItems">🛒<small>Корзина</small></a>
-  <button id="profileBtn">♙<small>Профиль</small></button>
+  <button class="nav-item active" data-go="home"><span>⌂</span>Главная</button>
+  <button class="nav-item" data-go="shops"><span>▦</span>Магазины</button>
+  <button class="nav-item" data-go="cart"><span>▣</span>Корзина <b id="cartCount">0</b></button>
+  <button class="nav-item" data-go="profile"><span>♙</span>Профиль</button>
 </nav>
 
-<div class="drawer-backdrop" id="drawerBackdrop"></div>
-<aside class="drawer" id="settingsDrawer">
-  <div class="drawer-head"><h2>Настройки</h2><button class="icon-btn" id="closeDrawer">✕</button></div>
-  <label>Язык
+<div class="drawer hidden" id="drawer">
+  <div class="drawer-panel">
+    <div class="section-head"><h2>Настройки</h2><button id="closeDrawer" class="close-btn">×</button></div>
+    <label>Размер текста</label>
+    <div class="font-options">
+      <button data-font="normal">Средний</button>
+      <button data-font="large">Большой</button>
+      <button data-font="xlarge">Очень большой</button>
+    </div>
+    <label>Язык</label>
     <select id="languageSelect">
-      <option value="ru">Русский</option><option value="tg">Тоҷикӣ</option>
-      <option value="en">English</option><option value="uz">O‘zbekcha</option>
+      <option value="ru">Русский</option>
+      <option value="tg">Тоҷикӣ</option>
+      <option value="en">English</option>
     </select>
-  </label>
-  <label>Оформление
-    <select id="themeSelect"><option value="light">Светлая тема</option><option value="dark">Тёмная тема</option></select>
-  </label>
-  <label>Размер текста
-    <select id="fontSelect"><option value="normal">Обычный</option><option value="large">Крупный</option><option value="xlarge">Очень крупный</option></select>
-  </label>
-  <p class="small muted">Нужна помощь? Напишите нам в WhatsApp.</p>
-  <a class="whatsapp-link" href="https://wa.me/992000001606" target="_blank" rel="noopener">Связаться с OVARD</a>
-</aside>
-
-<div class="modal-backdrop" id="modalBackdrop">
-  <section class="modal" role="dialog" aria-modal="true">
-    <button class="modal-close icon-btn" id="modalClose">✕</button>
-    <div id="modalContent"></div>
-  </section>
+    <label>Тема</label>
+    <button class="wide-btn" id="themeBtn">Светлая / тёмная тема</button>
+    <p class="muted">OVARD — покупки из магазинов с доставкой.</p>
+  </div>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
+<div class="modal hidden" id="modal">
+  <div class="modal-card">
+    <div class="section-head"><h2 id="modalTitle">Корзина</h2><button class="close-btn" id="closeModal">×</button></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+<div class="toast hidden" id="toast"></div>
+
 <script src="script.js"></script>
 </body>
 </html>
