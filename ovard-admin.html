@@ -1,598 +1,219 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#078747">
-<title>OVARD — Администратор</title>
-<link rel="stylesheet" href="style.css">
-<style>
-.admin-wrap{max-width:850px;margin:auto;padding:16px}
-.admin-header{padding:20px;background:var(--green);color:white;border-radius:18px;margin-bottom:18px}
-.admin-header h1{margin:0 0 7px;font-size:25px}
-.admin-header p{margin:0;font-size:13px;color:#e1f4e8}
-.admin-section{padding:17px;margin:15px 0;background:var(--card);border:1px solid var(--line);border-radius:17px}
-.admin-section h2{font-size:18px;margin:0 0 14px}
-.admin-section input,.admin-section textarea,.admin-section select{width:100%;padding:12px;margin:6px 0 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
-.admin-section textarea{min-height:65px}
-.admin-section label{display:block;font-size:12px;color:var(--muted);margin-top:8px}
-.admin-button{padding:11px 14px;border:0;border-radius:10px;background:var(--green);color:white;font-weight:700;margin:4px 4px 4px 0}
-.admin-button.secondary{background:#65746b}
-.admin-button.danger{background:#c64444}
-.admin-button.small{padding:8px 10px;font-size:12px}
-.admin-item{padding:13px 0;border-bottom:1px solid var(--line)}
-.admin-item:last-child{border-bottom:0}
-.admin-item strong{display:block;margin-bottom:5px;font-size:14px}
-.admin-item p{margin:4px 0;color:var(--muted);font-size:12px}
-.admin-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.admin-check{display:flex!important;align-items:center;gap:9px;margin:12px 0!important;color:var(--text)!important}
-.admin-check input{width:auto!important;margin:0!important}
-.admin-note{padding:12px;background:var(--green-soft);color:var(--green-dark);border-radius:11px;font-size:12px;line-height:1.5}
-.admin-back{display:inline-block;margin-bottom:14px;color:var(--green);font-weight:700;text-decoration:none}
-.admin-status{font-weight:700;color:var(--green)}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#078747">
+  <title>OVARD — Панель администратора</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-wrap{max-width:850px;margin:auto;padding:18px 15px 50px}
+    .admin-head{background:#078747;color:white;padding:22px;border-radius:20px;margin-bottom:18px}
+    .admin-head h1{margin:5px 0}
+    .admin-tabs{display:flex;gap:8px;overflow:auto;margin:18px 0}
+    .admin-tabs button{border:0;background:var(--card);color:var(--text);padding:11px 14px;border-radius:11px;white-space:nowrap}
+    .admin-tabs button.active{background:#078747;color:white}
+    .admin-section{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;margin:12px 0}
+    .admin-section h2{font-size:19px;margin:0 0 14px}
+    .admin-form label{display:block;font-size:12px;font-weight:700;margin:11px 0 5px}
+    .admin-form input,.admin-form textarea,.admin-form select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+    .admin-item{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .admin-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .admin-actions button{border:0;padding:8px 10px;border-radius:8px;background:var(--soft);color:var(--green-dark);font-size:12px}
+    .danger{background:#ffeded!important;color:#b32626!important}
+    .admin-note{font-size:12px;color:var(--muted);line-height:1.5}
+  </style>
 </head>
 <body>
-
 <div class="admin-wrap">
+  <header class="admin-head">
+    <div style="font-weight:800">O✓ Ovard</div>
+    <h1>Панель управления</h1>
+    <p style="margin:0;color:#e0f3e7;font-size:13px">Управление товарами, магазинами и заказами</p>
+  </header>
 
-<a class="admin-back" href="index.html">← Вернуться на сайт</a>
+  <nav class="admin-tabs">
+    <button class="active" onclick="tab('products',this)">Товары OVARD</button>
+    <button onclick="tab('shops',this)">Магазины</button>
+    <button onclick="tab('orders',this)">Заказы</button>
+    <button onclick="tab('settings',this)">Настройки</button>
+  </nav>
 
-<header class="admin-header">
-  <h1>OVARD — Администратор</h1>
-  <p>Управление собственным магазином, партнёрами и заказами.</p>
-</header>
+  <section id="products" class="admin-panel">
+    <div class="admin-section">
+      <h2>Добавить товар OVARD</h2>
+      <form class="admin-form" onsubmit="addOwnProduct(event)">
+        <label>Название товара</label><input id="pName" required>
+        <label>Цена, сомони</label><input id="pPrice" type="number" min="0" step="0.01" required>
+        <label>Единица измерения</label><input id="pUnit" placeholder="кг, мешок, тонна, штука..." required>
+        <label>Фото — ссылка (необязательно)</label><input id="pPhoto" type="url" placeholder="https://...">
+        <label>Описание</label><textarea id="pDescription" rows="2"></textarea>
+        <button class="primary-btn" type="submit">+ Добавить товар</button>
+      </form>
+    </div>
+    <div class="admin-section"><h2>Список товаров</h2><div id="ownList"></div></div>
+  </section>
 
-<div class="admin-note">
-  Важно: эта версия хранит данные в памяти браузера на одном устройстве.
-  Для общей работы сайта на разных телефонах потребуется подключить базу данных и сервер.
-</div>
+  <section id="shops" class="admin-panel hidden">
+    <div class="admin-section">
+      <h2>Добавить магазин-партнёр</h2>
+      <form class="admin-form" onsubmit="addShop(event)">
+        <label>Название магазина</label><input id="sName" required>
+        <label>Описание</label><input id="sDescription">
+        <label>Фото — ссылка (необязательно)</label><input id="sPhoto" type="url">
+        <button class="primary-btn" type="submit">+ Добавить магазин</button>
+      </form>
+    </div>
+    <div class="admin-section"><h2>Магазины и товары</h2><div id="shopList"></div></div>
+  </section>
 
-<section class="admin-section">
-  <h2>Магазин OVARD — свои товары</h2>
-  <p class="section-note">Эти товары показываются на главной странице сайта.</p>
+  <section id="orders" class="admin-panel hidden">
+    <div class="admin-section"><h2>Поступившие заказы</h2><div id="ordersList"></div></div>
+  </section>
 
-  <input id="ownId" type="hidden">
+  <section id="settings" class="admin-panel hidden">
+    <div class="admin-section">
+      <h2>Настройки доставки и связи</h2>
+      <form class="admin-form" onsubmit="saveSettings(event)">
+        <label>Телефон OVARD</label><input id="adminPhone" type="tel" placeholder="+992 ...">
+        <button class="primary-btn" type="submit">Сохранить</button>
+      </form>
+      <p class="admin-note">Стоимость доставки пока подтверждается вручную. Автоматический расчёт маршрута и веса требует отдельного подключения.</p>
+    </div>
+    <div class="admin-section">
+      <h2>Важная информация</h2>
+      <p class="admin-note">Эта версия хранит данные в браузере данного устройства. Она не защищена авторизацией администратора и не подходит для публичного управления реальными заказами. Перед запуском для клиентов подключим общую базу данных и защиту панели.</p>
+    </div>
+  </section>
 
-  <label>Название товара</label>
-  <input id="ownName" placeholder="Например: Гандум">
-
-  <label>Цена в сомони</label>
-  <input id="ownPrice" type="number" min="0" placeholder="Цена">
-
-  <label>Единица измерения</label>
-  <input id="ownUnit" placeholder="кг, мешок, штука, тонна...">
-
-  <label>Ссылка на фотографию</label>
-  <input id="ownImage" placeholder="https://...">
-
-  <label>Описание</label>
-  <textarea id="ownDescription" placeholder="Описание товара"></textarea>
-
-  <button class="admin-button" onclick="saveOwnProduct()">Сохранить товар</button>
-  <button class="admin-button secondary" onclick="clearOwnForm()">Очистить</button>
-
-  <div id="ownProductList"></div>
-</section>
-
-<section class="admin-section">
-  <h2>Магазины-партнёры</h2>
-  <p class="section-note">Добавленные магазины автоматически появляются в разделе партнёров на главной странице.</p>
-
-  <input id="shopId" type="hidden">
-
-  <label>Название магазина</label>
-  <input id="shopName" placeholder="Название магазина">
-
-  <label>Описание</label>
-  <textarea id="shopDescription" placeholder="Краткое описание"></textarea>
-
-  <button class="admin-button" onclick="saveShop()">Сохранить магазин</button>
-  <button class="admin-button secondary" onclick="clearShopForm()">Очистить</button>
-
-  <div id="shopList"></div>
-</section>
-
-<section class="admin-section">
-  <h2>Товары партнёрских магазинов</h2>
-
-  <label>Выберите магазин</label>
-  <select id="productShop" onchange="renderPartnerProducts()">
-    <option value="">Выберите магазин</option>
-  </select>
-
-  <input id="partnerProductId" type="hidden">
-
-  <label>Название товара</label>
-  <input id="partnerProductName" placeholder="Название товара">
-
-  <label>Цена</label>
-  <input id="partnerProductPrice" type="number" min="0" placeholder="Цена">
-
-  <label>Единица измерения</label>
-  <input id="partnerProductUnit" placeholder="кг, штука, мешок, тонна...">
-
-  <label>Ссылка на фотографию</label>
-  <input id="partnerProductImage" placeholder="https://...">
-
-  <label>Описание</label>
-  <textarea id="partnerProductDescription" placeholder="Описание товара"></textarea>
-
-  <button class="admin-button" onclick="savePartnerProduct()">Сохранить товар</button>
-  <button class="admin-button secondary" onclick="clearPartnerForm()">Очистить</button>
-
-  <div id="partnerProductList"></div>
-</section>
-
-<section class="admin-section">
-  <h2>Настройки приёма заказов</h2>
-
-  <label class="admin-check">
-    <input type="checkbox" id="whatsappEnabled">
-    Отправка заказов через WhatsApp
-  </label>
-
-  <label>Номер WhatsApp с кодом страны</label>
-  <input id="adminPhone" type="tel" placeholder="992XXXXXXXXX">
-
-  <label class="admin-check">
-    <input type="checkbox" id="websiteEnabled">
-    Приём заказов через сайт
-  </label>
-
-  <button class="admin-button" onclick="saveOrderSettings()">Сохранить настройки</button>
-</section>
-
-<section class="admin-section">
-  <h2>Способы оплаты</h2>
-
-  <label class="admin-check">
-    <input type="checkbox" id="cashEnabled">
-    Оплата наличными
-  </label>
-
-  <label class="admin-check">
-    <input type="checkbox" id="alifEnabled">
-    Оплата через Alif
-  </label>
-
-  <p class="admin-note">Для онлайн-оплаты Alif потребуется подключить платёжный API. Сейчас здесь сохраняется только настройка способа оплаты.</p>
-
-  <button class="admin-button" onclick="savePayments()">Сохранить оплату</button>
-</section>
-
-<section class="admin-section">
-  <h2>Заказы покупателей</h2>
-  <div id="ordersList"></div>
-</section>
-
+  <a href="index.html" class="primary-btn" style="display:inline-block;text-align:center">← Вернуться на сайт</a>
 </div>
 
 <script>
 const KEY = "ovard_v2";
+const defaults = {shops:[],ownProducts:[],cart:[],orders:[],settings:{lang:"ru",theme:"light",phone:""}};
 
-const baseData = {
-  city:"Фархор",
-  shops:[],
-  ownProducts:[],
-  cart:[],
-  orders:[],
-  settings:{language:"ru",theme:"light",whatsapp:true,website:true,phone:""},
-  payments:{cash:true,alif:false}
-};
-
-function readData(){
+function getData(){
   try{
     const saved=JSON.parse(localStorage.getItem(KEY));
-    if(!saved || typeof saved!=="object") return structuredClone(baseData);
-
-    const result={...structuredClone(baseData),...saved};
-    result.shops=Array.isArray(result.shops)?result.shops:[];
-    result.ownProducts=Array.isArray(result.ownProducts)?result.ownProducts:[];
-    result.orders=Array.isArray(result.orders)?result.orders:[];
-    result.settings={...baseData.settings,...(result.settings||{})};
-    result.payments={...baseData.payments,...(result.payments||{})};
-
-    result.shops.forEach(shop=>{
-      if(!Array.isArray(shop.products)) shop.products=[];
-      if(shop.active===undefined) shop.active=true;
-    });
-
-    return result;
-  }catch(e){
-    return structuredClone(baseData);
-  }
+    return saved?{...defaults,...saved,settings:{...defaults.settings,...(saved.settings||{})}}:JSON.parse(JSON.stringify(defaults));
+  }catch{return JSON.parse(JSON.stringify(defaults));}
 }
-
-let data=readData();
-
-function saveData(){
-  localStorage.setItem(KEY,JSON.stringify(data));
+let data=getData();
+function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function id(){return Date.now()+Math.floor(Math.random()*1000);}
+function tab(name,btn){
+  document.querySelectorAll(".admin-panel").forEach(x=>x.classList.add("hidden"));
+  document.getElementById(name).classList.remove("hidden");
+  document.querySelectorAll(".admin-tabs button").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  renderAll();
 }
-
-function id(){
-  return Date.now()+Math.floor(Math.random()*1000);
-}
-
-function esc(value){
-  return String(value??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  })[c]);
-}
-
-function money(value){
-  return (Number(value)||0).toLocaleString("ru-RU")+" сомони";
-}
-
-function renderOwnProducts(){
-  const box=document.getElementById("ownProductList");
-  if(!data.ownProducts.length){
-    box.innerHTML='<p class="section-note">Своих товаров пока нет.</p>';
-    return;
-  }
-
-  box.innerHTML=data.ownProducts.map(p=>`
-    <div class="admin-item">
-      <strong>${esc(p.name)}</strong>
-      <p>${money(p.price)} / ${esc(p.unit||"шт.")}</p>
-      <p>${p.active===false?"Скрыт":"Показывается на сайте"}</p>
-      <div class="admin-row">
-        <button class="admin-button small" onclick="editOwnProduct('${esc(p.id)}')">Изменить</button>
-        <button class="admin-button small secondary" onclick="toggleOwnProduct('${esc(p.id)}')">${p.active===false?"Показать":"Скрыть"}</button>
-        <button class="admin-button small danger" onclick="deleteOwnProduct('${esc(p.id)}')">Удалить</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function clearOwnForm(){
-  ["ownId","ownName","ownPrice","ownUnit","ownImage","ownDescription"].forEach(id=>{
-    document.getElementById(id).value="";
+function addOwnProduct(e){
+  e.preventDefault();
+  data.ownProducts.unshift({
+    id:id(),name:pName.value.trim(),price:Number(pPrice.value),
+    unit:pUnit.value.trim(),photo:pPhoto.value.trim(),
+    description:pDescription.value.trim(),active:true
   });
+  save();e.target.reset();renderAll();alert("Товар добавлен");
 }
-
-function saveOwnProduct(){
-  const name=document.getElementById("ownName").value.trim();
-  const price=document.getElementById("ownPrice").value;
-  const unit=document.getElementById("ownUnit").value.trim();
-  const image=document.getElementById("ownImage").value.trim();
-  const description=document.getElementById("ownDescription").value.trim();
-  const oldId=document.getElementById("ownId").value;
-
-  if(!name || price===""){
-    alert("Введите название и цену товара.");
-    return;
-  }
-
-  const product={
-    id:oldId||String(id()),
-    name,price:Number(price),
-    unit:unit||"шт.",
-    image,description,
-    active:true
-  };
-
-  if(oldId){
-    const index=data.ownProducts.findIndex(p=>String(p.id)===oldId);
-    if(index!==-1){
-      product.active=data.ownProducts[index].active!==false;
-      data.ownProducts[index]=product;
-    }
-  }else{
-    data.ownProducts.unshift(product);
-  }
-
-  saveData();
-  clearOwnForm();
-  renderOwnProducts();
-  alert("Товар сохранён.");
+function addShop(e){
+  e.preventDefault();
+  data.shops.unshift({
+    id:id(),name:sName.value.trim(),description:sDescription.value.trim(),
+    photo:sPhoto.value.trim(),active:true,products:[]
+  });
+  save();e.target.reset();renderAll();alert("Магазин добавлен");
 }
-
-function editOwnProduct(productId){
-  const p=data.ownProducts.find(x=>String(x.id)===String(productId));
-  if(!p)return;
-
-  document.getElementById("ownId").value=p.id;
-  document.getElementById("ownName").value=p.name||"";
-  document.getElementById("ownPrice").value=p.price??"";
-  document.getElementById("ownUnit").value=p.unit||"";
-  document.getElementById("ownImage").value=p.image||"";
-  document.getElementById("ownDescription").value=p.description||"";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function toggleOwnProduct(productId){
-  const p=data.ownProducts.find(x=>String(x.id)===String(productId));
-  if(!p)return;
-  p.active=p.active===false;
-  saveData();
-  renderOwnProducts();
-}
-
-function deleteOwnProduct(productId){
-  if(!confirm("Удалить этот товар?"))return;
-  data.ownProducts=data.ownProducts.filter(p=>String(p.id)!==String(productId));
-  saveData();
-  renderOwnProducts();
-}
-
-function renderShops(){
-  const box=document.getElementById("shopList");
-  const select=document.getElementById("productShop");
-  const selected=select.value;
-
-  if(!data.shops.length){
-    box.innerHTML='<p class="section-note">Магазинов пока нет.</p>';
-  }else{
-    box.innerHTML=data.shops.map(shop=>`
-      <div class="admin-item">
-        <strong>${esc(shop.name)}</strong>
-        <p>${esc(shop.description||"")}</p>
-        <p>${shop.active===false?"Скрыт":"Активен"}</p>
-        <div class="admin-row">
-          <button class="admin-button small" onclick="editShop(${Number(shop.id)})">Изменить</button>
-          <button class="admin-button small secondary" onclick="toggleShop(${Number(shop.id)})">${shop.active===false?"Показать":"Скрыть"}</button>
-          <button class="admin-button small danger" onclick="deleteShop(${Number(shop.id)})">Удалить</button>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  select.innerHTML='<option value="">Выберите магазин</option>'+
-    data.shops.map(shop=>`
-      <option value="${Number(shop.id)}">${esc(shop.name)}</option>
-    `).join("");
-
-  if(data.shops.some(shop=>String(shop.id)===selected)){
-    select.value=selected;
-  }
-}
-
-function clearShopForm(){
-  document.getElementById("shopId").value="";
-  document.getElementById("shopName").value="";
-  document.getElementById("shopDescription").value="";
-}
-
-function saveShop(){
-  const name=document.getElementById("shopName").value.trim();
-  const description=document.getElementById("shopDescription").value.trim();
-  const oldId=document.getElementById("shopId").value;
-
-  if(!name){
-    alert("Введите название магазина.");
-    return;
-  }
-
-  if(oldId){
-    const shop=data.shops.find(s=>String(s.id)===oldId);
-    if(shop){
-      shop.name=name;
-      shop.description=description;
-    }
-  }else{
-    data.shops.push({
-      id:id(),name,description,active:true,products:[]
-    });
-  }
-
-  saveData();
-  clearShopForm();
-  renderShops();
-  alert("Магазин сохранён. На главной странице он появится после обновления сайта.");
-}
-
-function editShop(shopId){
-  const shop=data.shops.find(s=>Number(s.id)===Number(shopId));
+function addPartnerProduct(shopId){
+  const name=prompt("Название товара:");
+  if(!name)return;
+  const price=prompt("Цена в сомони:");
+  if(price===null||price.trim()===""||!Number.isFinite(Number(price))||Number(price)<0)return alert("Укажите правильную цену");
+  const unit=prompt("Единица измерения (кг, штука, мешок и т.д.):")||"шт.";
+  const shop=data.shops.find(s=>s.id===shopId);
   if(!shop)return;
-
-  document.getElementById("shopId").value=shop.id;
-  document.getElementById("shopName").value=shop.name||"";
-  document.getElementById("shopDescription").value=shop.description||"";
-  window.scrollTo({top:0,behavior:"smooth"});
+  shop.products=shop.products||[];
+  shop.products.unshift({id:id(),name:name.trim(),price:Number(price),unit,active:true,description:"",photo:""});
+  save();renderAll();alert("Товар магазина добавлен");
 }
-
-function toggleShop(shopId){
-  const shop=data.shops.find(s=>Number(s.id)===Number(shopId));
-  if(!shop)return;
-  shop.active=shop.active===false;
-  saveData();
-  renderShops();
+function editOwn(idValue){
+  const p=data.ownProducts.find(x=>x.id===idValue);if(!p)return;
+  const name=prompt("Название:",p.name);if(name===null)return;
+  const price=prompt("Цена:",p.price);if(price===null)return;
+  const unit=prompt("Единица измерения:",p.unit);if(unit===null)return;
+  p.name=name.trim();p.price=Number(price);p.unit=unit.trim();
+  save();renderAll();
 }
-
-function deleteShop(shopId){
-  if(!confirm("Удалить магазин и его товары?"))return;
-  data.shops=data.shops.filter(s=>Number(s.id)!==Number(shopId));
-  saveData();
-  renderShops();
-  renderPartnerProducts();
+function editShop(idValue){
+  const s=data.shops.find(x=>x.id===idValue);if(!s)return;
+  const name=prompt("Название магазина:",s.name);if(name===null)return;
+  const desc=prompt("Описание:",s.description||"");if(desc===null)return;
+  s.name=name.trim();s.description=desc.trim();save();renderAll();
 }
-
-function clearPartnerForm(){
-  ["partnerProductId","partnerProductName","partnerProductPrice",
-   "partnerProductUnit","partnerProductImage","partnerProductDescription"]
-  .forEach(id=>document.getElementById(id).value="");
+function toggleOwn(idValue){
+  const p=data.ownProducts.find(x=>x.id===idValue);if(!p)return;
+  p.active=p.active===false;save();renderAll();
 }
-
-function savePartnerProduct(){
-  const shopId=Number(document.getElementById("productShop").value);
-  const shop=data.shops.find(s=>Number(s.id)===shopId);
-
-  if(!shop){
-    alert("Сначала выберите магазин.");
-    return;
-  }
-
-  const name=document.getElementById("partnerProductName").value.trim();
-  const price=document.getElementById("partnerProductPrice").value;
-  const oldId=document.getElementById("partnerProductId").value;
-
-  if(!name || price===""){
-    alert("Введите название и цену товара.");
-    return;
-  }
-
-  const product={
-    id:oldId||String(id()),
-    name,
-    price:Number(price),
-    unit:document.getElementById("partnerProductUnit").value.trim()||"шт.",
-    image:document.getElementById("partnerProductImage").value.trim(),
-    description:document.getElementById("partnerProductDescription").value.trim(),
-    active:true
-  };
-
-  if(oldId){
-    const index=shop.products.findIndex(p=>String(p.id)===oldId);
-    if(index!==-1){
-      product.active=shop.products[index].active!==false;
-      shop.products[index]=product;
-    }
-  }else{
-    shop.products.unshift(product);
-  }
-
-  saveData();
-  clearPartnerForm();
-  renderPartnerProducts();
-  alert("Товар сохранён.");
+function toggleShop(idValue){
+  const s=data.shops.find(x=>x.id===idValue);if(!s)return;
+  s.active=s.active===false;save();renderAll();
 }
+function deleteOwn(idValue){
+  if(!confirm("Удалить товар?"))return;
+  data.ownProducts=data.ownProducts.filter(x=>x.id!==idValue);save();renderAll();
+}
+function deleteShop(idValue){
+  if(!confirm("Удалить магазин вместе с его товарами?"))return;
+  data.shops=data.shops.filter(x=>x.id!==idValue);save();renderAll();
+}
+function deletePartnerProduct(shopId,productId){
+  if(!confirm("Удалить товар?"))return;
+  const s=data.shops.find(x=>x.id===shopId);if(!s)return;
+  s.products=(s.products||[]).filter(p=>p.id!==productId);save();renderAll();
+}
+function renderAll(){
+  document.getElementById("ownList").innerHTML=data.ownProducts.length?data.ownProducts.map(p=>`
+    <div class="admin-item"><div><strong>${esc(p.name)}</strong><div class="admin-note">${esc(p.price)} сомони / ${esc(p.unit)} · ${p.active===false?"Скрыт":"Активен"}</div></div>
+    <div class="admin-actions"><button onclick="editOwn(${p.id})">Изменить</button><button onclick="toggleOwn(${p.id})">${p.active===false?"Показать":"Скрыть"}</button><button class="danger" onclick="deleteOwn(${p.id})">Удалить</button></div></div>
+  `).join(""):"<p class='admin-note'>Товаров пока нет.</p>";
 
-function renderPartnerProducts(){
-  const box=document.getElementById("partnerProductList");
-  const shopId=Number(document.getElementById("productShop").value);
-  const shop=data.shops.find(s=>Number(s.id)===shopId);
-
-  if(!shop){
-    box.innerHTML='<p class="section-note">Выберите магазин, чтобы увидеть его товары.</p>';
-    return;
-  }
-
-  if(!shop.products.length){
-    box.innerHTML='<p class="section-note">В этом магазине пока нет товаров.</p>';
-    return;
-  }
-
-  box.innerHTML=shop.products.map(p=>`
-    <div class="admin-item">
-      <strong>${esc(p.name)}</strong>
-      <p>${money(p.price)} / ${esc(p.unit||"шт.")}</p>
-      <p>${p.active===false?"Скрыт":"Активен"}</p>
-      <div class="admin-row">
-        <button class="admin-button small" onclick="editPartnerProduct('${esc(p.id)}')">Изменить</button>
-        <button class="admin-button small secondary" onclick="togglePartnerProduct('${esc(p.id)}')">${p.active===false?"Показать":"Скрыть"}</button>
-        <button class="admin-button small danger" onclick="deletePartnerProduct('${esc(p.id)}')">Удалить</button>
-      </div>
+  document.getElementById("shopList").innerHTML=data.shops.length?data.shops.map(s=>`
+    <div class="admin-section">
+      <div class="admin-item"><div><strong>${esc(s.name)}</strong><div class="admin-note">${s.active===false?"Скрыт":"Активен"} · ${(s.products||[]).length} товаров</div></div>
+      <div class="admin-actions"><button onclick="editShop(${s.id})">Изменить</button><button onclick="toggleShop(${s.id})">${s.active===false?"Показать":"Скрыть"}</button><button class="danger" onclick="deleteShop(${s.id})">Удалить</button></div></div>
+      <button class="small-btn" style="margin-top:10px" onclick="addPartnerProduct(${s.id})">+ Добавить товар в магазин</button>
+      ${(s.products||[]).map(p=>`<div class="admin-item"><div><strong>${esc(p.name)}</strong><div class="admin-note">${esc(p.price)} сомони / ${esc(p.unit)}</div></div><button class="danger" onclick="deletePartnerProduct(${s.id},${p.id})">Удалить</button></div>`).join("")}
     </div>
-  `).join("");
-}
+  `).join(""):"<p class='admin-note'>Магазинов пока нет.</p>";
 
-function editPartnerProduct(productId){
-  const shop=data.shops.find(s=>Number(s.id)===Number(document.getElementById("productShop").value));
-  const p=shop?.products.find(x=>String(x.id)===String(productId));
-  if(!p)return;
-
-  document.getElementById("partnerProductId").value=p.id;
-  document.getElementById("partnerProductName").value=p.name||"";
-  document.getElementById("partnerProductPrice").value=p.price??"";
-  document.getElementById("partnerProductUnit").value=p.unit||"";
-  document.getElementById("partnerProductImage").value=p.image||"";
-  document.getElementById("partnerProductDescription").value=p.description||"";
-  window.scrollTo({top:document.getElementById("productShop").offsetTop,behavior:"smooth"});
-}
-
-function togglePartnerProduct(productId){
-  const shop=data.shops.find(s=>Number(s.id)===Number(document.getElementById("productShop").value));
-  const p=shop?.products.find(x=>String(x.id)===String(productId));
-  if(!p)return;
-  p.active=p.active===false;
-  saveData();
-  renderPartnerProducts();
-}
-
-function deletePartnerProduct(productId){
-  const shop=data.shops.find(s=>Number(s.id)===Number(document.getElementById("productShop").value));
-  if(!shop || !confirm("Удалить товар?"))return;
-  shop.products=shop.products.filter(p=>String(p.id)!==String(productId));
-  saveData();
-  renderPartnerProducts();
-}
-
-function saveOrderSettings(){
-  data.settings.whatsapp=document.getElementById("whatsappEnabled").checked;
-  data.settings.website=document.getElementById("websiteEnabled").checked;
-  data.settings.phone=document.getElementById("adminPhone").value.trim();
-  saveData();
-  alert("Настройки сохранены.");
-}
-
-function savePayments(){
-  data.payments.cash=document.getElementById("cashEnabled").checked;
-  data.payments.alif=document.getElementById("alifEnabled").checked;
-  saveData();
-  alert("Настройки оплаты сохранены.");
-}
-
-function renderOrders(){
-  const box=document.getElementById("ordersList");
-
-  if(!data.orders.length){
-    box.innerHTML='<p class="section-note">Заказов пока нет.</p>';
-    return;
-  }
-
-  box.innerHTML=data.orders.map(order=>`
-    <div class="admin-item">
-      <strong>Заказ №${esc(order.id)}</strong>
-      <p>Покупатель: ${esc(order.name)}</p>
-      <p>Телефон: ${esc(order.phone)}</p>
-      <p>Адрес: ${esc(order.address)}</p>
-      <p>Дата: ${esc(order.date)}</p>
-      <p>Товары: ${(order.items||[]).map(item=>
-        `${esc(item.name)} × ${Number(item.quantity)}`
-      ).join(", ")}</p>
-      <p>Сумма: <strong>${money(order.total)}</strong></p>
+  document.getElementById("ordersList").innerHTML=data.orders.length?data.orders.map(o=>`
+    <div class="admin-section">
+      <strong>Заказ №${o.id}</strong><p class="admin-note">${esc(o.date)} · ${esc(o.name)} · ${esc(o.phone)}</p>
+      <p>${esc(o.address)}</p>
+      <p>${(o.items||[]).map(i=>esc(i.name)+" × "+i.qty).join("<br>")}</p>
+      <strong>${Number(o.total||0)} сомони</strong>
       <label>Статус заказа</label>
-      <select onchange="changeOrderStatus(${Number(order.id)},this.value)">
-        ${["Новый","Подтверждён","В доставке","Выполнен","Отменён"].map(status=>
-          `<option ${order.status===status?"selected":""}>${status}</option>`
-        ).join("")}
+      <select onchange="changeStatus(${o.id},this.value)">
+        ${["Новый","Подтверждён","Готовится","В пути","Доставлен","Отменён"].map(st=>`<option ${o.status===st?"selected":""}>${st}</option>`).join("")}
       </select>
-      <div class="admin-row">
-        <button class="admin-button small danger" onclick="deleteOrder(${Number(order.id)})">Удалить заказ</button>
-      </div>
     </div>
-  `).join("");
-}
+  `).join(""):"<p class='admin-note'>Заказов пока нет.</p>";
 
-function changeOrderStatus(orderId,status){
-  const order=data.orders.find(o=>Number(o.id)===Number(orderId));
-  if(!order)return;
-  order.status=status;
-  saveData();
-}
-
-function deleteOrder(orderId){
-  if(!confirm("Удалить заказ?"))return;
-  data.orders=data.orders.filter(o=>Number(o.id)!==Number(orderId));
-  saveData();
-  renderOrders();
-}
-
-function initAdmin(){
-  document.getElementById("whatsappEnabled").checked=!!data.settings.whatsapp;
-  document.getElementById("websiteEnabled").checked=!!data.settings.website;
   document.getElementById("adminPhone").value=data.settings.phone||"";
-  document.getElementById("cashEnabled").checked=!!data.payments.cash;
-  document.getElementById("alifEnabled").checked=!!data.payments.alif;
-
-  renderOwnProducts();
-  renderShops();
-  renderPartnerProducts();
-  renderOrders();
 }
-
-initAdmin();
+function changeStatus(orderId,status){
+  const o=data.orders.find(x=>x.id===orderId);if(!o)return;
+  o.status=status;save();
+}
+function saveSettings(e){
+  e.preventDefault();data.settings.phone=document.getElementById("adminPhone").value.trim();
+  save();alert("Настройки сохранены");
+}
+renderAll();
 </script>
 </body>
 </html>
