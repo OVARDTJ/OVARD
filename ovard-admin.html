@@ -1,143 +1,521 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OVARD — Администратор</title>
-<link rel="stylesheet" href="style.css">
-<style>
-.admin-head{background:#075f37;color:#fff;padding:22px;border-radius:18px;margin-bottom:18px}
-.admin-head .brand{color:white}
-.admin-box{background:white;padding:18px;border-radius:16px;border:1px solid var(--line);margin:14px 0}
-.admin-box input,.admin-box select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin:7px 0 12px}
-.admin-box button{background:var(--green);color:white;border:0;padding:11px 15px;border-radius:10px;font-weight:bold}
-.admin-shop{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
-.admin-shop .grow{flex:1}
-.admin-shop button{padding:8px 10px;margin-left:4px}
-.danger{background:#d93636!important}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#168447">
+  <title>Панель управления — овaрд</title>
+  <style>
+    :root{
+      --green:#168447;--dark:#106b38;--bg:#f4f7f5;
+      --card:#fff;--text:#17231c;--muted:#758078;--line:#e5ece7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:Arial,Helvetica,sans-serif;padding-bottom:35px;
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .top{
+      background:var(--card);border-bottom:1px solid var(--line);
+      padding:15px;display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:5;
+    }
+    .brand{display:flex;align-items:center;gap:8px;color:var(--green);font-weight:900;font-size:20px}
+    .brand svg{width:33px;height:33px}
+    .top a{color:var(--green);font-size:12px;font-weight:800;text-decoration:none}
+    main{max-width:760px;margin:auto;padding:16px}
+    .intro{
+      background:var(--green);color:white;padding:22px;border-radius:20px;
+      margin:15px 0 18px;
+    }
+    .intro small{font-size:10px;letter-spacing:1px;font-weight:900;opacity:.8}
+    .intro h1{font-size:23px;margin:8px 0}
+    .intro p{font-size:12px;line-height:1.5;margin:0;color:#e3f2e8}
+    .card{
+      background:var(--card);border:1px solid var(--line);
+      border-radius:17px;padding:17px;margin:13px 0;
+    }
+    h2{font-size:17px;margin:0 0 14px}
+    .field{margin:11px 0}
+    label{display:block;font-size:11px;font-weight:800;margin-bottom:7px}
+    input,textarea,select{
+      width:100%;border:1px solid var(--line);border-radius:10px;
+      padding:12px;background:var(--bg);color:var(--text);outline:none;
+      font-size:12px;
+    }
+    textarea{resize:vertical}
+    .btn{
+      border:0;background:var(--green);color:white;
+      padding:12px 15px;border-radius:10px;font-size:12px;font-weight:800;
+    }
+    .btn.secondary{background:#e9f5ed;color:var(--green)}
+    .btn.danger{background:#fff0ef;color:#c0392b}
+    .btn.gray{background:#edf0ed;color:#4e5b52}
+    .btn-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .shop-item,.product-item{
+      border:1px solid var(--line);border-radius:13px;padding:13px;
+      margin:9px 0;background:var(--card);
+    }
+    .item-top{display:flex;align-items:center;gap:10px}
+    .thumb{
+      width:43px;height:43px;border-radius:12px;background:#e9f5ed;
+      display:grid;place-items:center;color:var(--green);font-weight:900;
+      flex-shrink:0;
+    }
+    .item-info{flex:1;min-width:0}
+    .item-info strong{display:block;font-size:13px;overflow-wrap:anywhere}
+    .item-info small{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+    .status{font-size:10px;font-weight:800;color:var(--green)}
+    .status.off{color:#bd4b42}
+    .muted{font-size:11px;color:var(--muted);line-height:1.5}
+    .product-price{font-size:13px;font-weight:900;color:var(--green);margin-top:8px}
+    .empty{padding:17px;text-align:center;color:var(--muted);font-size:12px}
+    .notice{
+      background:#fff8e8;color:#74571c;padding:12px;border-radius:11px;
+      font-size:11px;line-height:1.5;margin-top:12px;
+    }
+    .footer-link{
+      display:block;text-align:center;margin:22px 0;
+      color:var(--green);text-decoration:none;font-weight:800;font-size:12px;
+    }
+    @media(min-width:650px){main{padding:25px}}
+  </style>
 </head>
 <body>
-<main>
-  <div class="admin-head">
-    <div class="brand"><span class="logo-mark">✓</span><span>OVARD</span></div>
-    <h1 style="color:white;font-size:30px">Панель администратора</h1>
-    <p>Управление магазинами и товарами</p>
-    <a href="index.html" style="color:white">← Открыть сайт</a>
-  </div>
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="5"/>
+        <path d="M14 24.5 21 31 35 16" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>овард</span>
+    </div>
+    <a href="index.html">← На сайт</a>
+  </header>
 
-  <div class="admin-box">
-    <h2>Настройки доставки</h2>
-    <label>Активный город / район</label>
-    <input id="city" value="Фархор, Таджикистан">
-    <button id="saveCity">Сохранить регион</button>
-    <p class="muted">Стоимость доставки подтверждается отдельно с учётом веса и расстояния по дороге.</p>
-  </div>
+  <main>
+    <section class="intro">
+      <small>ОВАРД • УПРАВЛЕНИЕ</small>
+      <h1>Панель управления</h1>
+      <p>Управляйте магазинами, товарами и регионом работы с телефона.</p>
+    </section>
 
-  <div class="admin-box">
-    <h2>Добавить магазин</h2>
-    <input id="shopName" placeholder="Название магазина">
-    <input id="shopDesc" placeholder="Описание магазина">
-    <input id="shopPhoto" placeholder="Эмодзи или символ для значка, например 🏬">
-    <button id="addShop">+ Добавить магазин</button>
-  </div>
+    <section class="card">
+      <h2>Регион обслуживания</h2>
+      <div class="field">
+        <label for="regionInput">Активный город / регион</label>
+        <input id="regionInput" value="Фархор, Таджикистан" placeholder="Например: Фархор, Таджикистан">
+      </div>
+      <button class="btn" id="saveRegion">Сохранить регион</button>
+      <p class="muted">Это название отображается на главной странице. Автоматическое определение GPS здесь не используется.</p>
+    </section>
 
-  <div class="admin-box">
-    <h2>Список магазинов</h2>
-    <div id="adminShops"></div>
-  </div>
+    <section class="card">
+      <h2>Добавить магазин</h2>
+      <form id="shopForm">
+        <div class="field">
+          <label for="shopName">Название магазина</label>
+          <input id="shopName" required placeholder="Например: Продуктовый магазин">
+        </div>
+        <div class="field">
+          <label for="shopDescription">Описание</label>
+          <input id="shopDescription" placeholder="Краткое описание магазина">
+        </div>
+        <div class="field">
+          <label for="shopIcon">Значок (одна буква или символ)</label>
+          <input id="shopIcon" maxlength="3" placeholder="Например: П">
+        </div>
+        <button class="btn" type="submit">+ Добавить магазин</button>
+      </form>
+    </section>
 
-  <div class="admin-box">
-    <h2>Добавить товар в магазин</h2>
-    <label>Выберите магазин</label>
-    <select id="productShop"></select>
-    <input id="productName" placeholder="Название товара">
-    <input id="productPrice" type="number" min="0" placeholder="Цена, сомонӣ">
-    <input id="productUnit" placeholder="Единица (кг, шт., мешок...)">
-    <button id="addProduct">Добавить товар</button>
-  </div>
+    <section class="card">
+      <h2>Все магазины</h2>
+      <p class="muted">Магазин овард всегда находится первым. Партнёрские магазины добавляйте по мере договорённостей.</p>
+      <div id="shopsList"></div>
+    </section>
 
-  <div class="admin-box">
-    <h2>Товары выбранного магазина</h2>
-    <div id="adminProducts"></div>
-  </div>
-  <p class="muted">Демо-версия: данные сохраняются только в браузере и на этом устройстве. Для работы с телефонами клиентов и общей базой заказов потребуется подключить серверную базу данных и защищённый вход администратора.</p>
-</main>
-<script>
-const KEY="ovard_v2";
-const defaults={
- location:"Фархор, Таджикистан",
- shops:[
- {id:1,name:"Нонвойхона",desc:"Свежий хлеб и выпечка",photo:"🥖",active:true,products:[]},
- {id:2,name:"Магазин продуктов",desc:"Продукты питания",photo:"🛒",active:true,products:[]},
- {id:3,name:"Мясо и птица",desc:"Мясная продукция и яйца",photo:"🍗",active:true,products:[]},
- {id:4,name:"Аптека",desc:"Аптечные товары",photo:"✚",active:true,products:[]},
- {id:5,name:"Стройматериалы",desc:"Материалы для строительства",photo:"🧱",active:true,products:[]}
- ],cart:[],font:"normal",dark:false,language:"ru"
-};
-let data=JSON.parse(localStorage.getItem(KEY)||"null")||defaults;
-function save(){localStorage.setItem(KEY,JSON.stringify(data));}
-function render(){
- document.getElementById("city").value=data.location;
- const list=document.getElementById("adminShops");list.innerHTML="";
- const select=document.getElementById("productShop");select.innerHTML="";
- data.shops.forEach(s=>{
-  const opt=document.createElement("option");opt.value=s.id;opt.textContent=s.name;select.appendChild(opt);
-  const row=document.createElement("div");row.className="admin-shop";
-  row.innerHTML=`<span>${s.photo||"🏬"}</span><div class="grow"><b>${s.name}</b><br><small>${s.desc||""}</small></div><button data-toggle="${s.id}">${s.active?"Активен":"Скрыт"}</button><button data-edit="${s.id}">✎</button><button class="danger" data-delete="${s.id}">×</button>`;
-  list.appendChild(row);
- });
- renderProducts();
-}
-function renderProducts(){
- const id=Number(document.getElementById("productShop").value);
- const shop=data.shops.find(s=>s.id===id);const box=document.getElementById("adminProducts");box.innerHTML="";
- if(!shop){box.textContent="Сначала добавьте магазин.";return;}
- shop.products.forEach((p,i)=>{
-  const row=document.createElement("div");row.className="admin-shop";
-  row.innerHTML=`<div class="grow"><b>${p.name}</b><br><small>${p.price} сомонӣ / ${p.unit}</small></div><button class="danger" data-product-delete="${i}">Удалить</button>`;
-  box.appendChild(row);
- });
- if(!shop.products.length)box.innerHTML="<p class='muted'>Товаров пока нет.</p>";
-}
-document.getElementById("saveCity").onclick=()=>{data.location=document.getElementById("city").value.trim()||"Фархор, Таджикистан";save();alert("Регион сохранён");};
-document.getElementById("addShop").onclick=()=>{
- const name=document.getElementById("shopName").value.trim();
- if(!name){alert("Введите название магазина");return;}
- data.shops.push({id:Date.now(),name,desc:document.getElementById("shopDesc").value.trim(),photo:document.getElementById("shopPhoto").value.trim()||"🏬",active:true,products:[]});
- document.getElementById("shopName").value="";document.getElementById("shopDesc").value="";document.getElementById("shopPhoto").value="";
- save();render();
-};
-document.getElementById("productShop").onchange=renderProducts;
-document.getElementById("addProduct").onclick=()=>{
- const shop=data.shops.find(s=>s.id===Number(document.getElementById("productShop").value));
- const name=document.getElementById("productName").value.trim();
- const price=Number(document.getElementById("productPrice").value);
- if(!shop||!name||price<0||!document.getElementById("productPrice").value){alert("Заполните название и цену");return;}
- shop.products.push({name,price,unit:document.getElementById("productUnit").value.trim()||"шт."});
- document.getElementById("productName").value="";document.getElementById("productPrice").value="";document.getElementById("productUnit").value="";
- save();renderProducts();
-};
-document.getElementById("adminShops").onclick=e=>{
- const b=e.target.closest("button");if(!b)return;
- const id=Number(b.dataset.toggle||b.dataset.edit||b.dataset.delete);
- const shop=data.shops.find(s=>s.id===id);if(!shop)return;
- if(b.dataset.toggle){shop.active=!shop.active;}
- if(b.dataset.edit){
-  const n=prompt("Название магазина",shop.name);if(n===null)return;
-  const d=prompt("Описание",shop.desc);if(d===null)return;
-  shop.name=n.trim()||shop.name;shop.desc=d;
- }
- if(b.dataset.delete){if(!confirm("Удалить магазин и его товары?"))return;data.shops=data.shops.filter(s=>s.id!==id);}
- save();render();
-};
-document.getElementById("adminProducts").onclick=e=>{
- const b=e.target.closest("[data-product-delete]");if(!b)return;
- const shop=data.shops.find(s=>s.id===Number(document.getElementById("productShop").value));
- if(shop){shop.products.splice(Number(b.dataset.productDelete),1);save();renderProducts();}
-};
-render();
-</script>
+    <section class="card">
+      <h2>Добавить товар</h2>
+      <form id="productForm">
+        <div class="field">
+          <label for="productShop">Магазин</label>
+          <select id="productShop" required></select>
+        </div>
+        <div class="field">
+          <label for="productName">Название товара</label>
+          <input id="productName" required placeholder="Например: Мука">
+        </div>
+        <div class="field">
+          <label for="productPrice">Цена</label>
+          <input id="productPrice" required type="number" min="0" step="any" placeholder="Например: 50">
+        </div>
+        <div class="field">
+          <label for="productUnit">Единица измерения / способ продажи</label>
+          <input id="productUnit" placeholder="кг, грамм, тонна, штука, мешок, литр или свой вариант">
+        </div>
+        <div class="field">
+          <label for="productWeight">Вес или дополнительная информация</label>
+          <input id="productWeight" placeholder="Например: мешок 50 кг">
+        </div>
+        <div class="field">
+          <label for="productImage">Ссылка на фото товара (необязательно)</label>
+          <input id="productImage" type="url" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label for="productDescription">Описание (необязательно)</label>
+          <textarea id="productDescription" rows="2" placeholder="Описание товара"></textarea>
+        </div>
+        <div class="field">
+          <label for="productAvailability">Наличие товара</label>
+          <select id="productAvailability">
+            <option value="yes">В наличии</option>
+            <option value="no">Нет в наличии / скрыть</option>
+          </select>
+        </div>
+        <button class="btn" type="submit">+ Добавить товар</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Товары выбранного магазина</h2>
+      <div class="field">
+        <label for="manageShop">Выберите магазин</label>
+        <select id="manageShop"></select>
+      </div>
+      <div id="productsList"></div>
+    </section>
+
+    <div class="notice">
+      Важно: сейчас данные сохраняются только в браузере этого устройства. Чтобы сайт и панель управления работали совместно на разных телефонах, понадобится подключить общую базу данных и защитить вход администратора паролем.
+    </div>
+
+    <a class="footer-link" href="index.html">← Вернуться на сайт овaрд</a>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const KEY = "ovard_v2";
+      const $ = id => document.getElementById(id);
+
+      function defaultData() {
+        return {
+          location:"Фархор, Таджикистан",
+          language:"ru",
+          dark:false,
+          font:"normal",
+          shops:[{
+            id:"ovard-own",
+            name:"Магазин овард",
+            description:"Товары собственного магазина",
+            icon:"O",
+            active:true,
+            own:true,
+            products:[]
+          }],
+          cart:[]
+        };
+      }
+
+      function load() {
+        let old;
+        try { old = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e) {}
+        const base = defaultData();
+        if (!old || typeof old !== "object") return base;
+
+        const data = {...base,...old};
+        if (!Array.isArray(data.shops)) data.shops = [];
+        if (!Array.isArray(data.cart)) data.cart = [];
+
+        let own = data.shops.find(shop => shop.own || shop.id === "ovard-own");
+        if (!own) {
+          own = base.shops[0];
+          data.shops.unshift(own);
+        } else {
+          own.own = true;
+          own.id = own.id || "ovard-own";
+          own.name = "Магазин овард";
+          own.products = Array.isArray(own.products) ? own.products : [];
+        }
+        data.shops = [own,...data.shops.filter(shop => shop !== own)];
+        return data;
+      }
+
+      let data = load();
+
+      function save() {
+        localStorage.setItem(KEY,JSON.stringify(data));
+      }
+
+      function id() {
+        return "id-" + Date.now() + "-" + Math.floor(Math.random()*100000);
+      }
+
+      function safe(value) {
+        return String(value ?? "").replace(/[&<>"']/g,char => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        })[char]);
+      }
+
+      function money(value) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n.toLocaleString("ru-RU") + " смн." : String(value || "");
+      }
+
+      function ownShop() {
+        return data.shops.find(shop => shop.own) || data.shops[0];
+      }
+
+      function renderShopSelects() {
+        const options = data.shops.map(shop =>
+          `<option value="${safe(shop.id)}">${safe(shop.name)}</option>`
+        ).join("");
+        $("productShop").innerHTML = options;
+        $("manageShop").innerHTML = options;
+      }
+
+      function renderShops() {
+        $("shopsList").innerHTML = data.shops.map(shop => `
+          <div class="shop-item">
+            <div class="item-top">
+              <div class="thumb">${safe(shop.icon || "▤")}</div>
+              <div class="item-info">
+                <strong>${safe(shop.name)}</strong>
+                <small>${safe(shop.description || "")}</small>
+                <span class="status ${shop.active === false ? "off" : ""}">
+                  ${shop.active === false ? "Неактивен" : "Активен"}
+                  ${shop.own ? " · Собственный магазин" : ""}
+                </span>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn secondary" data-shop-edit="${safe(shop.id)}">Изменить</button>
+              ${shop.own ? "" : `
+                <button class="btn gray" data-shop-toggle="${safe(shop.id)}">
+                  ${shop.active === false ? "Активировать" : "Отключить"}
+                </button>
+                <button class="btn danger" data-shop-delete="${safe(shop.id)}">Удалить</button>
+              `}
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function renderProducts() {
+        const shopId = $("manageShop").value || ownShop()?.id;
+        const shop = data.shops.find(s => s.id === shopId);
+        if (!shop) {
+          $("productsList").innerHTML = '<div class="empty">Сначала добавьте магазин.</div>';
+          return;
+        }
+
+        const products = shop.products || [];
+        if (!products.length) {
+          $("productsList").innerHTML = '<div class="empty">В этом магазине пока нет товаров.</div>';
+          return;
+        }
+
+        $("productsList").innerHTML = products.map(product => `
+          <div class="product-item">
+            <div class="item-info">
+              <strong>${safe(product.name)}</strong>
+              <small>${safe(product.unit || "")} ${product.weight ? " · " + safe(product.weight) : ""}</small>
+              <div class="product-price">${safe(money(product.price))}</div>
+              <small>${product.available === false ? "Скрыт / нет в наличии" : "В наличии"}</small>
+            </div>
+            ${product.description ? `<p class="muted">${safe(product.description)}</p>` : ""}
+            <div class="btn-row">
+              <button class="btn secondary" data-product-edit="${safe(product.id)}">Изменить</button>
+              <button class="btn danger" data-product-delete="${safe(product.id)}">Удалить</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function render() {
+        $("regionInput").value = data.location || "Фархор, Таджикистан";
+        renderShopSelects();
+        renderShops();
+        renderProducts();
+        save();
+      }
+
+      $("saveRegion").addEventListener("click",() => {
+        const value = $("regionInput").value.trim();
+        if (!value) {
+          alert("Введите регион обслуживания.");
+          return;
+        }
+        data.location = value;
+        save();
+        alert("Регион сохранён.");
+      });
+
+      $("shopForm").addEventListener("submit",event => {
+        event.preventDefault();
+        const name = $("shopName").value.trim();
+        if (!name) return;
+
+        data.shops.push({
+          id:id(),
+          name,
+          description:$("shopDescription").value.trim(),
+          icon:$("shopIcon").value.trim() || "▤",
+          active:true,
+          own:false,
+          products:[]
+        });
+
+        save();
+        event.target.reset();
+        render();
+        alert("Магазин добавлен.");
+      });
+
+      $("shopsList").addEventListener("click",event => {
+        const edit = event.target.closest("[data-shop-edit]");
+        const toggle = event.target.closest("[data-shop-toggle]");
+        const remove = event.target.closest("[data-shop-delete]");
+
+        if (edit) {
+          const shop = data.shops.find(s => s.id === edit.dataset.shopEdit);
+          if (!shop) return;
+
+          if (!shop.own) {
+            const name = prompt("Название магазина:",shop.name);
+            if (name === null) return;
+            if (name.trim()) shop.name = name.trim();
+          }
+
+          const description = prompt("Описание магазина:",shop.description || "");
+          if (description === null) return;
+          shop.description = description.trim();
+
+          const icon = prompt("Значок магазина:",shop.icon || "▤");
+          if (icon !== null && icon.trim()) shop.icon = icon.trim();
+
+          save();
+          render();
+        }
+
+        if (toggle) {
+          const shop = data.shops.find(s => s.id === toggle.dataset.shopToggle);
+          if (!shop || shop.own) return;
+          shop.active = shop.active === false;
+          save();
+          render();
+        }
+
+        if (remove) {
+          const shop = data.shops.find(s => s.id === remove.dataset.shopDelete);
+          if (!shop || shop.own) return;
+          if (!confirm("Удалить магазин и все его товары?")) return;
+          data.shops = data.shops.filter(s => s.id !== shop.id);
+          data.cart = data.cart.filter(item => item.shopId !== shop.id);
+          save();
+          render();
+        }
+      });
+
+      $("productForm").addEventListener("submit",event => {
+        event.preventDefault();
+        const shop = data.shops.find(s => s.id === $("productShop").value);
+        if (!shop) {
+          alert("Сначала выберите магазин.");
+          return;
+        }
+
+        const name = $("productName").value.trim();
+        const price = $("productPrice").value;
+        if (!name || price === "" || Number(price) < 0) {
+          alert("Введите название и правильную цену.");
+          return;
+        }
+
+        if (!Array.isArray(shop.products)) shop.products = [];
+        shop.products.push({
+          id:id(),
+          name,
+          price:Number(price),
+          unit:$("productUnit").value.trim(),
+          weight:$("productWeight").value.trim(),
+          image:$("productImage").value.trim(),
+          description:$("productDescription").value.trim(),
+          available:$("productAvailability").value === "yes"
+        });
+
+        save();
+        event.target.reset();
+        renderProducts();
+        alert("Товар добавлен.");
+      });
+
+      $("manageShop").addEventListener("change",renderProducts);
+
+      $("productsList").addEventListener("click",event => {
+        const edit = event.target.closest("[data-product-edit]");
+        const remove = event.target.closest("[data-product-delete]");
+        const shop = data.shops.find(s => s.id === $("manageShop").value);
+        if (!shop) return;
+
+        if (edit) {
+          const product = (shop.products || []).find(p => p.id === edit.dataset.productEdit);
+          if (!product) return;
+
+          const name = prompt("Название товара:",product.name);
+          if (name === null) return;
+          if (!name.trim()) {
+            alert("Название не может быть пустым.");
+            return;
+          }
+
+          const price = prompt("Цена:",product.price);
+          if (price === null) return;
+          if (price.trim() === "" || !Number.isFinite(Number(price)) || Number(price) < 0) {
+            alert("Введите правильную цену.");
+            return;
+          }
+
+          const unit = prompt("Единица измерения / способ продажи:",product.unit || "");
+          if (unit === null) return;
+          const weight = prompt("Вес или дополнительная информация:",product.weight || "");
+          if (weight === null) return;
+          const image = prompt("Ссылка на фото:",product.image || "");
+          if (image === null) return;
+          const description = prompt("Описание:",product.description || "");
+          if (description === null) return;
+          const available = confirm("Товар есть в наличии? Нажмите OK — да, Отмена — скрыть.");
+
+          Object.assign(product,{
+            name:name.trim(),
+            price:Number(price),
+            unit:unit.trim(),
+            weight:weight.trim(),
+            image:image.trim(),
+            description:description.trim(),
+            available
+          });
+
+          save();
+          renderProducts();
+        }
+
+        if (remove) {
+          const product = (shop.products || []).find(p => p.id === remove.dataset.productDelete);
+          if (!product || !confirm("Удалить этот товар?")) return;
+          shop.products = shop.products.filter(p => p.id !== product.id);
+          data.cart = data.cart.filter(item => item.productId !== product.id);
+          save();
+          renderProducts();
+        }
+      });
+
+      render();
+    })();
+  </script>
 </body>
 </html>
