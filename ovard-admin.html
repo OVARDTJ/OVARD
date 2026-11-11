@@ -1,219 +1,109 @@
-
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="tj">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#078747">
-  <title>OVARD — Панель администратора</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OVARD - Панель администратора</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    .admin-wrap{max-width:850px;margin:auto;padding:18px 15px 50px}
-    .admin-head{background:#078747;color:white;padding:22px;border-radius:20px;margin-bottom:18px}
-    .admin-head h1{margin:5px 0}
-    .admin-tabs{display:flex;gap:8px;overflow:auto;margin:18px 0}
-    .admin-tabs button{border:0;background:var(--card);color:var(--text);padding:11px 14px;border-radius:11px;white-space:nowrap}
-    .admin-tabs button.active{background:#078747;color:white}
-    .admin-section{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;margin:12px 0}
-    .admin-section h2{font-size:19px;margin:0 0 14px}
-    .admin-form label{display:block;font-size:12px;font-weight:700;margin:11px 0 5px}
-    .admin-form input,.admin-form textarea,.admin-form select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
-    .admin-item{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
-    .admin-actions{display:flex;gap:6px;flex-wrap:wrap}
-    .admin-actions button{border:0;padding:8px 10px;border-radius:8px;background:var(--soft);color:var(--green-dark);font-size:12px}
-    .danger{background:#ffeded!important;color:#b32626!important}
-    .admin-note{font-size:12px;color:var(--muted);line-height:1.5}
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: #033a18; color: white; padding: 16px; }
+    .sidebar .logo { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .sidebar ul { list-style: none; }
+    .sidebar li { padding: 12px; margin-bottom: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+    .sidebar li.active { background: #0d8a43; font-weight: bold; }
+    .main-admin { flex: 1; padding: 20px; background: #f4f6f8; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-add { background: #0d8a43; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .admin-store-card { background: white; padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .admin-store-info { display: flex; align-items: center; gap: 12px; }
+    .admin-store-info img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+    .actions { display: flex; gap: 10px; align-items: center; }
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 22px; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #0d8a43; }
+    input:checked + .slider:before { transform: translateX(18px); }
+    .btn-icon { background: #f0f0f0; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; color: #555; }
+    .btn-icon.delete { color: #d9534f; }
+    .footer-quote { margin-top: 30px; background: #e6f4ea; padding: 12px; border-radius: 8px; text-align: center; color: #0d8a43; font-size: 13px; }
   </style>
 </head>
 <body>
-<div class="admin-wrap">
-  <header class="admin-head">
-    <div style="font-weight:800">O✓ Ovard</div>
-    <h1>Панель управления</h1>
-    <p style="margin:0;color:#e0f3e7;font-size:13px">Управление товарами, магазинами и заказами</p>
-  </header>
 
-  <nav class="admin-tabs">
-    <button class="active" onclick="tab('products',this)">Товары OVARD</button>
-    <button onclick="tab('shops',this)">Магазины</button>
-    <button onclick="tab('orders',this)">Заказы</button>
-    <button onclick="tab('settings',this)">Настройки</button>
-  </nav>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo"><i class="fa-solid fa-circle-check"></i> Ovard</div>
+      <p style="font-size:12px; opacity:0.7; margin-bottom:15px;">Панель администратора</p>
+      <ul>
+        <li class="active"><i class="fa-solid fa-store"></i> Магазины</li>
+        <li><i class="fa-solid fa-box"></i> Товары</li>
+        <li><i class="fa-solid fa-receipt"></i> Заказы</li>
+        <li><i class="fa-solid fa-gear"></i> Настройки</li>
+        <li><a href="index.html" style="color:white; text-decoration:none;"><i class="fa-solid fa-right-from-bracket"></i> Выход</a></li>
+      </ul>
 
-  <section id="products" class="admin-panel">
-    <div class="admin-section">
-      <h2>Добавить товар OVARD</h2>
-      <form class="admin-form" onsubmit="addOwnProduct(event)">
-        <label>Название товара</label><input id="pName" required>
-        <label>Цена, сомони</label><input id="pPrice" type="number" min="0" step="0.01" required>
-        <label>Единица измерения</label><input id="pUnit" placeholder="кг, мешок, тонна, штука..." required>
-        <label>Фото — ссылка (необязательно)</label><input id="pPhoto" type="url" placeholder="https://...">
-        <label>Описание</label><textarea id="pDescription" rows="2"></textarea>
-        <button class="primary-btn" type="submit">+ Добавить товар</button>
-      </form>
+      <div class="footer-quote">
+        <i class="fa-solid fa-leaf"></i> OVARD – развитие и удобство для вас!
+      </div>
     </div>
-    <div class="admin-section"><h2>Список товаров</h2><div id="ownList"></div></div>
-  </section>
 
-  <section id="shops" class="admin-panel hidden">
-    <div class="admin-section">
-      <h2>Добавить магазин-партнёр</h2>
-      <form class="admin-form" onsubmit="addShop(event)">
-        <label>Название магазина</label><input id="sName" required>
-        <label>Описание</label><input id="sDescription">
-        <label>Фото — ссылка (необязательно)</label><input id="sPhoto" type="url">
-        <button class="primary-btn" type="submit">+ Добавить магазин</button>
-      </form>
+    <!-- Content -->
+    <div class="main-admin">
+      <div class="admin-header">
+        <h2>Управление магазинами</h2>
+        <button class="btn-add"><i class="fa-solid fa-plus"></i> Добавить магазин</button>
+      </div>
+
+      <div class="admin-store-card">
+        <div class="admin-store-info">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=100" alt="Bread">
+          <div>
+            <h4>Нонвойхона</h4>
+            <small style="color:#777;">Фархор</small>
+          </div>
+        </div>
+        <div class="actions">
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+          <button class="btn-icon"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+
+      <div class="admin-store-card">
+        <div class="admin-store-info">
+          <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=100" alt="Products">
+          <div>
+            <h4>Продукты</h4>
+            <small style="color:#777;">Фархор</small>
+          </div>
+        </div>
+        <div class="actions">
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+          <button class="btn-icon"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+
+      <div class="admin-store-card">
+        <div class="admin-store-info">
+          <img src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=100" alt="Meat">
+          <div>
+            <h4>Мясо и птица</h4>
+            <small style="color:#777;">Фархор</small>
+          </div>
+        </div>
+        <div class="actions">
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+          <button class="btn-icon"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
     </div>
-    <div class="admin-section"><h2>Магазины и товары</h2><div id="shopList"></div></div>
-  </section>
+  </div>
 
-  <section id="orders" class="admin-panel hidden">
-    <div class="admin-section"><h2>Поступившие заказы</h2><div id="ordersList"></div></div>
-  </section>
-
-  <section id="settings" class="admin-panel hidden">
-    <div class="admin-section">
-      <h2>Настройки доставки и связи</h2>
-      <form class="admin-form" onsubmit="saveSettings(event)">
-        <label>Телефон OVARD</label><input id="adminPhone" type="tel" placeholder="+992 ...">
-        <button class="primary-btn" type="submit">Сохранить</button>
-      </form>
-      <p class="admin-note">Стоимость доставки пока подтверждается вручную. Автоматический расчёт маршрута и веса требует отдельного подключения.</p>
-    </div>
-    <div class="admin-section">
-      <h2>Важная информация</h2>
-      <p class="admin-note">Эта версия хранит данные в браузере данного устройства. Она не защищена авторизацией администратора и не подходит для публичного управления реальными заказами. Перед запуском для клиентов подключим общую базу данных и защиту панели.</p>
-    </div>
-  </section>
-
-  <a href="index.html" class="primary-btn" style="display:inline-block;text-align:center">← Вернуться на сайт</a>
-</div>
-
-<script>
-const KEY = "ovard_v2";
-const defaults = {shops:[],ownProducts:[],cart:[],orders:[],settings:{lang:"ru",theme:"light",phone:""}};
-
-function getData(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(KEY));
-    return saved?{...defaults,...saved,settings:{...defaults.settings,...(saved.settings||{})}}:JSON.parse(JSON.stringify(defaults));
-  }catch{return JSON.parse(JSON.stringify(defaults));}
-}
-let data=getData();
-function save(){localStorage.setItem(KEY,JSON.stringify(data));}
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function id(){return Date.now()+Math.floor(Math.random()*1000);}
-function tab(name,btn){
-  document.querySelectorAll(".admin-panel").forEach(x=>x.classList.add("hidden"));
-  document.getElementById(name).classList.remove("hidden");
-  document.querySelectorAll(".admin-tabs button").forEach(x=>x.classList.remove("active"));
-  btn.classList.add("active");
-  renderAll();
-}
-function addOwnProduct(e){
-  e.preventDefault();
-  data.ownProducts.unshift({
-    id:id(),name:pName.value.trim(),price:Number(pPrice.value),
-    unit:pUnit.value.trim(),photo:pPhoto.value.trim(),
-    description:pDescription.value.trim(),active:true
-  });
-  save();e.target.reset();renderAll();alert("Товар добавлен");
-}
-function addShop(e){
-  e.preventDefault();
-  data.shops.unshift({
-    id:id(),name:sName.value.trim(),description:sDescription.value.trim(),
-    photo:sPhoto.value.trim(),active:true,products:[]
-  });
-  save();e.target.reset();renderAll();alert("Магазин добавлен");
-}
-function addPartnerProduct(shopId){
-  const name=prompt("Название товара:");
-  if(!name)return;
-  const price=prompt("Цена в сомони:");
-  if(price===null||price.trim()===""||!Number.isFinite(Number(price))||Number(price)<0)return alert("Укажите правильную цену");
-  const unit=prompt("Единица измерения (кг, штука, мешок и т.д.):")||"шт.";
-  const shop=data.shops.find(s=>s.id===shopId);
-  if(!shop)return;
-  shop.products=shop.products||[];
-  shop.products.unshift({id:id(),name:name.trim(),price:Number(price),unit,active:true,description:"",photo:""});
-  save();renderAll();alert("Товар магазина добавлен");
-}
-function editOwn(idValue){
-  const p=data.ownProducts.find(x=>x.id===idValue);if(!p)return;
-  const name=prompt("Название:",p.name);if(name===null)return;
-  const price=prompt("Цена:",p.price);if(price===null)return;
-  const unit=prompt("Единица измерения:",p.unit);if(unit===null)return;
-  p.name=name.trim();p.price=Number(price);p.unit=unit.trim();
-  save();renderAll();
-}
-function editShop(idValue){
-  const s=data.shops.find(x=>x.id===idValue);if(!s)return;
-  const name=prompt("Название магазина:",s.name);if(name===null)return;
-  const desc=prompt("Описание:",s.description||"");if(desc===null)return;
-  s.name=name.trim();s.description=desc.trim();save();renderAll();
-}
-function toggleOwn(idValue){
-  const p=data.ownProducts.find(x=>x.id===idValue);if(!p)return;
-  p.active=p.active===false;save();renderAll();
-}
-function toggleShop(idValue){
-  const s=data.shops.find(x=>x.id===idValue);if(!s)return;
-  s.active=s.active===false;save();renderAll();
-}
-function deleteOwn(idValue){
-  if(!confirm("Удалить товар?"))return;
-  data.ownProducts=data.ownProducts.filter(x=>x.id!==idValue);save();renderAll();
-}
-function deleteShop(idValue){
-  if(!confirm("Удалить магазин вместе с его товарами?"))return;
-  data.shops=data.shops.filter(x=>x.id!==idValue);save();renderAll();
-}
-function deletePartnerProduct(shopId,productId){
-  if(!confirm("Удалить товар?"))return;
-  const s=data.shops.find(x=>x.id===shopId);if(!s)return;
-  s.products=(s.products||[]).filter(p=>p.id!==productId);save();renderAll();
-}
-function renderAll(){
-  document.getElementById("ownList").innerHTML=data.ownProducts.length?data.ownProducts.map(p=>`
-    <div class="admin-item"><div><strong>${esc(p.name)}</strong><div class="admin-note">${esc(p.price)} сомони / ${esc(p.unit)} · ${p.active===false?"Скрыт":"Активен"}</div></div>
-    <div class="admin-actions"><button onclick="editOwn(${p.id})">Изменить</button><button onclick="toggleOwn(${p.id})">${p.active===false?"Показать":"Скрыть"}</button><button class="danger" onclick="deleteOwn(${p.id})">Удалить</button></div></div>
-  `).join(""):"<p class='admin-note'>Товаров пока нет.</p>";
-
-  document.getElementById("shopList").innerHTML=data.shops.length?data.shops.map(s=>`
-    <div class="admin-section">
-      <div class="admin-item"><div><strong>${esc(s.name)}</strong><div class="admin-note">${s.active===false?"Скрыт":"Активен"} · ${(s.products||[]).length} товаров</div></div>
-      <div class="admin-actions"><button onclick="editShop(${s.id})">Изменить</button><button onclick="toggleShop(${s.id})">${s.active===false?"Показать":"Скрыть"}</button><button class="danger" onclick="deleteShop(${s.id})">Удалить</button></div></div>
-      <button class="small-btn" style="margin-top:10px" onclick="addPartnerProduct(${s.id})">+ Добавить товар в магазин</button>
-      ${(s.products||[]).map(p=>`<div class="admin-item"><div><strong>${esc(p.name)}</strong><div class="admin-note">${esc(p.price)} сомони / ${esc(p.unit)}</div></div><button class="danger" onclick="deletePartnerProduct(${s.id},${p.id})">Удалить</button></div>`).join("")}
-    </div>
-  `).join(""):"<p class='admin-note'>Магазинов пока нет.</p>";
-
-  document.getElementById("ordersList").innerHTML=data.orders.length?data.orders.map(o=>`
-    <div class="admin-section">
-      <strong>Заказ №${o.id}</strong><p class="admin-note">${esc(o.date)} · ${esc(o.name)} · ${esc(o.phone)}</p>
-      <p>${esc(o.address)}</p>
-      <p>${(o.items||[]).map(i=>esc(i.name)+" × "+i.qty).join("<br>")}</p>
-      <strong>${Number(o.total||0)} сомони</strong>
-      <label>Статус заказа</label>
-      <select onchange="changeStatus(${o.id},this.value)">
-        ${["Новый","Подтверждён","Готовится","В пути","Доставлен","Отменён"].map(st=>`<option ${o.status===st?"selected":""}>${st}</option>`).join("")}
-      </select>
-    </div>
-  `).join(""):"<p class='admin-note'>Заказов пока нет.</p>";
-
-  document.getElementById("adminPhone").value=data.settings.phone||"";
-}
-function changeStatus(orderId,status){
-  const o=data.orders.find(x=>x.id===orderId);if(!o)return;
-  o.status=status;save();
-}
-function saveSettings(e){
-  e.preventDefault();data.settings.phone=document.getElementById("adminPhone").value.trim();
-  save();alert("Настройки сохранены");
-}
-renderAll();
-</script>
 </body>
 </html>
