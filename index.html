@@ -1,106 +1,257 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#078747">
-  <title>OVARD — Доставка из магазинов</title>
+  <meta name="theme-color" content="#168447">
+  <meta name="description" content="овард — покупки и доставка из магазинов Фархора">
+  <title>OVARD — покупки и доставка</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="#">
-    <span class="logo-mark"><span>✓</span></span>
-    <span>OVARD</span>
-  </a>
-  <button class="location" id="locationBtn">⌖ <span id="locationText">Фархор, Таджикистан</span>⌄</button>
-  <button class="menu-btn" id="menuBtn" aria-label="Меню">☰</button>
-</header>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="OVARD">
+      <svg class="brand-symbol" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="5"/>
+        <path d="M14 24.5 21 31 35 16" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>OVARD</span>
+    </a>
 
-<main>
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">OVARD — СЕРВИС ДОСТАВКИ</p>
-      <h1>Выбирайте магазин.<br>Мы доставим до двери.</h1>
-      <p class="hero-sub">Покупайте у любимых продавцов — доставку организуем мы.</p>
-      <button class="hero-btn" onclick="document.getElementById('shops').scrollIntoView({behavior:'smooth'})">Выбрать магазин <span>→</span></button>
+    <button class="location-button" id="locationButton">
+      <span class="location-pin">⌖</span>
+      <span id="locationText">Фархор, Таджикистан</span>
+      <span class="tiny-arrow">⌄</span>
+    </button>
+
+    <button class="menu-button" id="menuButton" aria-label="Меню">•••</button>
+  </header>
+
+  <main class="page">
+    <section class="welcome">
+      <div class="welcome-copy">
+        <span class="eyebrow" data-i18n="welcomeSmall">ПОКУПКИ БЕЗ ЛИШНИХ ПОЕЗДОК</span>
+        <h1 data-i18n="welcomeTitle">Нужное — рядом.<br>Доставим к вам.</h1>
+        <p data-i18n="welcomeText">Заказывайте товары из магазинов, а мы привезём их по вашему адресу.</p>
+        <button class="primary-button" id="startShopping" data-i18n="startShopping">Начать покупки <span>→</span></button>
+      </div>
+      <div class="welcome-art" aria-hidden="true">
+        <div class="art-circle"></div>
+        <div class="art-package">
+          <div class="package-top"></div>
+          <div class="package-front">
+            <svg viewBox="0 0 48 48">
+              <circle cx="24" cy="24" r="18" fill="none" stroke="#168447" stroke-width="4"/>
+              <path d="m14 24 7 7 14-15" fill="none" stroke="#168447" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <span class="art-spark spark-one">✦</span>
+        <span class="art-spark spark-two">✦</span>
+      </div>
+    </section>
+
+    <section class="search-area">
+      <label class="search-box">
+        <span>⌕</span>
+        <input id="searchInput" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Найти товар или магазин">
+        <button id="clearSearch" aria-label="Очистить">×</button>
+      </label>
+    </section>
+
+    <section class="section-heading">
+      <div>
+        <span class="section-kicker" data-i18n="forYou">ДЛЯ ВАС</span>
+        <h2 data-i18n="ourProducts">Товары овaрд</h2>
+      </div>
+      <span class="section-note" data-i18n="freshOffers">Наши предложения</span>
+    </section>
+
+    <section class="promo-grid">
+      <article class="promo-card promo-green">
+        <div class="promo-info">
+          <span data-i18n="promoOneTag">УДОБНО И ПРОСТО</span>
+          <h3 data-i18n="promoOneTitle">Покупки из магазинов</h3>
+          <p data-i18n="promoOneText">Выбирайте нужное — доставку организуем мы.</p>
+          <button class="promo-link" id="promoShops" data-i18n="viewShops">Посмотреть магазины →</button>
+        </div>
+        <div class="promo-visual visual-bag" aria-hidden="true">
+          <div class="bag-handle"></div>
+          <div class="bag-body"><span>овард</span></div>
+        </div>
+      </article>
+
+      <article class="promo-card promo-light">
+        <div class="promo-info">
+          <span data-i18n="promoTwoTag">ДОСТАВКА ПО АДРЕСУ</span>
+          <h3 data-i18n="promoTwoTitle">Не нужно выходить</h3>
+          <p data-i18n="promoTwoText">Оформите заказ — привезём к вашей двери.</p>
+          <button class="promo-link" id="promoDelivery" data-i18n="howDelivery">Как работает доставка →</button>
+        </div>
+        <div class="promo-visual visual-route" aria-hidden="true">
+          <div class="route-line"></div>
+          <div class="route-dot dot-a"></div>
+          <div class="route-dot dot-b"></div>
+          <div class="route-home">⌂</div>
+          <div class="route-box">овард</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-heading shops-heading" id="shopsSection">
+      <div>
+        <span class="section-kicker" data-i18n="partners">ПАРТНЁРЫ</span>
+        <h2 data-i18n="shopsTitle">Магазины</h2>
+      </div>
+      <button class="text-button" id="allShopsButton" data-i18n="allShops">Все магазины →</button>
+    </section>
+
+    <div class="shops-hidden-hint" id="shopsHint">
+      <div class="hint-icon">⌂</div>
+      <p data-i18n="shopsHint">Нажмите «Все магазины», чтобы посмотреть магазины и их товары.</p>
+      <button class="outline-button" id="showShopsButton" data-i18n="openShops">Открыть магазины</button>
     </div>
-    <div class="hero-art">
-      <div class="art-circle"></div>
-      <div class="art-box">✓</div>
-      <div class="art-leaf">✦</div>
+
+    <section class="shop-list hidden" id="shopList"></section>
+
+    <section class="section-heading product-heading" id="productsHeading">
+      <div>
+        <span class="section-kicker" data-i18n="catalog">КАТАЛОГ</span>
+        <h2 id="productsTitle" data-i18n="popularProducts">Популярные товары</h2>
+      </div>
+      <button class="text-button hidden" id="backToShops" data-i18n="back">← Назад</button>
+    </section>
+
+    <section class="product-grid" id="productGrid"></section>
+
+    <section class="delivery-info" id="deliveryInfo">
+      <div class="delivery-icon">↗</div>
+      <div>
+        <h3 data-i18n="deliveryTitle">Доставка до вашего адреса</h3>
+        <p data-i18n="deliveryText">Стоимость доставки рассчитывается отдельно — с учётом расстояния по дороге и веса заказа.</p>
+      </div>
+    </section>
+
+    <section class="courier-card">
+      <div class="courier-symbol">↗</div>
+      <div>
+        <span class="section-kicker" data-i18n="courierLabel">СЕРВИС ОВАРД</span>
+        <h3 data-i18n="courierTitle">Доставка для каждого заказа</h3>
+        <p data-i18n="courierText">Мы заберём покупки у продавца и доставим по указанному адресу.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home">
+      <span class="nav-icon">⌂</span><small data-i18n="navHome">Главная</small>
+    </button>
+    <button class="nav-item" data-page="shops">
+      <span class="nav-icon">▤</span><small data-i18n="navShops">Магазины</small>
+    </button>
+    <button class="nav-item cart-nav" data-page="cart">
+      <span class="nav-icon">▢</span><small data-i18n="navCart">Корзина</small><b id="cartCount">0</b>
+    </button>
+    <button class="nav-item" data-page="profile">
+      <span class="nav-icon">♙</span><small data-i18n="navProfile">Профиль</small>
+    </button>
+  </nav>
+
+  <div class="overlay hidden" id="overlay"></div>
+
+  <aside class="drawer hidden" id="settingsDrawer">
+    <div class="drawer-head">
+      <div>
+        <span class="section-kicker" data-i18n="settingsLabel">ОВАРД</span>
+        <h2 data-i18n="settingsTitle">Настройки</h2>
+      </div>
+      <button class="close-button" id="closeDrawer">×</button>
     </div>
+
+    <div class="setting-group">
+      <label data-i18n="languageLabel">Язык</label>
+      <select id="languageSelect">
+        <option value="ru">Русский</option>
+        <option value="tg">Тоҷикӣ</option>
+        <option value="uz">O‘zbekcha</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <div class="setting-group">
+      <label data-i18n="themeLabel">Оформление</label>
+      <div class="choice-row">
+        <button class="choice-button selected" data-theme-choice="light" data-i18n="lightTheme">Светлая</button>
+        <button class="choice-button" data-theme-choice="dark" data-i18n="darkTheme">Тёмная</button>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label data-i18n="fontLabel">Размер текста</label>
+      <div class="choice-row">
+        <button class="choice-button selected" data-font="normal">A</button>
+        <button class="choice-button" data-font="large">A+</button>
+        <button class="choice-button" data-font="xlarge">A++</button>
+      </div>
+    </div>
+
+    <div class="drawer-bottom">
+      <p data-i18n="aboutText">овард — покупки и доставка из магазинов.</p>
+      <a href="admin.html" class="admin-link" data-i18n="adminLink">Панель управления</a>
+    </div>
+  </aside>
+
+  <section class="modal hidden" id="cartModal">
+    <div class="modal-head">
+      <div>
+        <span class="section-kicker" data-i18n="yourOrder">ВАШ ЗАКАЗ</span>
+        <h2 data-i18n="cartTitle">Корзина</h2>
+      </div>
+      <button class="close-button" id="closeCart">×</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-total-row">
+      <span data-i18n="productsTotal">Товары:</span>
+      <strong id="cartTotal">0</strong>
+    </div>
+    <p class="delivery-separate" data-i18n="deliverySeparate">Доставка оплачивается отдельно. Стоимость уточняется по адресу и весу.</p>
+
+    <form id="checkoutForm" class="checkout-form">
+      <label data-i18n="customerName">Ваше имя</label>
+      <input name="customer" required placeholder="Имя">
+      <label data-i18n="phoneLabel">Номер телефона</label>
+      <input name="phone" type="tel" required placeholder="+992">
+      <label data-i18n="addressLabel">Адрес доставки</label>
+      <input name="address" required placeholder="Улица, дом, ориентир">
+      <label data-i18n="commentLabel">Комментарий</label>
+      <textarea name="comment" rows="2" placeholder="Дополнительная информация"></textarea>
+      <button class="primary-button full-button" type="submit" data-i18n="sendOrder">Отправить заказ в WhatsApp →</button>
+    </form>
   </section>
 
-  <section class="search-wrap">
-    <span>⌕</span>
-    <input id="searchInput" placeholder="Поиск магазинов...">
-    <button id="searchBtn">Найти</button>
+  <section class="modal hidden" id="profileModal">
+    <div class="modal-head">
+      <div>
+        <span class="section-kicker" data-i18n="yourAccount">ОВАРД</span>
+        <h2 data-i18n="profileTitle">Покупатель</h2>
+      </div>
+      <button class="close-button" id="closeProfile">×</button>
+    </div>
+    <p data-i18n="profileText">Укажите свои данные при оформлении заказа. Отдельная регистрация пока не требуется.</p>
+    <button class="primary-button full-button" id="profileOrderButton" data-i18n="goToOrder">Перейти к заказу</button>
   </section>
 
-  <section class="section" id="shops">
-    <div class="section-head">
-      <h2>Магазины</h2>
-      <button class="text-btn" id="allShopsBtn">Все магазины →</button>
+  <section class="modal hidden" id="infoModal">
+    <div class="modal-head">
+      <h2 id="infoTitle">Доставка</h2>
+      <button class="close-button" id="closeInfo">×</button>
     </div>
-    <div class="shop-grid" id="shopGrid"></div>
+    <p id="infoText"></p>
   </section>
 
-  <section class="promo">
-    <div>
-      <span class="promo-label">СЕРВИС OVARD</span>
-      <h2>Покупать стало проще</h2>
-      <p>Один заказ — покупки из магазинов с доставкой до вашей двери.</p>
-    </div>
-    <div class="promo-icon">O✓</div>
-  </section>
+  <div class="toast" id="toast"></div>
 
-  <section class="section hidden" id="shopDetails">
-    <div class="section-head">
-      <button class="text-btn" id="backShops">← Магазины</button>
-      <h2 id="shopTitle">Магазин</h2>
-    </div>
-    <div id="productGrid" class="product-grid"></div>
-  </section>
-</main>
-
-<nav class="bottom-nav">
-  <button class="nav-item active" data-go="home"><span>⌂</span>Главная</button>
-  <button class="nav-item" data-go="shops"><span>▦</span>Магазины</button>
-  <button class="nav-item" data-go="cart"><span>▣</span>Корзина <b id="cartCount">0</b></button>
-  <button class="nav-item" data-go="profile"><span>♙</span>Профиль</button>
-</nav>
-
-<div class="drawer hidden" id="drawer">
-  <div class="drawer-panel">
-    <div class="section-head"><h2>Настройки</h2><button id="closeDrawer" class="close-btn">×</button></div>
-    <label>Размер текста</label>
-    <div class="font-options">
-      <button data-font="normal">Средний</button>
-      <button data-font="large">Большой</button>
-      <button data-font="xlarge">Очень большой</button>
-    </div>
-    <label>Язык</label>
-    <select id="languageSelect">
-      <option value="ru">Русский</option>
-      <option value="tg">Тоҷикӣ</option>
-      <option value="en">English</option>
-    </select>
-    <label>Тема</label>
-    <button class="wide-btn" id="themeBtn">Светлая / тёмная тема</button>
-    <p class="muted">OVARD — покупки из магазинов с доставкой.</p>
-  </div>
-</div>
-
-<div class="modal hidden" id="modal">
-  <div class="modal-card">
-    <div class="section-head"><h2 id="modalTitle">Корзина</h2><button class="close-btn" id="closeModal">×</button></div>
-    <div id="modalContent"></div>
-  </div>
-</div>
-<div class="toast hidden" id="toast"></div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
