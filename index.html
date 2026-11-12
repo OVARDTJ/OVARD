@@ -1,215 +1,127 @@
+
 <!DOCTYPE html>
-<html lang="tj">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OVARD - Покупки с доставкой в ваш город!</title>
+  <meta name="theme-color" content="#16843a">
+  <meta name="description" content="Магазины, товары и доставка">
+  <title>Главная</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0d8a43">
-  <!-- Иконкаҳои Font Awesome (барои иконкаҳои поёнӣ ва меню) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Header / Сарлавҳа -->
-  <header class="header">
-    <div class="logo-area">
-      <img src="logo.png" alt="Ovard Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=O'">
-      <span class="brand-name">Ovard</span>
+<header class="topbar">
+  <div class="logo">
+    <span class="logo-mark">✓</span>
+  </div>
+  <div class="header-actions">
+    <button id="searchOpen" aria-label="Поиск">⌕</button>
+    <button id="notificationsOpen" aria-label="Уведомления">♧</button>
+    <button id="settingsOpen" aria-label="Настройки">⋮</button>
+  </div>
+</header>
+
+<main>
+  <section id="homePage" class="page active">
+    <div class="welcome">
+      <h2>Добро пожаловать!</h2>
+      <p>Выбирайте товары и оформляйте заказ</p>
     </div>
-    <div class="location-picker">
-      <i class="fa-solid fa-location-dot"></i>
-      <span>Фархор, Таджикистан</span>
-      <i class="fa-solid fa-chevron-down"></i>
+
+    <div id="searchBox" class="search-box hidden">
+      <input id="searchInput" placeholder="Поиск товаров...">
     </div>
-    <button class="menu-btn" aria-label="Меню"><i class="fa-solid fa-bars"></i></button>
-  </header>
 
-  <!-- Асосӣ: Саҳифаи Главная -->
-  <main id="app-content">
-    
-    <!-- SECTION 1: ГЛАВНАЯ -->
-    <section id="page-home" class="page active">
-      <!-- Banner -->
-      <div class="hero-banner">
-        <div class="banner-text">
-          <h1>OVARD</h1>
-          <p class="subtitle">Покупки с доставкой в ваш город!</p>
-          <p class="desc">Удобно. Быстро. Надёжно.</p>
-        </div>
-      </div>
+    <h3>Наши товары</h3>
+    <div id="ownProducts" class="product-grid"></div>
 
-      <!-- Поиск -->
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" placeholder="Поиск товаров или магазинов...">
-        <button class="search-btn">Найти</button>
+    <section class="partners-section">
+      <div class="section-title">
+        <h3>Магазины</h3>
+        <button id="allShopsButton">Все магазины →</button>
       </div>
-
-      <!-- Магазины Категорияҳо -->
-      <div class="section-header">
-        <h2>Магазины</h2>
-        <a href="#" onclick="switchTab('stores')" class="see-all">Все магазины &rarr;</a>
-      </div>
-
-      <div class="categories-grid">
-        <div class="cat-card" onclick="switchTab('stores')">
-          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200" alt="Нонвойхона">
-          <span>Нонвойхона</span>
-        </div>
-        <div class="cat-card" onclick="switchTab('stores')">
-          <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200" alt="Продукты">
-          <span>Продукты</span>
-        </div>
-        <div class="cat-card" onclick="switchTab('stores')">
-          <img src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=200" alt="Мясо и птица">
-          <span>Мясо и птица</span>
-        </div>
-        <div class="cat-card" onclick="switchTab('stores')">
-          <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200" alt="Аптека">
-          <span>Аптека</span>
-        </div>
-        <div class="cat-card" onclick="switchTab('stores')">
-          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=200" alt="Стройматериалы">
-          <span>Стройматериалы</span>
-        </div>
-      </div>
+      <div id="shopTicker" class="shop-ticker"></div>
     </section>
+  </section>
 
-    <!-- SECTION 2: ВСЕ МАГАЗИНЫ -->
-    <section id="page-stores" class="page">
-      <div class="page-title-bar">
-        <h2>Все магазины</h2>
-      </div>
+  <section id="shopsPage" class="page">
+    <h2>Магазины</h2>
+    <div id="shopsList" class="shops-list"></div>
+  </section>
 
-      <!-- Фильтрҳо -->
-      <div class="filter-chips">
-        <button class="chip active">Все</button>
-        <button class="chip">Питание</button>
-        <button class="chip">Аптека</button>
-        <button class="chip">Стройматериалы</button>
-        <button class="chip">Другое</button>
-      </div>
+  <section id="shopDetailPage" class="page">
+    <button class="back-button" data-back>← Назад</button>
+    <div id="shopDetail"></div>
+    <div id="shopProducts" class="product-grid"></div>
+  </section>
 
-      <!-- Рӯйхати мағозаҳо -->
-      <div class="stores-list">
-        <div class="store-item">
-          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=150" alt="Нонвойхона">
-          <div class="store-info">
-            <h3>Нонвойхона</h3>
-            <p>Нони гарм</p>
-            <span class="location"><i class="fa-solid fa-location-dot"></i> Фархор</span>
-          </div>
-          <span class="status-badge open"><i class="fa-solid fa-circle"></i> Открыто</span>
-        </div>
+  <section id="cartPage" class="page">
+    <h2>Корзина</h2>
+    <div id="cartItems"></div>
+    <div id="cartTotal"></div>
+    <button id="checkoutButton" class="primary-button">Оформить заказ</button>
+  </section>
 
-        <div class="store-item">
-          <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=150" alt="Продукты">
-          <div class="store-info">
-            <h3>Магазин продуктов</h3>
-            <p>Хӯрокворӣ</p>
-            <span class="location"><i class="fa-solid fa-location-dot"></i> Фархор</span>
-          </div>
-          <span class="status-badge open"><i class="fa-solid fa-circle"></i> Открыто</span>
-        </div>
+  <section id="ordersPage" class="page">
+    <h2>Мои заказы</h2>
+    <div id="ordersList"></div>
+  </section>
 
-        <div class="store-item">
-          <img src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=150" alt="Мясо и птица">
-          <div class="store-info">
-            <h3>Мясо и птица</h3>
-            <p>Маҳсулоти мурғ</p>
-            <span class="location"><i class="fa-solid fa-location-dot"></i> Фархор</span>
-          </div>
-          <span class="status-badge open"><i class="fa-solid fa-circle"></i> Открыто</span>
-        </div>
+  <section id="messagesPage" class="page">
+    <h2>Сообщения</h2>
+    <div id="messagesList"></div>
+  </section>
 
-        <div class="store-item">
-          <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=150" alt="Аптека">
-          <div class="store-info">
-            <h3>Аптека</h3>
-            <p>Дорухона</p>
-            <span class="location"><i class="fa-solid fa-location-dot"></i> Фархор</span>
-          </div>
-          <span class="status-badge open"><i class="fa-solid fa-circle"></i> Открыто</span>
-        </div>
+  <section id="profilePage" class="page">
+    <h2>Мой аккаунт</h2>
+    <div id="profileContent"></div>
+  </section>
 
-        <div class="store-item">
-          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150" alt="Стройматериалы">
-          <div class="store-info">
-            <h3>Стройматериалы</h3>
-            <p>Молҳои сохтмонӣ</p>
-            <span class="location"><i class="fa-solid fa-location-dot"></i> Фархор</span>
-          </div>
-          <span class="status-badge open"><i class="fa-solid fa-circle"></i> Открыто</span>
-        </div>
-      </div>
-    </section>
+  <section id="settingsPage" class="page">
+    <h2>Настройки</h2>
 
-    <!-- SECTION 3: ПРОФИЛЬ -->
-    <section id="page-profile" class="page">
-      <div class="profile-header">
-        <div class="avatar"><i class="fa-solid fa-user"></i></div>
-        <div class="user-details">
-          <h3>Нурмухаммад</h3>
-          <p>Покупатель OVARD</p>
-        </div>
-        <i class="fa-solid fa-gear settings-icon"></i>
-      </div>
+    <label>Язык</label>
+    <select id="languageSelect">
+      <option value="ru">Русский</option>
+      <option value="tg">Тоҷикӣ</option>
+      <option value="uz">O‘zbekcha</option>
+      <option value="en">English</option>
+    </select>
 
-      <div class="orders-box">
-        <div class="orders-header">
-          <span><i class="fa-solid fa-bag-shopping"></i> Мои заказы</span>
-          <a href="#" class="see-all">Все заказы &rarr;</a>
-        </div>
-        <div class="empty-orders">
-          <i class="fa-solid fa-cart-flatbed"></i>
-          <p>Здесь будут ваши заказы после оформления</p>
-        </div>
-      </div>
+    <label>Размер текста</label>
+    <select id="fontSelect">
+      <option value="medium">Средний</option>
+      <option value="large">Крупный</option>
+    </select>
 
-      <ul class="profile-menu">
-        <li><i class="fa-solid fa-location-dot"></i> Мои адреса <i class="fa-solid fa-chevron-right arrow"></i></li>
-        <li><i class="fa-solid fa-heart"></i> Избранные магазины <i class="fa-solid fa-chevron-right arrow"></i></li>
-        <li><i class="fa-solid fa-bell"></i> Уведомления <i class="fa-solid fa-chevron-right arrow"></i></li>
-        <li><i class="fa-solid fa-circle-info"></i> О приложении <i class="fa-solid fa-chevron-right arrow"></i></li>
-      </ul>
-    </section>
+    <label>Тема</label>
+    <select id="themeSelect">
+      <option value="light">Светлая</option>
+      <option value="dark">Тёмная</option>
+      <option value="auto">Автоматически</option>
+    </select>
 
-    <!-- SECTION 4: НАСТРОЙКИ -->
-    <section id="page-settings" class="page">
-      <div class="page-title-bar">
-        <h2>Настройки</h2>
-      </div>
-      <ul class="profile-menu">
-        <li><i class="fa-solid fa-globe"></i> Язык / Забон <span class="badge-val">Русский</span></li>
-        <li><i class="fa-solid fa-moon"></i> Тёмная тема <input type="checkbox" id="theme-toggle"></li>
-        <li><i class="fa-solid fa-lock"></i> Администратор <a href="ovard-admin.html" class="admin-link">Панель управления</a></li>
-      </ul>
-    </section>
+    <h3>Уведомления</h3>
+    <div id="notificationSettings"></div>
 
-  </main>
+    <h3>Аккаунт и безопасность</h3>
+    <div id="accountSettings"></div>
 
-  <!-- Bottom Navigation / Навигатсияи Поёнӣ -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="switchTab('home')">
-      <i class="fa-solid fa-house"></i>
-      <span>Главная</span>
-    </button>
-    <button class="nav-btn" onclick="switchTab('stores')">
-      <i class="fa-solid fa-store"></i>
-      <span>Магазины</span>
-    </button>
-    <button class="nav-btn" onclick="switchTab('profile')">
-      <i class="fa-solid fa-user"></i>
-      <span>Профиль</span>
-    </button>
-    <button class="nav-btn" onclick="switchTab('settings')">
-      <i class="fa-solid fa-gear"></i>
-      <span>Настройки</span>
-    </button>
-  </nav>
+    <h3>Помощь и информация</h3>
+    <div id="helpSettings"></div>
+  </section>
+</main>
 
-  <script src="script.js"></script>
+<nav class="bottom-nav">
+  <button data-page="homePage">⌂<span>Главная</span></button>
+  <button data-page="shopsPage">▤<span>Магазины</span></button>
+  <button data-page="cartPage">🛒<span>Корзина</span></button>
+  <button data-page="ordersPage">▣<span>Заказы</span></button>
+  <button data-page="profilePage">♙<span>Профиль</span></button>
+</nav>
+
+<script src="script.js"></script>
 </body>
 </html>
