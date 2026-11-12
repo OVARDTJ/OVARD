@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Панель управления</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="brand-icon"><span>✓</span></div>
+  <h2>Панель управления</h2>
+</header>
+
+<main class="admin-main">
+  <section id="loginSection">
+    <h2>Вход администратора</h2>
+    <input id="adminPassword" type="password" placeholder="Пароль">
+    <button id="loginButton">Войти</button>
+    <p id="loginError"></p>
+  </section>
+
+  <section id="adminPanel" class="hidden">
+    <h2>Управление</h2>
+
+    <div class="admin-tabs">
+      <button data-tab="productsTab">Товары</button>
+      <button data-tab="shopsTab">Магазины</button>
+      <button data-tab="ordersTab">Заказы</button>
+    </div>
+
+    <section id="productsTab" class="admin-tab">
+      <h3>Добавить товар</h3>
+      <select id="productOwner">
+        <option value="own">Собственный товар</option>
+      </select>
+      <input id="productName" placeholder="Название товара">
+      <input id="productPrice" type="number" placeholder="Цена">
+      <input id="productUnit" placeholder="Единица измерения">
+      <input id="productImage" placeholder="Ссылка на фото">
+      <button id="addProduct">Добавить товар</button>
+      <div id="adminProducts"></div>
+    </section>
+
+    <section id="shopsTab" class="admin-tab hidden">
+      <h3>Добавить магазин</h3>
+      <input id="shopName" placeholder="Название магазина">
+      <input id="shopDescription" placeholder="Описание">
+      <button id="addShop">Добавить магазин</button>
+      <div id="adminShops"></div>
+    </section>
+
+    <section id="ordersTab" class="admin-tab hidden">
+      <h3>Все заказы</h3>
+      <div id="adminOrders"></div>
+    </section>
+
+    <button id="logoutButton" class="logout">Выйти</button>
+  </section>
+</main>
+
+<script src="admin.js"></script>
+</body>
+</html>
